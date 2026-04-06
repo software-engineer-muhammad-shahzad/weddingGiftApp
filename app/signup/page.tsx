@@ -5,10 +5,10 @@ const page = () => {
         <div className="bg-[#350366] min-h-screen overflow-auto w-full max-w-382.5 mx-auto py-15.5 px-25">
             <div className="flex w-full h-full">
             
-                <div className=" flex-1 ">
+                <div className=" flex-1">
                     <SignupLeft />
                 </div>
-                <div className="  flex-1">
+                <div className="  flex-1  ps-20 ">
                     
                     <SignupForm />
                 </div>

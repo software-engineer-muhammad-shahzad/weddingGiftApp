@@ -40,7 +40,7 @@ const Input = ({
   
   return (
     <div className={containerClass} style={gradientStyle}>
-      <div className="py-3 px-5 flex flex-col">
+      <div className="py-3 px-5 flex flex-col gap-1">
         <label htmlFor={id} className="text-white text-[14px]">{label}</label>
         <input
           type={type}
