@@ -6,11 +6,8 @@ const SignupLeft = () => {
 
         {/* left bannerText */}
        <LeftBannerText/>
-        {/* banner text */}
-        <div className="mt-6">
-          <p className="text-white text-xl ">Secure access to smarter.</p>
-          <h1 className="text-6xl font-normal text-white mt-3 leading-tight">Celebrate Love,<br/> Gift Digitally</h1>
-        </div>
+       
+       
       
     </div>
   )
