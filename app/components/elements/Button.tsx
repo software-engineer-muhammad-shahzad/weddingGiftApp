@@ -15,7 +15,7 @@ const Button = ({
   className = '', 
   disabled = false 
 }: ButtonProps) => {
-  const defaultClass = "text-[20px] w-full h-14 text-center font-medium bg-[#5FDA78] text-[#330065] rounded-[60px]"
+  const defaultClass = "text-[20px] w-full h-16 text-center font-medium bg-[#5FDA78] text-[#330065] rounded-[60px]"
   const buttonClass = className || defaultClass
   
   return (
