@@ -3,7 +3,7 @@
 import React from 'react'
 
 interface InputProps {
-  label: string
+  label?: string
   type?: string
   placeholder?: string
   name?: string
@@ -11,6 +11,12 @@ interface InputProps {
   className?: string
   containerClassName?: string
   specialGradient?: boolean
+  maxLength?:number
+    value?: string
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onPaste?: (e: React.ClipboardEvent<HTMLInputElement>) => void
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void
+  
 }
 
 const Input = ({ 
@@ -21,7 +27,12 @@ const Input = ({
   id, 
   className = '', 
   containerClassName = '',
-  specialGradient = false 
+  specialGradient = false ,
+  maxLength,
+  value,
+  onChange,
+  onPaste,
+  onKeyDown,
 }: InputProps) => {
   const defaultInputClass = "border-none outline-none text-[#989898] text-sm bg-transparent"
   const defaultContainerClass = "border border-[#5FDA78] rounded-[147px]"
@@ -39,7 +50,7 @@ const Input = ({
   }
   
   return (
-    <div className={containerClass} style={gradientStyle}>
+    <div className={containerClass}   style={specialGradient ? gradientStyle : {}}>
       <div className="py-3 px-5 flex flex-col gap-1">
         <label htmlFor={id} className="text-white text-[14px]">{label}</label>
         <input
@@ -48,6 +59,11 @@ const Input = ({
           name={name}
           placeholder={placeholder}
           className={inputClass}
+          maxLength={ maxLength}
+           value={value}
+           onChange={onChange}
+           onPaste={onPaste}
+           onKeyDown={onKeyDown}
         />
       </div>
     </div>

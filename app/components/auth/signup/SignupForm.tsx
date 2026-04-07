@@ -1,9 +1,21 @@
+"use client"
 import Input from '@/app/components/elements/Input'
 import Button from '@/app/components/elements/Button'
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 const SignupForm = () => {
+      const router = useRouter();
+
+  const handleSubmit = (e:React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); 
+   
+    router.push("/verify-otp");
+  };
+
     return (
-        <div className="flex flex-col gap-4">
+        <div  >
+            <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
             <Input
                 label="Your Name"
                 type="text"
@@ -53,12 +65,20 @@ const SignupForm = () => {
                 placeholder="Confirm Password"
                 name="confirmPassword"
             />
-            
-            <div className="mt-5 w-full">
-                <Button type="submit">
+           
+            <div className="mt-5 w-full ">
+                <Button type="submit" className=''>
                     Sign Up
                 </Button>
             </div>
+            <div className='flex gap-2 text-white justify-center'>            <p>Already have an account?</p>
+            <Link href={"/login"} className='border-white border-b'>
+            Sign In
+            </Link>
+             
+             </div>
+
+             </form>
         </div>
     )
 }

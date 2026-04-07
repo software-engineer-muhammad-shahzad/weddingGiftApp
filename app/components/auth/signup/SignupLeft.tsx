@@ -4,7 +4,7 @@ const SignupLeft = () => {
     <div className="h-full flex flex-col pt-40">
     
 
-        {/* left bannerText */}
+        
        <LeftBannerText/>
        
        
