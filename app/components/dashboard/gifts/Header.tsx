@@ -1,28 +1,17 @@
-import { Bell, Settings } from "lucide-react"
-import Image from "next/image"
+import { Bell, ChevronLeft, Settings } from "lucide-react"
 import Link from "next/link"
 
-
 const Header = () => {
-    return (
-        <div className="flex justify-between">
-            {/* image and name */}
-            <div className="flex gap-4 items-center  ">
-                <div className="w-12 h-12 border border-[#5FDA78] rounded-full overflow-hidden">
-  <Image 
-    src="/profileDelete.png" 
-    alt="error"  
-    width={84} 
-    height={84}
-    className="w-full h-full object-cover"
-  />
-</div>
-                {/* name date */}
-                <div className="flex flex-col text-white ">
-                    <p className="text-xl ">Name</p>
-                    <p className="text-lg font-light">02,Nov 2026</p>
-                </div>
-                </div>
+  return (
+    <>
+{/* header greetings */}
+ <div className="flex justify-between">
+           {/* Greetings header */}
+    <Link  href="/dashboard"className="flex w-fit items-center gap-2">
+        <ChevronLeft  className='text-white'/>
+        <p className="text-white text-2xl">Greetings</p>
+
+    </Link>
                 {/* icons */}
                 <div className="flex gap-2">
 
@@ -38,7 +27,9 @@ const Header = () => {
             
 
         </div>
-    )
+
+    </>
+  )
 }
 
 export default Header

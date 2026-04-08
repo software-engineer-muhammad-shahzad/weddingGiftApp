@@ -1,5 +1,6 @@
 import Balance from "../components/dashboard/home/Balance"
 import Banner from "../components/dashboard/home/Banner"
+import ContributorList from "../components/dashboard/home/ContributorList"
 import FooterAppShare from "../components/dashboard/home/FooterAppShare"
 import Header from "../components/dashboard/home/Header"
 import StatisticChart from "../components/dashboard/home/StatisticChart"
@@ -14,6 +15,7 @@ const page = () => {
            <Banner/>
            <StatisticChart/>
            <FooterAppShare/>
+           <ContributorList/>
 </div>
 
     </div>
