@@ -6,11 +6,14 @@ import Input from "../../elements/Input"
 
 const ForgotPasswordform = () => {
     const router=useRouter()
+    const source = "forgot-password"
+
+
     
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
         
-router.push("set-password");
+router.push(`/verify-otp?source=${source}`)
 
     }
     return (
@@ -20,10 +23,11 @@ router.push("set-password");
                 type="email"
                 placeholder="Enter your email"
                 name="email"
+                specialGradient={true}
             />
    <div className="mt-5 w-full">
-                <Button type="submit" >
-                    Sign Up
+                <Button type="submit" className='py-2! md:py-4!' >
+            Next
                 </Button>
             </div>
         </form>

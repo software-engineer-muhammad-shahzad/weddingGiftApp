@@ -19,8 +19,8 @@ const page = ({setIsModalOpen,isModalOpen}: SetPasswordFormProps) => {
 
     }
   return (
-   <div  >
-            <form className="flex flex-col gap-4 pt-30" onSubmit={handleSubmit}>
+   <div>
+            <form className="flex flex-col gap-4 " onSubmit={handleSubmit}>
             
             
             <Input
@@ -28,6 +28,7 @@ const page = ({setIsModalOpen,isModalOpen}: SetPasswordFormProps) => {
                 type="password"
                 placeholder="Enter your password"
                 name="password"
+
             />
             
             <Input
@@ -38,7 +39,7 @@ const page = ({setIsModalOpen,isModalOpen}: SetPasswordFormProps) => {
             />
            
             <div className="mt-5 w-full">
-                <Button type="submit" className='' onClick={()=>setIsModalOpen(!isModalOpen)}>
+                <Button type="submit" className='py-2! md:py-4!' onClick={()=>setIsModalOpen(!isModalOpen)}>
                     Continue
                 </Button>
             </div>

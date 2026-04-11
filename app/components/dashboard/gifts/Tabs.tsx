@@ -1,9 +1,15 @@
 "use client"
 import { useState } from "react"
 
-const Tabs = () => {
-  const [activeTab, setActiveTab] = useState("all")
+interface TabsProps {
+    activeTab: string;
+    setActiveTab: (tab: string) => void;
+}
 
+const Tabs = ({activeTab,setActiveTab}: TabsProps) => {
+  
+
+    
   // ✅ Glass style for inactive tabs
   const glassStyle = {
     background: `
@@ -30,14 +36,14 @@ const Tabs = () => {
 
   // ✅ Helper for classes
   const getTabClass = (tab: string) =>
-    `w-40 flex justify-center items-center border border-[#5FDA78] rounded-[30px] font-medium transition-all duration-300 ${
+    `w-40 flex justify-center items-center border cursor-pointer border-[#5FDA78] rounded-[30px] font-medium transition-all duration-300 ${
       activeTab === tab
-        ? "bg-[#5FDA78] text-[#330065]"
-        : "text-[#919191] hover:bg-[#5FDA78] hover:text-[#330065]"
+        ? "bg-[#5FDA78] text-[#330065] font-medium"
+        : "text-[#919191] hover:bg-[#5FDA78] "
     }`
 
   return (
-    <div className="flex justify-between px-6 h-12 mt-16 gap-3">
+    <div className="flex justify-between  h-12 mt-16 gap-3">
 
       {/* All */}
       <button
@@ -65,9 +71,7 @@ const Tabs = () => {
       >
         Video
       </button>
-      <p className="text-[#919191]!"> 
-hello
-</p>
+
 
     </div>
   )

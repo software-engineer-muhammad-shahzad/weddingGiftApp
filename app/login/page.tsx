@@ -4,18 +4,28 @@ import Image from "next/image"
 import Input from "../components/elements/Input";
 import Button from "../components/elements/Button";
 import LeftBannerText from "../components/auth/LeftBannerText";
+import Checkbox from "../components/elements/Checkbox";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router=useRouter()
+
+  const handleLoginResponse=()=>{
+
+    router.push("/verify-otp")
+
+
+  }
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-[#350366] text-white">
-      <div className="w-full  p-20">
-
-        <div className=" bg-[#350366] p-8 flex flex-col md:flex-row gap-8">
+      <div className="w-full max-w-7xl p-4 sm:p-6 lg:p-8">
+        <div className="bg-[#350366] px-1 py-18   sm:p-6 lg:p-8 flex flex-col sm:flex-row  sm:gap-6 lg:gap-8 rounded-lg">
 
           {/* Left */}
           <div className="flex-1 flex flex-col justify-center">
@@ -25,46 +35,46 @@ export default function SignIn() {
           </div>
 
           {/* Right */}
-          <form className="flex-1 space-y-4">
+          <form className="flex-1 space-y-5 sm:space-y-6 mt-14">
 
 
             <Input label="Email"
               type="email"
               placeholder="Enter your email"
-              name="email" />
+              name="email"
+              specialGradient={true} />
+
 
             <Input
               label="Password"
               type="password"
               placeholder="Enter your password"
               name="password"
+              specialGradient={true}
             />
 
 
             {/* Remember + Forgot */}
-            <div className="flex items-center justify-between text-sm text-gray-200">
-              <label className="flex items-center gap-2">
-                <input type="checkbox" className="accent-blue-500" />
-                Remember me
-              </label>
+            <div className="flex items-center justify-between text-sm text-gray-200 ">
+              <Checkbox label="Remember me" />
 
-              <span className="hover:text-white cursor-pointer">
+              <Link href="/forgot-password" className="hover:text-white cursor-pointer border-b border-transparent transition-all duration-300 hover:border-white">
                 Forgot password?
-              </span>
+              </Link>
             </div>
 
 
-            <div className="mt-5 w-full">
-              <Button type="submit">
-                Sign Up
+            <div className="mt-10 w-full z-50">
+              <Button type="button" className="h-12 w-full z-50" onClick={handleLoginResponse}>
+                Sign In
               </Button>
             </div>
 
-            <p className="text-sm text-center text-gray-200 ">
-              Don’t have an account?{" "}
-              <span className="text-blue-400 cursor-pointer hover:underline">
+            <p className="text-sm text-center  text-[#C5C5C5] mt-6">
+              Don’t have an account?
+              <Link href="/signup" className=" ps-1 cursor-pointer border-b border-transparent transition-all duration-300 hover:border-white">
                 Sign up
-              </span>
+              </Link>
             </p>
           </form>
 
@@ -72,17 +82,13 @@ export default function SignIn() {
 
         </div>
       </div>
-      {/* left-center-bottom image at natural size */}
-      <div
-        className="fixed left-0 top-10"
-
-      >
+      <div className="fixed -top-22.5 right-0 md:top-10 md:left-0 md:right-auto">
         <Image
           src="/images/bg-images/left-rainbow.png"
-          alt="Left Rainbow"
-          width={600}   // replace with your image's real width
-          height={600}  // replace with your image's real height
-          className="object-contain"
+          alt="Rainbow"
+          width={700}
+          height={700}
+          className="object-contain scale-x-[-1] md:scale-x-100"
         />
       </div>
     </div>
