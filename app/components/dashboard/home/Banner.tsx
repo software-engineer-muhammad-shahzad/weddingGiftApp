@@ -3,45 +3,43 @@ import Image from "next/image"
 
 const Banner = () => {
     return (
-        <div className="flex gap-1 h-60 justify-between mt-16">
-            {/* QR Button */}
-            <div className="w-57.5 h-60.25 top-0 relative ">
-                <Image
-                    src="/images/qr-download-button.png"
-                    alt="qr-button"
-                    fill
-                    className="object-cover"
-                />
+        <div className="flex justify-between items-stretch gap-2 mt-10 md:mt-16">
+
+            {/* LEFT IMAGE */}
+            <div className="flex-shrink-0 flex items-stretch">
+                <div className="h-full">
+                    <Image
+                        src="/images/qr-download-button.png"
+                        alt="qr-button"
+                        width={120}
+                        height={150}
+                        className="h-full w-auto object-contain"
+                    />
+                </div>
             </div>
-            {/* card */}
 
-            <div className="w-full h-full relative rounded-2xl bg-[#5FDA78]  overflow-hidden">
+            {/* RIGHT BANNER */}
+            <div className="flex-1 relative max-w-[240px] sm:max-w-[280px] md:max-w-[315px] aspect-[305/198] bg-[url('/images/shagun-logo-banner.svg')] bg-contain bg-center bg-no-repeat">
 
-                <div className="flex flex-col text-[#330065] mt-25 ps-5">
-                    <p className="text-[14px] font-normal ">Invite Now</p>
-                    <p className="text-[34px] font-normal">Invite<br />
+                <div className="absolute bottom-4 left-4">
+                    <p className="text-sm text-[#330065] font-normal ">Invite Now</p>
+                    <p className="text-sm  text-[#330065]  font-normal">Invite<br />
                         Guest</p>
                 </div>
-                <div className="w-10 h-10 absolute top-4 left-2">
-                    <Image src="/images/arrange-square.png" alt="error" width={100} height={100} quality={100} unoptimized />
+                {/* share image */}
+              <div className="w-10 h-10 absolute top-4 left-2 relative">
+  <Image
+    src="/images/arrange-square.png"
+    alt="share"
+    fill
+    className="object-contain"
+    quality={100}
+  />
+</div>
 
 
-                </div>
-
-
-
-                <Image
-                    src="/images/shagunHomeBanner.png"
-                    alt="shagunHomeBanner"
-                    fill
-                    priority
-                    unoptimized
-                    className="object-contain object-right-top"
-                />
-
-                {/* send button */}
                 <button
-                    className="group border cursor-pointer border-white gap-2 text-white px-4 py-2 flex justify-center items-center rounded-[30px] text-md font-light absolute bottom-5 right-10 backdrop-blur-[25px] transition-all duration-300"
+                    className="group absolute right-3 sm:right-5 border cursor-pointer border-white gap-1 text-white px-2 py-1 flex justify-center items-center rounded-[30px] text-sm font-light bottom-5  backdrop-blur-[25px] transition-all duration-300"
                     style={{
                         background: `
       radial-gradient(38.46% 38.46% at 11.54% 19.23%, rgba(255, 235, 255, 0) 0%, rgba(230, 255, 240, 0) 70%, rgba(240, 240, 255, 0) 100%),
@@ -61,7 +59,6 @@ const Banner = () => {
                     <MoveRight className="text-white ml-0 transition-transform duration-300 group-hover:translate-x-1" />
                 </button>
             </div>
-
         </div>
     )
 }

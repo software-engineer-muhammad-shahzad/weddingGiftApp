@@ -1,6 +1,5 @@
 import Image from "next/image"
 import ModalLayer from "../ui/ModalLayer"
-import Button from "../elements/Button"
 import Link from "next/link"
 
 interface SecurityCodeCardProps {

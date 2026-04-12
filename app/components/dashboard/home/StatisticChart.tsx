@@ -1,10 +1,14 @@
 "use client"
 import React from 'react'
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 
 const StatisticChart: React.FC = () => {
+
+  const today = new Date().toLocaleString('en-US', { weekday: 'short' })[0]
+  // ⚠️ This gives first letter (M, T, W...)
+
   const data = [
-    { day: 'M', value: 0 },
+    { day: 'M', value: 300 },
     { day: 'T', value: 500 },
     { day: 'W', value: 150 },
     { day: 'T', value: 300 },
@@ -13,44 +17,62 @@ const StatisticChart: React.FC = () => {
     { day: 'S', value: 250 },
   ]
 
+  const activeIndex = data.findIndex(item => item.day === today)
+
   return (
-    <div
-      className="w-full max-w-full rounded-lg relative mt-20"
-      style={{
-        height: '300px', // Fixed height for the chart container
-        padding: '1.5rem',
-        borderRadius: '1rem',
-        border: '1px solid #5FDA78',
-        background: `
-          radial-gradient(38.46% 38.46% at 11.54% 19.23%, rgba(255, 255, 255, 0.05) 0%, rgba(95, 250, 120, 0.1) 70%, rgba(240, 240, 255, 0.05) 100%),
-          linear-gradient(316.97deg, rgba(255, 255, 255, 0.1) 17.24%, rgba(255, 255, 255, 0) 58.62%, rgba(217, 235, 255, 0) 86.21%)
-        `,
-        boxShadow: `
-          0px 1.5px 3.33px rgba(255, 255, 255, 0.1) inset,
-          0px 0px 8px rgba(209, 229, 255, 0.2) inset,
-          0px 3px 12px -3px rgba(0, 0, 0, 0.15),
-          0px 10px 28px -6px rgba(0, 0, 0, 0.25)
-        `,
-        backdropFilter: 'blur(15px)',
-      }}
-    >
-      {/* Recharts responsive container */}
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data} margin={{ top: 20, right: 20, bottom: 20, left: 0 }}>
-          <XAxis dataKey="day" tick={{ fill: '#fff', fontSize: 14 }} />
-          <YAxis tick={{ fill: '#fff', fontSize: 14 }} />
-          <Tooltip
-            contentStyle={{
-              backgroundColor: 'rgba(0,0,0,0.8)',
-              border: 'none',
-              borderRadius: '8px',
-              color: '#fff',
-            }}
-            formatter={(value: number) => `£${value}`}
-          />
-          <Bar dataKey="value" fill="#5FDA78" radius={[10, 10, 0, 0]} barSize={20} />
-        </BarChart>
-      </ResponsiveContainer>
+    <div className='mt-10'>
+      <p className='font-medium text-white text-md pb-3'>Statistic</p>
+
+      <div className="w-full glass-card max-w-full h-43.5 lg:h-53.75 p-2 sm:p-6 rounded-2xl border border-[#5FDA78] backdrop-blur-[15px]"
+        style={{
+        
+        }}
+      >
+
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={data} margin={{ top: 0, right: 0, bottom: 0, left: 10 }}>
+
+            <XAxis dataKey="day" tick={{ fill: '#fff', fontSize: 14 }} axisLine={false} tickLine={false} />
+            <YAxis
+  ticks={[0, 250, 500]}
+  domain={[0, 500]}
+  tick={{ fill: '#fff', fontSize: 14 }}
+  tickFormatter={(value) => `£${value}`}
+  width={30}
+  axisLine={false}
+  tickLine={false}
+/>
+
+            <Tooltip
+              cursor={{ fill: "#5FDA78" }} 
+  contentStyle={{
+    backgroundColor: '#330065',
+    border: '1px solid #5FDA78',
+    borderRadius: '8px',
+  }}
+  labelStyle={{
+    color: '#fff',   // label text
+  }}
+  itemStyle={{
+    color: '#5FDA78',    // VALUE text (your requirement)
+  }}
+  formatter={(value: number) => `£${value}`}
+/>
+
+            <Bar dataKey="value" barSize={15}>
+              {data.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={index === activeIndex ? "#5FDA78" : "#384552"}
+                  radius={30}
+                />
+              ))}
+            </Bar>
+
+          </BarChart>
+        </ResponsiveContainer>
+
+      </div>
     </div>
   )
 }

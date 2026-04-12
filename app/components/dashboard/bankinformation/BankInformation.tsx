@@ -1,7 +1,10 @@
 
 const BankInformation = () => {
   return (
-    <div>BankInformation</div>
+    <div>
+
+        
+    </div>
   )
 }
 

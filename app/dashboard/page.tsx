@@ -7,17 +7,17 @@ import StatisticChart from "../components/dashboard/home/StatisticChart"
 
 const page = () => {
   return (
-    <div className="flex justify-center bg-[#330065] min-h-screen overflow-auto w-full mx-auto pt-5 px-10 max-w-382.5">
-<div className="max-w-200 w-full "> 
-    
-           <Header/>
-           <Balance/>
-           <Banner/>
-           <StatisticChart/>
-           <FooterAppShare/>
-           <ContributorList/>
-</div>
-
+    <div className="flex justify-center  bg-[#330065] min-h-screen overflow-y-auto w-full mx-auto py-10 md:px-10 md:max-w-382.5">
+      <div className=" w-full max-w-200 h-full  ">
+        <div className="px-4 md:px-0 h-full">
+          <Header/>
+          <Balance/>
+          <Banner/>
+          <StatisticChart/>
+        </div>
+        <ContributorList/>
+        <FooterAppShare/>
+      </div>
     </div>
   )
 }

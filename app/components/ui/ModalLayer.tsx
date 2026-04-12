@@ -15,7 +15,7 @@ interface ModalLayerProps {
 const ModalLayer = ({
   children,
   onClose,
-  overlayColor = "bg-black/50",
+  overlayColor = "bg-[#330065B2] backdrop-blur-[20px]",
   modalHeight = "380px",
   modalWidth = "", // default value changed to "100%"
   className = "",
@@ -23,7 +23,7 @@ const ModalLayer = ({
 }: ModalLayerProps) => {
   return (
     <div
-      className={`fixed  inset-0 z-50 ${position === "bottom" ? "flex items-end justify-center" : "flex items-center justify-center"} ${position === "bottom" ? "rounded-t-2xl overflow-hidden" : ""} ${overlayColor}`}
+      className={`fixed  inset-0 z-2 ${position === "bottom" ? "flex items-end justify-center" : "flex items-center justify-center"} ${position === "bottom" ? "rounded-t-2xl overflow-hidden" : ""} ${overlayColor}`}
       onClick={onClose} // click outside triggers close
 
     >

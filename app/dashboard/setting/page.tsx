@@ -1,4 +1,5 @@
 "use client"
+import { FaqsIcon } from "@/app/components/icons/Icons"
 import { ChevronLeft, ChevronRight, Landmark, LogOut, User } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -14,11 +15,11 @@ const page = () => {
                 {/* notification header */}
                 <Link href="/dashboard" className="flex w-fit items-center gap-2">
                     <ChevronLeft className='text-white' />
-                    <p className="text-white text-2xl">Settings</p>
+                    <p className="text-white text-2xl border-b border-transparent hover:border-white transition-all duration-300">Settings</p>
                 </Link>
 
                 {/* personal info */}
-                <div className="px-8.5">
+                <div className="">
                     <p className="text-white text-lg font-semibold mt-10">Personal Information</p>
 
                     {/* profile-info */}
@@ -48,7 +49,7 @@ const page = () => {
                 <Link href="/dashboard/setting/how-works" className="flex justify-between items-center mt-10 w-full">
                     <div className="flex items-center gap-5 w-full">
                         <div className="border border-[#5FDA78] w-12 h-12 rounded-full flex justify-center items-center">
-                            <Image src="/images/faqs.png" alt="how it works" width={16} height={16} quality={100} />
+                           <FaqsIcon />
                         </div>
                         <p className="text-white text-sm font-medium ">How It Works</p>
                         {/* icon */}

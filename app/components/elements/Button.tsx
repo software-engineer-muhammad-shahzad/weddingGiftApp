@@ -9,11 +9,11 @@ interface ButtonProps {
   style?: React.CSSProperties   // ✅ ADD THIS
 }
 
-const Button = ({ 
-  children, 
-  onClick, 
-  type = 'button', 
-  className = '', 
+const Button = ({
+  children,
+  onClick,
+  type = 'button',
+  className = '',
   disabled = false,
   style
 }: ButtonProps) => {
