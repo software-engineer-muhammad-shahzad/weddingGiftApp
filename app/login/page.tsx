@@ -42,7 +42,7 @@ export default function SignIn() {
               type="email"
               placeholder="Enter your email"
               name="email"
-              specialGradient={true} />
+              />
 
 
             <Input
@@ -50,7 +50,7 @@ export default function SignIn() {
               type="password"
               placeholder="Enter your password"
               name="password"
-              specialGradient={true}
+             
             />
 
 

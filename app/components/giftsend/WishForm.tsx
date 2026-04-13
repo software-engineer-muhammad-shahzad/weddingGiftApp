@@ -3,37 +3,38 @@ import Button from "../elements/Button"
 import Input from "../elements/Input"
 
 
-interface selectCardProps{
+interface selectCardProps {
 
-    openModal:()=>void
+  openModal: () => void
 }
 
-const WishForm = ({openModal}:selectCardProps) => {
+const WishForm = ({ openModal }: selectCardProps) => {
   return (
     <div className="flex flex-col gap-6">
 
-        <Input type="text" placeholder="Enter your name" className="text-white outline-none " label="FullName"/>
-<Input type="number " placeholder="Enter your name" className="text-white outline-none " label="Card Number"/>
-{/* card expiry cvc */}
-<div className="flex gap-4 border">
+      <Input type="text" placeholder="Enter your name"   label="FullName"
+      />
+      <Input type="number " placeholder="Enter your name"  label="Card Number" />
+      {/* card expiry cvc */}
+      <div className="grid grid-cols-2 gap-4 ">
 
-    <Input type="date" placeholder="MM/YY" className="text-white outline-none flex-1 w-full" label="Card Expiry"/>
-    
-    
-<Input type="number" placeholder="Enter your cvc" className="text-white outline-none w-full " label="CVC "/>
-    
-    
-</div>
-{/*  */}
+        <Input type="date" placeholder="MM/YY"  label="Card Expiry" />
 
 
-<Input type="text " placeholder="Card Holder Name" className="text-white outline-none " label="Enter your name"/>
+        <Input type="number" placeholder="Enter your cvc"  label="CVC " />
 
 
-<Input type="number " placeholder="Contact Number" className="text-white outline-none " label="Enter your contact number"/>
-<Input type="email " placeholder="Enter your email" className="text-white outline-none " label="Enter your email"/>
-<p className="text-white text-sm px-2">By continuing, you agree to the Shagun Direct Payments <Link href="/">Terms of Service.</Link> The Privacy Notice describes how your data is handled.</p>
-<Button className="bg-[#5FDA78] rounded-2xl py-4" onClick={() => openModal()}> Next</Button>
+      </div>
+      {/*  */}
+
+
+      <Input type="text " placeholder="Card Holder Name"  label="Enter your name" />
+
+
+      <Input type="number " placeholder="Contact Number"  label="Enter your contact number" />
+      <Input type="email " placeholder="Enter your email"  label="Enter your email" />
+      <p className="text-white text-[11px] md:text-md px-2">By continuing, you agree to the Shagun Direct Payments <Link href="/" className="border-b">Terms of Service.</Link> The <Link href="" className="border-b"> Privacy Notice</Link> describes how your data is handled.</p>
+      <Button className="bg-[#5FDA78] rounded-2xl py-3! md:py-4" onClick={() => openModal()}> Next</Button>
 
     </div>
   )

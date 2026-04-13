@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation"
 import { useState } from "react"
 import ModalLayer from "../components/ui/ModalLayer"
 import PaymentSucessfull from "../components/giftsend/paymentflow/PaymentSucessfull"
+import PaymentSucessfulModal from "../components/giftsend/paymentflow/PaymentSucessfulModal"
 import Link from "next/link"
 import { ChevronLeft } from "lucide-react"
 
@@ -47,25 +48,10 @@ const page = () => {
                 </div>
             </div>
                 {/* Payment Success Modal */}
-            {showPaymentSuccess && (
-                <ModalLayer onClose={() => setShowPaymentSuccess(false)} modalHeight="500px">
-                    <div 
-                        className="w-full h-full p-4 bg-[#330065] rounded-lg flex flex-col items-center overflow-y-auto" 
-                        style={{
-                            scrollbarWidth: 'none', /* Firefox */
-                            msOverflowStyle: 'none', /* Internet Explorer 10+ */
-                        }}
-                    >
-                        <style jsx>{`
-                            div::-webkit-scrollbar {
-                                display: none; /* Safari and Chrome */
-                            }
-                        `}</style>
-                        <PaymentSucessfull />
-                    
-                    </div>
-                </ModalLayer>
-            )}
+            <PaymentSucessfulModal 
+                showPaymentSuccess={showPaymentSuccess}
+                setShowPaymentSuccess={setShowPaymentSuccess}
+            />
         </div>
     )
 }

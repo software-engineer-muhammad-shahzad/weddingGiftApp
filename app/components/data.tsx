@@ -214,7 +214,26 @@
         }
     ]
 
-    export const notificationData = [
+    export const howItWorksData = [
+    {
+        id: 1,
+        description: "Couples register on the platform and set up their personalized wedding profile with payment details."
+    },
+    {
+        id: 2,
+        description: "Guests can easily browse through the couple's profile and contribute to their wedding fund or purchase specific gifts."
+    },
+    {
+        id: 3,
+        description: "The platform securely processes all payments and provides real-time updates to both the couple and gift contributors."
+    },
+    {
+        id: 4,
+        description: "Couples can manage their wedding budget, track contributions, and send thank-you messages to their guests through the dashboard."
+    }
+]
+
+export const notificationData = [
         {
             id: 1,
             name: "M. Ali Raza",

@@ -3,25 +3,13 @@ import Image from "next/image"
 
 const WishVideo = () => {
   return (
-   <div className="  flex gap-4 flex-col pt-8 border border-[#5FDA78] rounded-[20px]"
-                   style={{
-                       background: `
-                   radial-gradient(38.46% 38.46% at 11.54% 19.23%, rgba(255, 255, 255, 0.05) 0%, rgba(95, 250, 120, 0.1) 70%, rgba(240, 240, 255, 0.05) 100%),
-                   linear-gradient(316.97deg, rgba(255, 255, 255, 0.1) 17.24%, rgba(255, 255, 255, 0) 58.62%, rgba(217, 235, 255, 0) 86.21%)
-                 `,
-                       boxShadow: `
-                   0px 1.5px 3.33px rgba(255, 255, 255, 0.1) inset,
-                   0px 0px 8px rgba(209, 229, 255, 0.2) inset,
-                   0px 3px 12px -3px rgba(0, 0, 0, 0.15),
-                   0px 10px 28px -6px rgba(0, 0, 0, 0.25)
-                 `,
-                       backdropFilter: 'blur(15px)',
-                   }}>
+   <div className="  flex gap-4 glass-card flex-col pt-8 border border-[#5FDA78] rounded-[20px]"
+                   >
    
    
    
                    <div className="relative px-8">
-                       <p className="text-white text-start text-lg pb-6">
+                       <p className="text-white text-start text-[16px] pb-6">
                            Add wishing video for just £ 1.00
                        </p>
    
@@ -29,12 +17,12 @@ const WishVideo = () => {
        bg-linear-to-r from-[#30114E] via-white to-[#30114E]" />
                    </div>
                    {/*wish video div  */}
-                   <div className="flex flex-col    gap-6 items-center px-4 bg-[#330065] py-8 border border-[#5FDA78] rounded-[20px]"
+                   <div className="flex flex-col    gap-6 items-center px-4 glass-card py-8 border border-[#5FDA78] rounded-[20px]"
                  >
 
                 
                 <Image 
-  src="/images/add-video.png" 
+  src="/images/video-upload.svg" 
   alt="add-video" 
   width={27} 
   height={27} 

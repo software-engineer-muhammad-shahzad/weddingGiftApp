@@ -9,7 +9,7 @@ interface ModalLayerProps {
   modalWidth?: string
   modalHeight?: string
   className?: string
-  position?: "center" | "bottom"
+  position?: "center" | "bottom" | "responsive"
 }
 
 const ModalLayer = ({
@@ -17,18 +17,32 @@ const ModalLayer = ({
   onClose,
   overlayColor = "bg-[#330065B2] backdrop-blur-[20px]",
   modalHeight = "380px",
-  modalWidth = "", // default value changed to "100%"
+  modalWidth = "100%",
   className = "",
-  position = "center",
+  position = "responsive", 
 }: ModalLayerProps) => {
   return (
     <div
-      className={`fixed  inset-0 z-2 ${position === "bottom" ? "flex items-end justify-center" : "flex items-center justify-center"} ${position === "bottom" ? "rounded-t-2xl overflow-hidden" : ""} ${overlayColor}`}
+      className={`fixed inset-0  z-[9999] ${
+        position === "responsive" 
+          ? "flex items-end justify-center md:items-center md:justify-center" 
+          : position === "bottom" 
+            ? "flex items-end justify-end" 
+            : "flex items-center justify-center"
+      } ${
+        position === "bottom" || position === "responsive" 
+          ? " overflow-hidden" 
+          : ""
+      } ${overlayColor}`}
       onClick={onClose} // click outside triggers close
 
     >
       <div
-        className={`${className} ${position === "bottom" ? "" : "rounded-2xl overflow-hidden"} ${modalWidth || ""}`}
+        className={`${className} ${
+          position === "bottom" || position === "responsive" 
+            ? "rounded-t-2xl overflow-hidden" 
+            : "rounded-2xl! overflow-hidden"
+        } ${modalWidth || ""}`}
         style={{ height: modalHeight, width: modalWidth }}
         onClick={(e: any) => e.stopPropagation()} // prevent closing when clicking inside modal
       >

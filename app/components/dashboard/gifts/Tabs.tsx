@@ -36,10 +36,10 @@ const Tabs = ({activeTab,setActiveTab}: TabsProps) => {
 
   // ✅ Helper for classes
   const getTabClass = (tab: string) =>
-    `w-40 flex justify-center items-center border cursor-pointer border-[#5FDA78] rounded-[30px] font-medium transition-all duration-300 ${
+    `w-40 flex justify-center items-center glass-card  border cursor-pointer border-[#5FDA78] rounded-[30px] font-medium transition-all duration-300 ${
       activeTab === tab
-        ? "bg-[#5FDA78] text-[#330065] font-medium"
-        : "text-[#919191] hover:bg-[#5FDA78] "
+        ? "bg-[#5FDA78]! text-[#330065] font-medium"
+        : "text-[#919191]! glass-card! hover:text-[#330065]! hover:bg-[#5FDA78]!"
     }`
 
   return (

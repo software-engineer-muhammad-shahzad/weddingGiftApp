@@ -25,7 +25,7 @@ const StatisticChart: React.FC = () => {
 
       <div className="w-full glass-card max-w-full h-43.5 lg:h-53.75 p-2 sm:p-6 rounded-2xl border border-[#5FDA78] backdrop-blur-[15px]"
         style={{
-        
+
         }}
       >
 
@@ -34,30 +34,30 @@ const StatisticChart: React.FC = () => {
 
             <XAxis dataKey="day" tick={{ fill: '#fff', fontSize: 14 }} axisLine={false} tickLine={false} />
             <YAxis
-  ticks={[0, 250, 500]}
-  domain={[0, 500]}
-  tick={{ fill: '#fff', fontSize: 14 }}
-  tickFormatter={(value) => `£${value}`}
-  width={30}
-  axisLine={false}
-  tickLine={false}
-/>
+              ticks={[0, 250, 500]}
+              domain={[0, 500]}
+              tick={{ fill: '#fff', fontSize: 14 }}
+              tickFormatter={(value) => `£${value}`}
+              width={30}
+              axisLine={false}
+              tickLine={false}
+            />
 
             <Tooltip
-              cursor={{ fill: "#5FDA78" }} 
-  contentStyle={{
-    backgroundColor: '#330065',
-    border: '1px solid #5FDA78',
-    borderRadius: '8px',
-  }}
-  labelStyle={{
-    color: '#fff',   // label text
-  }}
-  itemStyle={{
-    color: '#5FDA78',    // VALUE text (your requirement)
-  }}
-  formatter={(value: number) => `£${value}`}
-/>
+              cursor={{ fill: "#5FDA78" }}
+              contentStyle={{
+                backgroundColor: '#330065',
+                border: '1px solid #5FDA78',
+                borderRadius: '8px',
+              }}
+              labelStyle={{
+                color: '#fff',   // label text
+              }}
+              itemStyle={{
+                color: '#5FDA78',    // VALUE text (your requirement)
+              }}
+              formatter={(value: number) => `£${value}`}
+            />
 
             <Bar dataKey="value" barSize={15}>
               {data.map((entry, index) => (

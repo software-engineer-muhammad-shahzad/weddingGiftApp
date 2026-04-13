@@ -25,18 +25,30 @@ const SelectCardModal = ({ isModalOpen, setIsModalOpen, openAddCardModal }: Sele
   if (!isModalOpen) return null
 
   return (
-    <ModalLayer onClose={handleClose}>
-      <div className="w-100 h-64 p-4 bg-[#5FDA78] rounded-lg flex flex-col items-center justify-center">
-        <div>
-          <Image src="/images/card-image.png" alt="card-image" width={150} height={150} />
-        </div>
+    <ModalLayer 
+      onClose={handleClose}
+      modalHeight="h-full md:h-[300px]"
+      modalWidth="w-full max-w-[280px] sm:max-w-[400px]"
+      overlayColor="bg-[#171515EB] "
+    >
+      <div className="bg-[#5FDA78] h-full w-full p-6 flex flex-col items-center justify-center">
+        <div className="w-full">
+  <Image
+    src="/images/congrates-card.svg"
+    alt="card-image"
+    width={374}
+    height={265}
+  
+   
+  />
+</div>
 
         <div className="flex gap-4 mt-5 w-full">
           <Button
-            className={`rounded-[47px] text-sm p-2 border border-[#330065] transition-all ${
+            className={`rounded-[47px] text-sm! md:text-lg! py-2! p-2 border border-[#330065] transition-all ${
               activeButton === "cancel"
-                ? "bg-[#330065] text-[#5FDA78]"
-                : "bg-[#5FDA78] text-[#330065]"
+                ? "bg-[#330065]! text-[#5FDA78]"
+                : "bg-[#5FDA78] hover:bg-[#330065] hover:text-[#5FDA78] text-[#330065]"
             }`}
             onClick={() => setIsModalOpen(false)}
           >
@@ -44,10 +56,10 @@ const SelectCardModal = ({ isModalOpen, setIsModalOpen, openAddCardModal }: Sele
           </Button>
 
           <Button
-            className={`rounded-[47px] text-sm border border-[#330065] p-2 transition-all ${
+            className={`rounded-[47px] text-sm! md:text-lg! py-2! border border-[#330065] p-2 transition-all ${
               activeButton === "select"
                 ? "bg-[#330065] text-[#5FDA78]"
-                : "bg-[#5FDA78] text-[#330065]"
+                : "bg-[#5FDA78] hover:bg-[#330065] hover:text-[#5FDA78] text-[#330065]"
             }`}
             onClick={handleSelectCard}
           >

@@ -5,12 +5,12 @@ const WishAmount = () => {
   return (
     <div>
 
-         <div className="flex flex-col    gap-6  px-4 bg-[#330065] py-8 border border-[#5FDA78] rounded-[20px]"
+         <div className="flex flex-col    gap-6  px-4 glass-card py-8 border border-[#5FDA78] rounded-[20px]"
                          >
         
            {/* amount input */}
-                     <div className="relative px-8">
-                       <p className="text-white text-start text-lg pb-6">
+                     <div className="relative px-4">
+                       <p className="text-white text-start text-md pb-6">
                            Enter Amount
                        </p>
 

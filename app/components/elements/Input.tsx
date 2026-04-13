@@ -34,10 +34,10 @@ const Input = ({
   paddingClass = "",
 }: InputProps) => {
   const defaultInputClass =
-    "border-none outline-none font-normal text-[#989898] placeholder:text-[#989898] text-sm bg-transparent w-full"
+    "border-none outline-none   font-normal text-[#989898] placeholder:text-[#989898] text-sm bg-transparent w-full"
 
   const defaultContainerClass =
-    "border border-[#5FDA78] rounded-[147px] glass-card  "
+    "border border-[#5FDA78] rounded-[147px] glass-card"
 
   // const gradientStyle: React.CSSProperties = {
   //   background: 'glass-card'

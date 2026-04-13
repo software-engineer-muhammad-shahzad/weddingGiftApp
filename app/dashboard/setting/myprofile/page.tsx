@@ -1,6 +1,7 @@
 "use client"
 import ProfileInfoEditForm from "@/app/components/dashboard/myprofile/ProfileInfoEditForm"
 import SelectImage from "@/app/components/dashboard/myprofile/SelectImage"
+import { ProfileEditIcon } from "@/app/components/icons/Icons"
 import { ChevronLeft } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -16,7 +17,7 @@ const page = () => {
     <>
       {isImageOpen ? <SelectImage /> :
         <div className="min-h-screen overflow-auto  w-full max-w-382.5 flex  justify-center mx-auto ">
-          <div className="w-full h-full bg-[#330065] max-w-200 py-8  border border-red-400 px-5  sm:px-3 ">
+          <div className="w-full h-full bg-[#330065] max-w-200 py-8  border border-red-400 px-5   ">
             {/* my profile back navigation */}
             <Link href="/dashboard/setting" className="flex w-fit items-center gap-2">
               <ChevronLeft className='text-white' />
@@ -25,22 +26,17 @@ const page = () => {
             </Link>
 
             {/* Profile Image */}
-            <div className="flex justify-center mt-12  md:mt-20 ">
+            <div className="flex justify-center mt-12  md:mt-15  ">
               <div className="relative flex justify-center border w-30 h-30 border-[#5FDA78] rounded-full">
                 <div
                   onClick={() => setIsImageOpen(true)}
-                  className="absolute bottom-0 glass-card rounded-[100px] border-[0.5px] border-[#5FDA78] cursor-pointer right-2 w-12 h-12 flex justify-center items-center"
+                  className="absolute -bottom-3.5 right-[-10px] glass-card rounded-[100px] border-[0.5px] border-[#5FDA78] cursor-pointer right-2 w-12 h-12 flex justify-center items-center"
                 >
 
 
-                  <Image
-                    src="/images/pen-line.png"
-                    alt="edit"
-                    width={20}
-                    height={22}
-                    quality={100}
-                    unoptimized
-                  />
+
+
+                  <ProfileEditIcon />
                 </div>
 
               </div>
@@ -49,14 +45,16 @@ const page = () => {
             {/* form edit start*/}
             {/* edit button */}
             {isFormOpen ? <ProfileInfoEditForm /> : <div>
-              <div className=" mt-10 md:mt-20">
+              <div className=" mt-10 md:mt-15">
                 <div className="flex justify-end">
-                  <button className="cursor-pointer" onClick={() => setIsFormOpen(true)} ><Image src="/images/pen-line.png" alt="edit" width={20} height={20} /></button>
+                  <button className="cursor-pointer" onClick={() => setIsFormOpen(true)} >
+                    <ProfileEditIcon />
+                  </button>
 
                 </div>
               </div>
               {/* forms */}
-  <div
+              <div
                 className="border glass-card border-[#5FDA78] rounded-[30px]  mt-4  mb-8"
 
               >

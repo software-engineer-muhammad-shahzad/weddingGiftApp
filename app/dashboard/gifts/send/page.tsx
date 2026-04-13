@@ -29,7 +29,7 @@ const page = () => {
         <>
             {/* shagun logo */}
             <div className="min-h-screen w-full max-w-382.5 flex justify-center mx-auto">
-                <div className="w-full flex flex-col gap-8 h-full bg-[#330065] max-w-200 py-10 border px-10">
+                <div className="w-full flex flex-col gap-8 h-full bg-[#330065] max-w-200 py-10 border px-6 sm:px-8 md:px-10">
 
                     <ProfileDescription />
 

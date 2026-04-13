@@ -12,7 +12,7 @@ import { useState } from 'react'
 const page = () => {
     const [activeTab, setActiveTab] = useState("all")
     return (
-        <div className="flex justify-center bg-[#330065] min-h-screen overflow-auto w-full mx-auto pt-10 px-10 max-w-382.5">
+        <div className="flex justify-center bg-[#330065] min-h-screen overflow-auto w-full mx-auto pt-10 px-5 md:px-10 max-w-382.5">
             <div className="max-w-150 w-full ">
 
 

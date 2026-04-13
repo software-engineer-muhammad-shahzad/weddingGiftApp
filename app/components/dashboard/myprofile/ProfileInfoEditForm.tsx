@@ -29,7 +29,7 @@ const ProfileInfoEditForm = () => {
             
             <Input
                 label="Event Date"
-                type="text"
+                type="date"
                 placeholder="00-00-00"
                 name="23 Feb, 2026"
                  
@@ -54,7 +54,7 @@ const ProfileInfoEditForm = () => {
          
            
             <div className="mt-5 w-full ">
-                <Button type="submit" className='py-2! h-10'>
+                <Button type="submit" className='py-3!'>
                     Update
                 </Button>
             </div>
