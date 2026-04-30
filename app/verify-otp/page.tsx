@@ -19,7 +19,7 @@ const page = () => {
     
     return (
       <div className="bg-[#350366]  min-h-screen items-center flex  overflow-auto w-full py-15.5 md:py-0 px-4 md:px-20">
-           <div className=" flex flex-colmd:flex-row justify-between  h-full   w-full items-center pt-10 md:pt-0">
+           <div className=" flex flex-col md:flex-row justify-between  h-full   w-full items-center pt-10 md:pt-0">
 
           <Link href="/login" className="fixed z-[9999] top-10 left-4 sm:left-6 md:left-8 text-white flex items-center cursor-pointer bg-[#350366] px-3 py-1 rounded"><ChevronLeft /><span className="border-b border-transparent hover:border-white transition-all duration-300 ml-2">OTP Verification</span></Link>
                 {/* leftbannertext */}

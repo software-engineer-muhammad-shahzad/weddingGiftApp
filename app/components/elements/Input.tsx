@@ -15,6 +15,7 @@ interface InputProps {
   onPaste?: (e: React.ClipboardEvent<HTMLInputElement>) => void
   onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void
   paddingClass?: string
+  labelColor?:string
 }
 
 const Input = ({
@@ -32,6 +33,7 @@ const Input = ({
   onPaste,
   onKeyDown,
   paddingClass = "",
+  labelColor=""
 }: InputProps) => {
   const defaultInputClass =
     "border-none outline-none   font-normal text-[#989898] placeholder:text-[#989898] text-sm bg-transparent w-full"
@@ -50,7 +52,7 @@ const Input = ({
     >
       <div className={`py-2 md:py-3 px-5 md:px-6 flex  flex-col gap-1 ${paddingClass}`}>
         {label && (
-          <label htmlFor={id} className="text-white  text-[14px]">
+          <label htmlFor={id} className={ `${labelColor} text-white  text-[14px]`}>
             {label}
           </label>
         )}

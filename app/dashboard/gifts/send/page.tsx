@@ -16,6 +16,14 @@ type ModalType = 'selectCard' | 'addCard' | 'securityCode' | null
 const page = () => {
     const [greetingText, setGreetingText] = useState("Congratulations! Wishing you a lifetime of happiness together.")
     const [activeModal, setActiveModal] = useState<ModalType>(null)
+    const [video, setVideo] = useState(null);
+
+    const handleChange = (e: any) => {
+        const file = e.target.files[0];
+        if (file) {
+            setVideo(file);
+        }
+    };
 
     const openModal = (type: ModalType) => {
         setActiveModal(type)
@@ -34,23 +42,23 @@ const page = () => {
                     <ProfileDescription />
 
                     <WishMessage greetingText={greetingText} setGreetingText={setGreetingText} />
-                    
+
                     <WishCard openModal={() => openModal('selectCard')} />
-                    <WishVideo/> 
-                    <WishAmount/>
-                    <WishForm openModal={() => openModal('selectCard')}/>
-                    
+                    <WishVideo video={video} setVideo={setVideo}/>
+                    <WishAmount />
+                    <WishForm openModal={() => openModal('selectCard')} />
+
                     {/* Render modals based on type */}
                     {activeModal === 'selectCard' && (
-                        <SelectCardModal 
+                        <SelectCardModal
                             isModalOpen={activeModal === 'selectCard'}
                             setIsModalOpen={closeModal}
                             openAddCardModal={() => openModal('addCard')}
                         />
                     )}
-                    
+
                     {activeModal === 'addCard' && (
-                        <AddCard 
+                        <AddCard
                             isModalOpen={activeModal === 'addCard'}
                             setIsModalOpen={closeModal}
                             openSecurityCodeModal={() => openModal('securityCode')}
@@ -58,7 +66,7 @@ const page = () => {
                     )}
 
                     {activeModal === 'securityCode' && (
-                        <SecurityCodeCard 
+                        <SecurityCodeCard
                             isModalOpen={activeModal === 'securityCode'}
                             setIsModalOpen={closeModal}
                         />
