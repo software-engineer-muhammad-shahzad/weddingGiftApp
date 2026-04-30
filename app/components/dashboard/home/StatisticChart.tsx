@@ -56,7 +56,7 @@ const StatisticChart: React.FC = () => {
               itemStyle={{
                 color: '#5FDA78',    // VALUE text (your requirement)
               }}
-              formatter={(value: number) => `£${value}`}
+              formatter={(value: any) => value ? `£${value}` : ''}
             />
 
             <Bar dataKey="value" barSize={15}>

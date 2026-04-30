@@ -20,6 +20,7 @@ const PaymentSucessfulModal = ({ showPaymentSuccess, setShowPaymentSuccess }: Pa
       modalHeight="h-full md:max-h-[400px]"
       modalWidth="w-full max-w-[280px] sm:max-w-[400px] md:max-w-[400px]"
       overlayColor="bg-[#171515EB] "
+      position="center"
     >
       <div 
         className="bg-[#330065] h-[400px] md:h-[500px] w-full p-3 sm:p-4 md:p-6 flex flex-col items-center overflow-y-auto" 

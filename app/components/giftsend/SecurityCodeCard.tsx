@@ -20,6 +20,7 @@ const SecurityCodeCard = ({ isModalOpen, setIsModalOpen }: SecurityCodeCardProps
             modalHeight="md:h-[300px]!"
             modalWidth="w-full max-w-[280px] sm:max-w-[400px]"
             overlayColor="bg-[#171515EB] "
+            position="center"
         >
             <div className="bg-[#5FDA78] h-full w-full p-4 md:p-6 flex flex-col items-center justify-center">
                 <p className="text-[#330065] font-semibold text-lg mb-2">Security Code</p>

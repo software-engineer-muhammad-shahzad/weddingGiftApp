@@ -153,7 +153,6 @@ const VerifyOtpForm = ({ source, showPaymentSuccess, setShowPaymentSuccess }: Ve
                             onChange={(e) => handleOtpChange(index, e.target.value)}
                             onPaste={handlePaste}
                             onKeyDown={(e) => handleKeyDown(e, index)}
-                            specialGradient={false}   // 👈 IMPORTANT
                             containerClassName={` w-11 sm:w-12 md:w-14 h-11 sm:h-12 md:h-14  p-0 rounded-full flex items-center justify-center ${digit ? 'bg-white ' : 'text-black! bg-[#2C2C2C6E]'}`}
                             className={`w-full h-full text-center  outline-0  bg-transparent ${digit ? 'text-black!' : 'text-white!'}`}
                             maxLength={1}

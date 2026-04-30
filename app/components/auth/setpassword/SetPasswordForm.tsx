@@ -28,8 +28,6 @@ const page = ({setIsModalOpen,isModalOpen}: SetPasswordFormProps) => {
                 type="password"
                 placeholder="Enter your password"
                 name="password"
-                specialGradient={true}
-
             />
             
             <Input
@@ -37,7 +35,6 @@ const page = ({setIsModalOpen,isModalOpen}: SetPasswordFormProps) => {
                 type="password"
                 placeholder="Confirm Password"
                 name="confirmPassword"
-                 specialGradient={true}
             />
            
             <div className="mt-5 w-full">

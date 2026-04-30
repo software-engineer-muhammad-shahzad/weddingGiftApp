@@ -30,6 +30,7 @@ const SelectCardModal = ({ isModalOpen, setIsModalOpen, openAddCardModal }: Sele
       modalHeight="h-full md:h-[300px]"
       modalWidth="w-full max-w-[280px] sm:max-w-[400px]"
       overlayColor="bg-[#171515EB] "
+      position="center"
     >
       <div className="bg-[#5FDA78] h-full w-full p-6 flex flex-col items-center justify-center">
         <div className="w-full">

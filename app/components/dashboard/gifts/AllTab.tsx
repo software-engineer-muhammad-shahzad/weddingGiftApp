@@ -55,6 +55,7 @@ const AllTab = ({ receivedGiftData }: AllTabProps) => {
                     modalHeight="h-full  md:h-[400px]"
                     modalWidth="w-full max-w-[280px] sm:max-w-[400px]"
                     overlayColor="bg-[#171515EB] "
+                    position="center"
                 >
                     <div className="bg-[#5FDA78] h-full w-full   p-6 flex flex-col items-center justify-center">
                         <div className="flex flex-col items-center gap-4 w-full ">

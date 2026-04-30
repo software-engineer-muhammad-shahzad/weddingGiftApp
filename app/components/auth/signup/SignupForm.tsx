@@ -22,7 +22,6 @@ const SignupForm = () => {
                     id="name"
                     placeholder="Enter your name"
                     name="name"
-                    specialGradient={true}
                 />
 
 
@@ -32,7 +31,6 @@ const SignupForm = () => {
                     type="text"
                     placeholder="Enter your partner name"
                     name="partnerName"
-                    specialGradient={true}
                 />
 
                 <Input
@@ -40,7 +38,6 @@ const SignupForm = () => {
                     type="text"
                     placeholder="00-00-00"
                     name="eventDate"
-                    specialGradient={true}
                 />
 
                 <Input
@@ -48,7 +45,6 @@ const SignupForm = () => {
                     type="email"
                     placeholder="Enter your email"
                     name="email"
-                    specialGradient={true}
                 />
 
                 <Input
@@ -56,21 +52,21 @@ const SignupForm = () => {
                     type="tel"
                     placeholder="Enter your phone number"
                     name="phoneNumber"
-                    specialGradient={true} />
+                />
 
                 <Input
                     label="Password"
                     type="password"
                     placeholder="Enter your password"
                     name="password"
-                    specialGradient={true} />
+                />
 
                 <Input
                     label="Confirm Password"
                     type="password"
                     placeholder="Confirm Password"
                     name="confirmPassword"
-                    specialGradient={true} />
+                />
 
                 <div className="mt-5  w-full ">
                     <Button type="submit" className='py-3! md:py-4!'>

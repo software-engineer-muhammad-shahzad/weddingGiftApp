@@ -1,14 +1,7 @@
 "use client"
 import { Download, Share2 } from "lucide-react"
 import Button from "../../elements/Button"
-import html2pdf from 'html2pdf.js'
 import { useState, useEffect } from "react";
-import {
-  WhatsappShareButton,
-  WhatsappIcon,
-  FacebookShareButton,
-  FacebookIcon,
-} from "react-share";
 
 const PaymentMakerDetail = ({ }) => {
   const [showShareModal, setShowShareModal] = useState(false);
@@ -52,6 +45,9 @@ const PaymentMakerDetail = ({ }) => {
   };
 
   const handleDownloadPDF = async () => {
+    // Import html2pdf only on client side
+    const html2pdf = (await import('html2pdf.js')).default;
+    
     // Create the PDF content
     const paymentData = {
       senderName: "Ali Khan",
@@ -129,14 +125,12 @@ const PaymentMakerDetail = ({ }) => {
       {/* download and share button */}
       <div className="flex mt-4 gap-4 overflow-hidden">
         <Button
-          type="download"
           className="border glass-card border-[#5FDA78] py-4 w-6 rounded-full h-6 flex items-center justify-center"
           onClick={handleShare}
         >
           <Share2 className="text-white" />
         </Button>
         <Button
-          type="download"
           className="border glass-card border-[#5FDA78] py-4 w-6 rounded-full h-6 flex items-center justify-center"
           onClick={handleDownloadPDF}
         >
@@ -154,20 +148,30 @@ const PaymentMakerDetail = ({ }) => {
         >
           <div
             className="bg-[#5FDA78] rounded-xl p-5 w-[300px]"
-            onClick={(e) => e.stopPropagation()} // prevent close when clicking inside
+            onClick={(e) => e.stopPropagation()}
           >
             <h2 className="text-[#330065] font-semibold mb-4 text-center">
               Share Invoice
             </h2>
 
             <div className="flex justify-center gap-4">
-              <WhatsappShareButton url={window.location.href}>
-                <WhatsappIcon size={40} round />
-              </WhatsappShareButton>
+              <button
+                onClick={() => {
+                  window.open(`https://wa.me/?text=${encodeURIComponent(`Shagun Direct - Payment Receipt: ${window.location.href}`)}`, '_blank');
+                }}
+                className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white"
+              >
+                W
+              </button>
 
-              <FacebookShareButton url={window.location.href}>
-                <FacebookIcon size={40} round />
-              </FacebookShareButton>
+              <button
+                onClick={() => {
+                  window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`, '_blank');
+                }}
+                className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white"
+              >
+                f
+              </button>
             </div>
 
             {/* Copy link */}
@@ -177,7 +181,7 @@ const PaymentMakerDetail = ({ }) => {
                   navigator.clipboard.writeText(window.location.href);
                   alert("Link copied!");
                 }}
-                className="mt-4 w-fit text-[#330065] border-b border-transparent  hover:border-b-[#330065] cursor-pointer text-sm text-center"
+                className="mt-4 w-fit text-[#330065] border-b border-transparent hover:border-b-[#330065] cursor-pointer text-sm text-center"
               >
                 Copy Link
               </button>
@@ -185,7 +189,7 @@ const PaymentMakerDetail = ({ }) => {
             <div className="flex justify-center">
               <button
                 onClick={() => setShowShareModal(false)}
-                className="mt-2 w-fit text-gray-500 cursor-pointer border-b border-transparent  hover:border-b-[#726a82] text-sm"
+                className="mt-2 w-fit text-gray-500 cursor-pointer border-b border-transparent hover:border-b-[#726a82] text-sm"
               >
                 Close
               </button>
