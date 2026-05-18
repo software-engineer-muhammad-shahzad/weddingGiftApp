@@ -8,15 +8,25 @@ import { useRouter } from "next/navigation"
 import Input from "@/app/components/elements/Input"
 import Button from "@/app/components/elements/Button"
 import Checkbox from "@/app/components/elements/Checkbox"
+import { useLogin } from "@/app/features/auth/hooks/useLogin"
 
 const Login = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const router = useRouter()
+  const { handleLogin, isLoading, error } = useLogin()
 
-  const handleLoginResponse = () => {
-    router.push("/verify-otp")
+  const handleLoginResponse = async () => {
+    if (!email || !password) {
+      return
+    }
+
+    const result = await handleLogin({ email, password })
+
+    if (result.success) {
+      router.push("/dashboard")
+    }
   }
 
   return (
@@ -61,10 +71,21 @@ const Login = () => {
             </div>
 
             <div className="mt-10 w-full z-50">
-              <Button type="button" className="h-12 w-full z-50" onClick={handleLoginResponse}>
-                Sign In
+              <Button 
+                type="button" 
+                className="h-12 w-full z-50" 
+                onClick={handleLoginResponse}
+                disabled={isLoading}
+              >
+                {isLoading ? "Signing in..." : "Sign In"}
               </Button>
             </div>
+
+            {error && (
+              <div className="mt-4 text-red-400 text-sm text-center">
+                {error}
+              </div>
+            )}
 
             <p className="text-sm text-center  text-[#C5C5C5] mt-6">
               Don’t have an account?

@@ -6,6 +6,7 @@ import type {
   VerifyOtpPayload,
   VerifyOtpResponse,
 } from "@/app/features/auth/types/verifyOtp"
+import type { LoginPayload, LoginResponse } from "@/app/features/auth/types/login"
 
 // signup api call
 export const signup = async (payload: SignupPayload): Promise<SignupResponse> => {
@@ -26,4 +27,7 @@ export const resendOtp = async (
   return postRequest(endpoints.auth.resendOtp, payload, { skipAuth: true })
 }
 
-// resendOtp api call
+// login api call
+export const login = async (payload: LoginPayload): Promise<LoginResponse> => {
+  return postRequest(endpoints.auth.login, payload, { skipAuth: true })
+}
