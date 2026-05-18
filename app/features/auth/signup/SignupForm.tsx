@@ -1,20 +1,20 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 
 import Input from "@/app/components/elements/Input"
 import Button from "@/app/components/elements/Button"
-import { signup } from "@/app/features/auth/types/signup"
+import { useSignup } from "@/app/features/auth/hooks/useSignup"
+import type { SignupPayload } from "@/app/features/auth/types/signup"
 import { signupSchema, type SignupFormValues } from "@/app/features/auth/validations/signupSchema"
 
 const SignupForm = () => {
-  const router = useRouter()
-  const [apiError, setApiError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   const {
     register,
@@ -27,7 +27,7 @@ const SignupForm = () => {
     reValidateMode: "onChange",
     criteriaMode: "all",
     defaultValues: {
-      name: "",
+      fullName: "",
       partnerName: "",
       eventDate: "",
       email: "",
@@ -37,28 +37,24 @@ const SignupForm = () => {
     },
   })
 
+  const { signup, isLoading: isSignupLoading } = useSignup()
+
   const onSubmit = async (values: SignupFormValues) => {
-    setApiError(null)
     setIsSubmitting(true)
 
-    try {
-      await signup({
-        name: values.name,
-        partnerName: values.partnerName,
-        eventDate: values.eventDate,
-        email: values.email,
-        phoneNumber: values.phoneNumber,
-        password: values.password,
-      })
-
-      router.push("/verify-otp")
-    } catch (error: any) {
-      const message =
-        error?.response?.data?.message || error?.message || "Signup failed. Please try again."
-      setApiError(message)
-    } finally {
-      setIsSubmitting(false)
+    // Send date as YYYY-MM-DD format (e.g., 2026-05-18)
+    const payload: SignupPayload = {
+      fullName: values.fullName,
+      partnerName: values.partnerName,
+      eventDate: values.eventDate,
+      email: values.email,
+      phoneNumber: values.phoneNumber,
+      password: values.password,
+      confirmPassword: values.confirmPassword,
     }
+
+    await signup(payload)
+    setIsSubmitting(false)
   }
 
   return (
@@ -67,11 +63,11 @@ const SignupForm = () => {
         <Input
           label="Your Name"
           type="text"
-          id="name"
+          id="fullName"
           placeholder="Enter your name"
-          {...register("name")}
+          {...register("fullName")}
         />
-        {errors.name && <p className="text-sm text-red-400">{errors.name.message}</p>}
+        {errors.fullName && <p className="text-sm text-red-400">{errors.fullName.message}</p>}
 
         <Input
           label="Partner Name"
@@ -83,8 +79,8 @@ const SignupForm = () => {
 
         <Input
           label="Event Date"
-          type="text"
-          placeholder="00-00-00"
+          type="date"
+          placeholder="Select event date"
           {...register("eventDate")}
         />
         {errors.eventDate && <p className="text-sm text-red-400">{errors.eventDate.message}</p>}
@@ -109,6 +105,8 @@ const SignupForm = () => {
           label="Password"
           type="password"
           placeholder="Enter your password"
+          showPassword={showPassword}
+          onTogglePasswordVisibility={() => setShowPassword(!showPassword)}
           {...register("password")}
         />
         {errors.password && <p className="text-sm text-red-400">{errors.password.message}</p>}
@@ -117,13 +115,13 @@ const SignupForm = () => {
           label="Confirm Password"
           type="password"
           placeholder="Confirm Password"
+          showPassword={showConfirmPassword}
+          onTogglePasswordVisibility={() => setShowConfirmPassword(!showConfirmPassword)}
           {...register("confirmPassword")}
         />
         {errors.confirmPassword && (
           <p className="text-sm text-red-400">{errors.confirmPassword.message}</p>
         )}
-
-        {apiError && <p className="text-sm text-red-400">{apiError}</p>}
 
         <div className="mt-5 w-full">
           <Button type="submit" className="py-3! md:py-4!" disabled={isSubmitting}>

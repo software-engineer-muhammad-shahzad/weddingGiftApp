@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./styles/globals.css"
-
+import { Toaster } from "sonner";
 import { manrope,figtree,inter } from "./lib/fonts";
 
 const geistSans = Geist({
@@ -31,7 +31,15 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${manrope.variable} ${figtree.variable} ${inter.variable} h-full antialiased`}
     >
-    <body className={`${figtree.className} min-h-full bg-red-500 flex flex-col`}>{children}</body>
+    <body className={`${figtree.className} min-h-full bg-red-500 flex flex-col`}>{children}
+
+        <Toaster
+          position="top-right"
+          richColors
+          closeButton
+        />
+    </body>
+      
     </html>
   );
 }

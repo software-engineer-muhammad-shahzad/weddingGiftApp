@@ -1,5 +1,6 @@
 import React from "react"
 import { UseFormRegisterReturn } from "react-hook-form"
+import { EyeIcon, EyeOffIcon } from "@/app/components/icons/Icons"
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string
@@ -7,6 +8,8 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   paddingClass?: string
   labelColor?: string
   register?: UseFormRegisterReturn
+  showPassword?: boolean
+  onTogglePasswordVisibility?: () => void
 }
 
 const Input = ({
@@ -18,37 +21,52 @@ const Input = ({
   paddingClass = "",
   labelColor = "",
   register,
+  showPassword = false,
+  onTogglePasswordVisibility,
   ...inputProps
 }: InputProps) => {
   const defaultInputClass =
-    "border-none outline-none   font-normal text-[#989898] placeholder:text-[#989898] text-sm bg-transparent w-full"
+    "border-none outline-none font-normal text-[#989898] placeholder:text-[#989898] text-sm bg-transparent w-full"
 
   const defaultContainerClass =
     "border border-[#5FDA78] rounded-[147px] glass-card"
 
-  // const gradientStyle: React.CSSProperties = {
-  //   background: 'glass-card'
-  // }
+  const isPasswordField = type === "password"
+  const inputType = isPasswordField && showPassword ? "text" : type
 
   return (
-    <div
-      className={`${containerClassName || defaultContainerClass}`}
-      
-    >
-      <div className={`py-2 md:py-3 px-5 md:px-6 flex  flex-col gap-1 ${paddingClass}`}>
+    <div className={`${containerClassName || defaultContainerClass}`}>
+      <div className={`py-2 md:py-3 px-5 md:px-6 flex flex-col gap-1 ${paddingClass}`}>
         {label && (
-          <label htmlFor={id} className={ `${labelColor} text-white  text-[14px]`}>
+          <label htmlFor={id} className={`${labelColor} text-white text-[14px]`}>
             {label}
           </label>
         )}
 
-        <input
-          {...(register ?? {})}
-          {...inputProps}
-          type={type}
-          id={id}
-          className={className || defaultInputClass}
-        />
+        <div className="flex items-center gap-2">
+          <input
+            {...(register ?? {})}
+            {...inputProps}
+            type={inputType}
+            id={id}
+            className={className || defaultInputClass}
+          />
+
+          {isPasswordField && onTogglePasswordVisibility && (
+            <button
+              type="button"
+              onClick={onTogglePasswordVisibility}
+              className="flex items-center justify-center text-[#989898] hover:text-white transition-colors"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? (
+                <EyeOffIcon className="w-5 h-5" />
+              ) : (
+                <EyeIcon className="w-5 h-5" />
+              )}
+            </button>
+          )}
+        </div>
       </div>
     </div>
   )

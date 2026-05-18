@@ -1,21 +1,21 @@
-import { postRequest } from "@/app/services/http"
-import endpoints from "@/app/services/endpoint"
-
+// Backend signup payload shape
 export interface SignupPayload {
-  name: string
+  fullName: string
   partnerName: string
   eventDate: string
   email: string
   phoneNumber: string
   password: string
+  confirmPassword: string
 }
 
 export interface SignupResponse {
-  message?: string
-  email?: string
+  statusCode?: number
+  statusMessage?: string
+  data?: {
+    message?: string
+    email?: string
+    [key: string]: any
+  }
   [key: string]: any
-}
-
-export const signup = async (payload: SignupPayload): Promise<SignupResponse> => {
-  return postRequest(endpoints.auth.signup, payload, { skipAuth: true })
 }

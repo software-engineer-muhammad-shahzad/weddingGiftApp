@@ -2,9 +2,12 @@ import * as z from "zod"
 
 export const signupSchema = z
   .object({
-    name: z.string().min(2, "Please enter your name"),
+    fullName: z.string().min(2, "Please enter your name"),
     partnerName: z.string().min(2, "Please enter your partner name"),
-    eventDate: z.string().min(1, "Please enter your event date"),
+    eventDate: z.string().refine(
+      (date) => !isNaN(Date.parse(date)),
+      "Please enter a valid event date"
+    ),
     email: z.string().email("Please enter a valid email"),
     phoneNumber: z.string().min(10, "Please enter a valid phone number"),
     password: z.string().min(8, "Password must be at least 8 characters"),
