@@ -1,39 +1,24 @@
 import React from "react"
+import { UseFormRegisterReturn } from "react-hook-form"
 
-interface InputProps {
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string
-  type?: string
-  placeholder?: string
-  name?: string
-  id?: string
-  className?: string
   containerClassName?: string
-  
-  maxLength?: number
-  value?: string
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
-  onPaste?: (e: React.ClipboardEvent<HTMLInputElement>) => void
-  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void
   paddingClass?: string
-  labelColor?:string
+  labelColor?: string
+  register?: UseFormRegisterReturn
 }
 
 const Input = ({
   label,
   type = "text",
-  placeholder,
-  name,
   id,
   className = "",
   containerClassName = "",
-  
-  maxLength,
-  value,
-  onChange,
-  onPaste,
-  onKeyDown,
   paddingClass = "",
-  labelColor=""
+  labelColor = "",
+  register,
+  ...inputProps
 }: InputProps) => {
   const defaultInputClass =
     "border-none outline-none   font-normal text-[#989898] placeholder:text-[#989898] text-sm bg-transparent w-full"
@@ -58,16 +43,11 @@ const Input = ({
         )}
 
         <input
+          {...(register ?? {})}
+          {...inputProps}
           type={type}
           id={id}
-          name={name}
-          placeholder={placeholder}
           className={className || defaultInputClass}
-          maxLength={maxLength}
-          value={value}
-          onChange={onChange}
-          onPaste={onPaste}
-          onKeyDown={onKeyDown}
         />
       </div>
     </div>

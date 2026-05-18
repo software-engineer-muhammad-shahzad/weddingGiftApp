@@ -1,11 +1,10 @@
+import { redirect } from "next/navigation";
 
+const Page = () => {
 
-const page = () => {
-  return (
-    <div>
-      <p className='text-red-500 text-lg'>hello</p>
-    </div>
-  )
+  redirect("/login");
+
+  return null;
 }
 
-export default page
+export default Page;
