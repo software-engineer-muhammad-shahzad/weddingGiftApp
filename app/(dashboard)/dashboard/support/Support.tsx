@@ -1,9 +1,8 @@
 "use client"
-
-import Input from "../../components/elements/Input"
-import Button from "../../components/elements/Button"
 import { useState } from "react"
 import ModalLayer from "@/app/components/ui/ModalLayer"
+import Input from "@/app/components/elements/Input"
+import Button from "@/app/components/elements/Button"
 
 interface SupportProps {
   isOpen: boolean
@@ -69,7 +68,7 @@ const Support = ({ isOpen, onClose }: SupportProps) => {
             </div>
             
             {/* Submit Button */}
-            <Button 
+            <Button
               type="submit"
               className="w-full bg-[#330065]! text-[#5FDA78]! rounded-[47px] py-3! transition-colors"
             >

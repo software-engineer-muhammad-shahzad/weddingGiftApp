@@ -10,6 +10,10 @@ export const getErrorMessage = (error: any): string => {
     return error.response.data.message
   }
 
+  if (error?.response?.data?.statusMessage) {
+    return error.response.data.statusMessage
+  }
+
   if (error?.message) {
     return error.message
   }

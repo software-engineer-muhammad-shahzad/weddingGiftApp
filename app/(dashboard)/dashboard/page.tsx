@@ -1,13 +1,13 @@
 "use client"
 import Image from "next/image"
-import Balance from "../components/dashboard/home/Balance"
-import Banner from "../components/dashboard/home/Banner"
-import ContributorList from "../components/dashboard/home/ContributorList"
-import FooterAppShare from "../components/dashboard/home/FooterAppShare"
-import Header from "../components/dashboard/home/Header"
-import StatisticChart from "../components/dashboard/home/StatisticChart"
 import { useState } from "react"
 import Support from "./support/Support"
+import Balance from "@/app/features/dashboard/home/Balance"
+import Banner from "@/app/features/dashboard/home/Banner"
+import ContributorList from "@/app/features/dashboard/home/ContributorList"
+import FooterAppShare from "@/app/features/dashboard/home/FooterAppShare"
+import Header from "@/app/features/dashboard/home/Header"
+import StatisticChart from "@/app/features/dashboard/home/StatisticChart"
 
 const page = () => {
   const [isSupportOpen, setIsSupportOpen] = useState(false)
@@ -16,7 +16,8 @@ const page = () => {
       <div className=" relative w-full max-w-200 h-full ">
         <div className="px-4 md:px-0 h-full">
           <Header />
-          <Balance />
+          <Balance
+           />
           <Banner />
           <StatisticChart />
         </div>

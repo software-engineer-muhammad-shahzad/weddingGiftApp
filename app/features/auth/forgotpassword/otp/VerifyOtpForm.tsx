@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react'
 import Input from "../../../../components/elements/Input"
 import { Delete } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { useVerifyOtp } from "@/app/features/auth/hooks/useVerifyOtp"
+import { showError } from "@/app/lib/toast"
+import ResendOtp from "./ResendOtp"
 
 interface VerifyOtpFormProps {
 
@@ -14,30 +17,29 @@ interface VerifyOtpFormProps {
 }
 const VerifyOtpForm = ({ source, showPaymentSuccess, setShowPaymentSuccess }: VerifyOtpFormProps) => {
     const [otp, setOtp] = useState(['', '', '', '', '', ''])
-    const [timeLeft, setTimeLeft] = useState(58) // 58 seconds as shown in image
 
-    const handleVerifyOtp = () => {
+    const router = useRouter()
+    const { verifyOtp, isLoading: isVerifying } = useVerifyOtp()
 
+    const handleVerifyOtp = async () => {
+        const code = otp.join("")
+
+        if (code.length !== 6) {
+            showError("Please enter the 6-digit OTP.")
+            return
+        }
+
+        const isSuccess = await verifyOtp(code)
+        if (!isSuccess) return
 
         if (source === "payment") {
             setShowPaymentSuccess(true)
-        }else if(source==="forgot-password"){
+        } else if (source === "forgot-password") {
             router.push("/set-password")
-        }
-        
-        else {
+        } else {
             router.push("/dashboard")
-
         }
     }
-
-    const router = useRouter()
-    useEffect(() => {
-        if (timeLeft > 0) {
-            const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000)
-            return () => clearTimeout(timer)
-        }
-    }, [timeLeft])
 
     useEffect(() => {
         if (otp.every(d => d !== '')) {
@@ -163,25 +165,13 @@ const VerifyOtpForm = ({ source, showPaymentSuccess, setShowPaymentSuccess }: Ve
 
                 {/* Resend OTP Timer */}
                 <div className="flex justify-center mb-8">
-                    <p className="w-fit text-[#DDDDDD]">
-
-                        <span className="border-b border-transparent hover:border-white transition-all duration-300">
-                            Resend OTP 
-                        </span>
-<span className="ms-1">in</span>
-                       
-
-                        <span className="text-white ms-1">
-                            {formatTime(timeLeft)}
-                        </span>
-
-                    </p>
+                    <ResendOtp />
                 </div>
 
                 {/* Continue Button */}
                 <div className="mb-8 ">
-                    <Button type="submit" onClick={handleVerifyOtp} className="px-10 py-3!   ">
-                        Continue
+                    <Button type="button" onClick={handleVerifyOtp} disabled={isVerifying} className="px-10 py-3!   ">
+                        {isVerifying ? "Verifying..." : "Continue"}
                     </Button>
                 </div>
 
