@@ -1,11 +1,18 @@
+import type { CoupleDashboardData } from "@/app/features/dashboard/types/coupleDashboard"
 
+interface BalanceProps {
+  data: CoupleDashboardData | null
+  isLoading: boolean
+}
 
-const Balance = () => {
+const Balance = ({ data, isLoading }: BalanceProps) => {
   return (
     <div>
         <div className="flex flex-col mt-12 md:mt-16">
             <p className="text-[#C2C2C2] text-lg font-light">Received Balance</p>
-            <h2 className="text-white  font-medium text-[45px] sm:text-[56px]">22,769.90</h2>
+            <h2 className="text-white  font-medium text-[45px] sm:text-[56px]">
+                {isLoading ? "..." : `${data?.receivedBalance.toFixed(2)} ${data?.currency}`}
+            </h2>
 
         </div>
     </div>

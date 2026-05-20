@@ -1,34 +1,53 @@
 "use client"
 import { useRouter } from "next/navigation"
+import { useState } from "react"
 import Button from "../../../components/elements/Button"
 import Input from "../../../components/elements/Input"
-
+import { useForgotPassword } from "../hooks/useForgotPassword"
 
 const ForgotPasswordform = () => {
-    const router=useRouter()
+    const router = useRouter()
     const source = "forgot-password"
+    const [email, setEmail] = useState("")
+    const { handleForgotPassword, isLoading, error } = useForgotPassword()
 
-
-    
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         
-router.push(`/verify-otp?source=${source}`)
+        if (!email) {
+            return
+        }
 
+        const result = await handleForgotPassword({ email })
+
+        if (result.success) {
+            router.push(`/verify-otp?source=${source}`)
+        }
     }
     return (
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-     <Input
+            <Input
                 label="Email"
                 type="email"
                 placeholder="Enter your email"
                 name="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
             />
-   <div className="mt-5 w-full">
-                <Button type="submit" className='py-2! md:py-4!' >
-            Next
+            <div className="mt-5 w-full">
+                <Button 
+                    type="submit" 
+                    className='py-2! md:py-4!' 
+                    disabled={isLoading}
+                >
+            {isLoading ? "Sending..." : "Next"}
                 </Button>
             </div>
+            {error && (
+                <div className="text-red-400 text-sm text-center">
+                    {error}
+                </div>
+            )}
         </form>
     )
 }

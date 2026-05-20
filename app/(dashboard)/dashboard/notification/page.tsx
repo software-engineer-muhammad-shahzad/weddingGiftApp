@@ -3,17 +3,46 @@ import { ChevronLeft } from 'lucide-react';
 import { Search } from 'lucide-react';
 import Link from 'next/link';
 
-import { notificationData } from '../../components/data';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Input from '@/app/components/elements/Input';
-
+import { useCoupleNotification } from '@/app/features/dashboard/hooks/useCoupleNotification';
+import type { NotificationItem } from '@/app/features/dashboard/types/coupleNotifications';
 
 const page = () => {
   const [search, setSearch] = useState("");
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const { items, isLoading, hasMore, fetchNotifications, loadMore } = useCoupleNotification();
+
+  useEffect(() => {
+    fetchNotifications(1);
+  }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !isLoading) {
+          loadMore();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    const sentinel = sentinelRef.current;
+
+    if (sentinel) {
+      observer.observe(sentinel);
+    }
+
+    return () => {
+      if (sentinel) {
+        observer.unobserve(sentinel);
+      }
+    };
+  }, [hasMore, isLoading, loadMore]);
 
   // Filter notifications based on search input (name only)
-  const filteredNotifications = notificationData.filter(notification =>
-    notification.name.toLowerCase().includes(search.toLowerCase())
+  const filteredNotifications = items.filter(notification =>
+    notification.guestName.toLowerCase().includes(search.toLowerCase())
   );
 
   
@@ -41,26 +70,37 @@ const page = () => {
         </div>
         {/* user list */}
         <div className='flex flex-col gap-8 mt-8    '>
-          {filteredNotifications.map((notification) => (
-            <div key={notification.id} className='w-full p-4 flex justify-between rounded-[40px] glass-card border-[0.5px] border-[#5FDA78] pb-4'>
-              <div className='flex items-start gap-4'>
-                
-                <div className='flex-1'>
-                  <p className='text-white font-semibold text-[16px] '>{notification.name} <span className='font-light'>{notification.amount}</span></p>
-                  <p className='font-semibold text-white text-[16px]'>Message:<span className='text-white font-light'> {notification.message}</span></p>
-                  <div className='flex items-center gap-2 mt-2'>
-                   
-                    <p className='text-white/80 text-xs'>{notification.time}</p>
+          {isLoading && items.length === 0 ? (
+            <p className="text-white text-center">Loading...</p>
+          ) : filteredNotifications.length === 0 ? (
+            <p className="text-white text-center">No notifications yet</p>
+          ) : (
+            filteredNotifications.map((notification: NotificationItem) => (
+              <div key={notification.id} className='w-full p-4 flex justify-between rounded-[40px] glass-card border-[0.5px] border-[#5FDA78] pb-4'>
+                <div className='flex items-start gap-4'>
+                  
+                  <div className='flex-1'>
+                    <p className='text-white font-semibold text-[16px] '>{notification.guestName} <span className='font-light'>{notification.amount} {notification.currency}</span></p>
+                    <p className='font-semibold text-white text-[16px]'>Message:<span className='text-white font-light'> {notification.messagePreview}</span></p>
+                    <div className='flex items-center gap-2 mt-2'>
+                     
+                      <p className='text-white/80 text-xs'>{new Date(notification.receivedAtUtc).toLocaleDateString()}</p>
+                    </div>
                   </div>
                 </div>
+                {/* cricle white */}
+                <div>
+                  {!notification.isRead && (
+                    <div className='w-3 h-3 sm:w-4 sm:h-4 bg-white rounded-full'></div>
+                  )}
+                </div>
               </div>
-              {/* cricle white */}
-              <div>
-             <div className='w-3 h-3 sm:w-4 sm:h-4 bg-white rounded-full'></div>
-             </div>
-            </div>
-        
-          ))}
+            ))
+          )}
+          {isLoading && hasMore && (
+            <p className="text-white text-center">Loading more...</p>
+          )}
+          <div ref={sentinelRef} className="h-1" />
         </div>
       </div>
     </div>

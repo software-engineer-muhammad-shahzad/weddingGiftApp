@@ -2,13 +2,24 @@ const endpoints = {
   auth: {
     signup: "/Auth/register",
     verifyOtp: "/Auth/verifysignup",
-    resendOtp:"/Auth/resendsignupverification",
+    resendOtp: "/Auth/resendsignupverification",
     login: "/Auth/Login",
-    forgotPassword: "/auth/forgot-password",
-    setPassword: "/auth/set-password",
-    
+    forgotPassword: "/Auth/forgotpassword",
+    setNewPassword: "/Auth/resetpassword",
+
   },
-  dashboard:{
+  dashboard: {
+    coupleDashboard: "/couple/dashboard",
+    coupleContributionList:"/couple/contributions"
+
+  },
+  notifications:{
+
+    coupleNotification:"/couple/notifications"
+  },
+  
+  bankdetails:{
+    coupleBankDetails:"/couple/bankdetails"
 
 
   }

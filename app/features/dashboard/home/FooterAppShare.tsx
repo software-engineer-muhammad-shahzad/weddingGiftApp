@@ -4,9 +4,14 @@ import { Blocks, Wallet } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { DashboardIcon, DashboardGiftsICon } from "../../../components/icons/Icons"
+import type { Invite } from "@/app/features/dashboard/types/coupleDashboard"
 
+interface FooterAppShareProps {
+  inviteData: Invite | undefined
+  isLoading: boolean
+}
 
-const FooterAppShare = () => {
+const FooterAppShare = ({ inviteData, isLoading }: FooterAppShareProps) => {
   const pathname = usePathname();
 
   const navLinks = [

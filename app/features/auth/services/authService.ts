@@ -3,6 +3,7 @@ import {
   verifyOtp as verifyOtpApi,
   resendOtp as resendOtpApi,
   login as loginApi,
+  forgotPassword as forgotPasswordApi,
 } from "@/app/features/auth/api/authApi"
 import type { SignupPayload, SignupResponse } from "@/app/features/auth/types/signup"
 import type {
@@ -11,6 +12,7 @@ import type {
   VerifyOtpResponse,
 } from "@/app/features/auth/types/verifyOtp"
 import type { LoginPayload, LoginResponse } from "@/app/features/auth/types/login"
+import type { ForgotPasswordPayload, ForgotPasswordResponse } from "@/app/features/auth/types/forgotPassword"
 
 // signupUser
 export const signupUser = async (payload: SignupPayload): Promise<SignupResponse> => {
@@ -36,5 +38,11 @@ export const login = async (payload: LoginPayload): Promise<LoginResponse> => {
   return loginApi(payload)
 }
 
-// login 
+// forgot password
+export const forgotPassword = async (payload: ForgotPasswordPayload): Promise<ForgotPasswordResponse> => {
+  return forgotPasswordApi(payload)
+}
+
+
+
 

@@ -5,11 +5,14 @@ import Image from "next/image"
 import Link from "next/link"
 import ModalLayer from "@/app/components/ui/ModalLayer"
 import { useState } from "react"
+import { clearAllData } from "@/app/utils/storage/storageHelper"
+import { useRouter } from "next/navigation";
+import { showSuccess } from "@/app/lib/toast"
 
 const page = () => {
     const [isLogoutOpen, setIsLogoutOpen] = useState(false);
     const [activeButton, setActiveButton] = useState('no');
-
+const router = useRouter();
     return (
         <div className="min-h-screen overflow-auto w-full max-w-382.5 flex justify-center mx-auto ">
             <div className="w-full bg-[#330065] max-w-200 py-8 border   border-yellow-500  px-6">
@@ -74,7 +77,7 @@ const page = () => {
                         onClose={() => setIsLogoutOpen(false)}
                         modalWidth="w-full max-w-[280px] sm:max-w-[300px] md:max-w-[500px]"
                         modalHeight="300px"
-                        position="responsive"
+                        position="center"
                         className="bg-clip-padding "
                         overlayColor="bg-[#171515EB]"
                     >
@@ -104,8 +107,11 @@ const page = () => {
                                 <button
                                     onClick={() => {
                                         setActiveButton('yes');
+                                        // Clear all local storage
+                                        clearAllData();
+                                        showSuccess("logout SucessFully");
                                         // Redirect to login page after logout
-                                        window.location.href = '/login';
+                                        router.push("/login");
                                     }}
                                     className={`border border-[#330065] py-2 h-12 cursor-pointer rounded-[20px] w-20 px-4 transition-colors ${activeButton === 'yes'
                                             ? 'bg-[#330065] text-[#5FDA78]'

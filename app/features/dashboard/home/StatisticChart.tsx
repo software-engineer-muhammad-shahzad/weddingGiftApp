@@ -1,23 +1,24 @@
 "use client"
 import React from 'react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'
+import type { WeeklyStat } from "@/app/features/dashboard/types/coupleDashboard"
 
-const StatisticChart: React.FC = () => {
+interface StatisticChartProps {
+  data: WeeklyStat[] | undefined
+  isLoading: boolean
+}
+
+const StatisticChart: React.FC<StatisticChartProps> = ({ data, isLoading }) => {
 
   const today = new Date().toLocaleString('en-US', { weekday: 'short' })[0]
   // ⚠️ This gives first letter (M, T, W...)
 
-  const data = [
-    { day: 'M', value: 300 },
-    { day: 'T', value: 500 },
-    { day: 'W', value: 150 },
-    { day: 'T', value: 300 },
-    { day: 'F', value: 400 },
-    { day: 'S', value: 200 },
-    { day: 'S', value: 250 },
-  ]
+  const chartData = data?.map(stat => ({
+    day: stat.dayLabel,
+    value: stat.amount
+  })) || []
 
-  const activeIndex = data.findIndex(item => item.day === today)
+  const activeIndex = chartData.findIndex(item => item.day === today)
 
   return (
     <div className='mt-10'>
@@ -30,7 +31,7 @@ const StatisticChart: React.FC = () => {
       >
 
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} margin={{ top: 0, right: 0, bottom: 0, left: 10 }}>
+          <BarChart data={chartData} margin={{ top: 0, right: 0, bottom: 0, left: 10 }}>
 
             <XAxis dataKey="day" tick={{ fill: '#fff', fontSize: 14 }} axisLine={false} tickLine={false} />
             <YAxis
@@ -60,7 +61,7 @@ const StatisticChart: React.FC = () => {
             />
 
             <Bar dataKey="value" barSize={15}>
-              {data.map((entry, index) => (
+              {chartData.map((entry, index) => (
                 <Cell
                   key={`cell-${index}`}
                   fill={index === activeIndex ? "#5FDA78" : "#384552"}

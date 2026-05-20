@@ -1,9 +1,14 @@
 import { Bell, Settings } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
+import type { CoupleDashboardData } from "@/app/features/dashboard/types/coupleDashboard"
 
+interface HeaderProps {
+  data: CoupleDashboardData | null
+  isLoading: boolean
+}
 
-const Header = () => {
+const Header = ({ data, isLoading }: HeaderProps) => {
     return (
         <div className="flex justify-between items-center">
             {/* image and name */}
@@ -19,8 +24,12 @@ const Header = () => {
                 </div>
                 {/* name date */}
                 <div className="flex flex-col text-white ">
-                    <p className="text-md sm:text-xl ">Ahmed & Sana</p>
-                    <p className="text-sm md:text-md font-light text-[#E6E6E6]">02,Nov 2026</p>
+                    <p className="text-md sm:text-xl ">
+                        {isLoading ? "..." : `${data?.fullName} & ${data?.partnerName}`}
+                    </p>
+                    <p className="text-sm md:text-md font-light text-[#E6E6E6]">
+                        {isLoading ? "..." : new Date(data?.eventDate || "").toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
+                    </p>
                 </div>
             </div>
             {/* icons */}
