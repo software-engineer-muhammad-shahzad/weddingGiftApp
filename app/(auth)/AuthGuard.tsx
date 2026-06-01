@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { isTokenExpired } from "../lib/auth/CheckExpiry";
 import { clearAuthAndRedirect } from "../lib/auth/logout";
 
-const publicRoutes = ["/login", "/signup"];
+const publicRoutes = ["/login", "/signup","/verify-otp","/set-password","/forgot-password"];
 
 export default function AuthGuard({
   children,

@@ -1,113 +1,213 @@
 "use client"
+
 import ProfileInfoEditForm from "@/app/features/dashboard/myprofile/ProfileInfoEditForm"
-import SelectImageModal from "@/app/dashboard/setting/myprofile/SelectImageModal"
 import { ProfileEditIcon } from "@/app/components/icons/Icons"
-import { ChevronLeft } from "lucide-react"
+import { Trash2, X } from "lucide-react"
 import Image from "next/image"
-import Link from "next/link"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
-const page = () => {
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const [isImageOpen, setIsImageOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<string | undefined>(undefined);
+import { useCoupleProfileDetails } from "@/app/features/dashboard/hooks/useCoupleProfile"
+import { useUpdateCouplePhoto } from "@/app/features/dashboard/hooks/useUpdateCouplePhoto"
+import { useDeleteCouplePhoto } from "@/app/features/dashboard/hooks/useDeleteCoupleProfile"
 
-  const handleImageSelect = (imageData: string) => {
-    setSelectedImage(imageData);
-    // Here you can also save the image to your backend or state
-  };
+import ShowProfileInfo from "@/app/features/dashboard/myprofile/ShowProfileInfo"
+import ProfileInfoNavigation from "@/app/features/dashboard/myprofile/ProfileInfoNavigation"
+import UploadImageModal from "@/app/features/dashboard/myprofile/UploadImageModal"
+
+const Page = () => {
+  const [isFormOpen, setIsFormOpen] = useState(false)
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
+
+  const [previewImage, setPreviewImage] = useState<string | null>(null)
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+
+  const galleryInputRef = useRef<HTMLInputElement | null>(null)
+  const cameraInputRef = useRef<HTMLInputElement | null>(null)
+
+  const { data, refetch } = useCoupleProfileDetails()
+  const { updateProfilePhoto } = useUpdateCouplePhoto()
+  const { deleteProfilePhoto } = useDeleteCouplePhoto()
+  console.log("data is herE:", data);
+
+  const imageSrc = previewImage || data?.profileImageUrl || ""
+
+  // cleanup blob
+  useEffect(() => {
+    return () => {
+      if (previewImage?.startsWith("blob:")) {
+        URL.revokeObjectURL(previewImage)
+      }
+    }
+  }, [previewImage])
+
+  // upload trigger
+  const handleSelectImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    if (!file.type.startsWith("image/")) {
+      alert("Invalid image")
+      return
+    }
+
+    setPreviewImage(URL.createObjectURL(file))
+    setSelectedFile(file)
+    setIsUploadModalOpen(true)
+  }
+
+  // DELETE REAL PROFILE IMAGE (API)
+  const handleDeleteImage = async () => {
+    try {
+      await deleteProfilePhoto()   // 🔥 API CALL
+
+      setPreviewImage(null)
+      setSelectedFile(null)
+
+      await refetch?.()
+    } catch (err) {
+      console.error("Delete failed:", err)
+    }
+  }
 
   return (
-    <>
-      {/* Image Selection Modal */}
-      <SelectImageModal 
-        isOpen={isImageOpen} 
-        onClose={() => setIsImageOpen(false)}
-        onImageSelect={handleImageSelect}
-        currentImage={selectedImage}
-      />
-      
-      {/* Main Profile Page */}
-      <div className="min-h-screen overflow-auto  w-full max-w-382.5 flex  justify-center mx-auto ">
-        <div className="w-full h-full bg-[#330065] max-w-200 py-8  border border-red-400 px-5   ">
-          {/* my profile back navigation */}
-          <Link href="/dashboard/setting" className="flex w-fit items-center gap-2">
-            <ChevronLeft className='text-white' />
-            <p className="text-white text-xl md:text-2xl  border-b border-transparent hover:border-white transition-all duration-300">My Profile</p>
-          </Link>
+    <div className="min-h-screen w-full flex justify-center bg-[#330065]">
+      <div className="w-full max-w-200 py-8 px-5">
 
-          {/* Profile Image */}
-          <div className="flex justify-center mt-12  md:mt-15  ">
-            <div className="relative flex justify-center border w-30 h-30 border-[#5FDA78] rounded-full">
-              {/* Show selected image if available */}
-              {selectedImage && (
-                <Image 
-                  src={selectedImage} 
-                  alt="Profile" 
-                  width={120} 
-                  height={120} 
-                  className="w-full h-full rounded-full object-cover"
+        <ProfileInfoNavigation
+          isFormOpen={isFormOpen}
+          setIsFormOpen={setIsFormOpen}
+        />
+
+        {/* PROFILE IMAGE */}
+        {/* PROFILE IMAGE */}
+        <div className="flex justify-center mt-12">
+          <div className="relative w-30 h-30">  {/* ✅ removed overflow-hidden and border from here */}
+
+            {/* inputs */}
+            <input
+              type="file"
+              accept="image/*"
+              ref={galleryInputRef}
+              onChange={handleSelectImage}
+              className="hidden"
+            />
+            <input
+              type="file"
+              accept="image/*"
+              capture="environment"
+              ref={cameraInputRef}
+              onChange={handleSelectImage}
+              className="hidden"
+            />
+
+            {/* image with border and overflow-hidden only on image wrapper */}
+            <div className="w-30 h-30 rounded-full border border-[#5FDA78] overflow-hidden">
+              {imageSrc ? (
+                <Image
+                  src={imageSrc}
+                  alt="profile"
+                  width={120}
+                  height={120}
+                  className="w-full h-full object-cover"
+                  unoptimized={imageSrc.startsWith("blob:")}
                 />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-[#5FDA7833]">
+                  <p className="text-white text-xs">No Image</p>
+                </div>
               )}
-              
-              <div
-                onClick={() => setIsImageOpen(true)}
-                className="absolute -bottom-3.5 right-[-10px] glass-card rounded-[100px] border-[0.5px] border-[#5FDA78] cursor-pointer right-2 w-12 h-12 flex justify-center items-center"
-              >
-                <ProfileEditIcon />
-              </div>
             </div>
-          </div>
-            {/* form edit start*/}
-            {/* edit button */}
-            {isFormOpen ? <ProfileInfoEditForm /> : <div>
-              <div className=" mt-10 md:mt-15">
-                <div className="flex justify-end">
-                  <button className="cursor-pointer" onClick={() => setIsFormOpen(true)} >
-                    <ProfileEditIcon />
-                  </button>
 
-                </div>
-              </div>
-              {/* forms */}
-              <div
-                className="border glass-card border-[#5FDA78] rounded-[30px]  mt-4  mb-8"
-
+            {/* DELETE BUTTON — now outside overflow-hidden ✅ */}
+            {data?.profileImageUrl && (
+              <button
+                onClick={handleDeleteImage}
+                className="absolute cursor-pointer top-0 right-0 z-50 bg-red-500 text-white p-1 rounded-full shadow-md"
               >
-                <div className="flex flex-col border-b border-b-[#F1F1F11A] py-2 sm:py-4 px-5 md:px-4">
-                  <p className="font-light text-sm text-[#EEEEEE]">Name</p>
-                  <p className="font-medium text-sm text-[#EEEEEE]">Sana khan</p>
-                </div>
-                {/* other details */}
-                <div className="flex flex-col border-b  border-b-[#F1F1F11A]  py-2 sm:py-4 px-5 md:px-4 ">
-                  <p className="font-normal text-sm text-[#EEEEEE]">Partner Name</p>
-                  <p className="font-bold text-sm text-[#EEEEEE]">Ahmad Ali</p>
-                </div>
-                {/* Event date */}
-                <div className="flex flex-col border-b  border-b-[#F1F1F11A] py-2 sm:py-4 px-5 md:px-4 ">
-                  <p className="font-normal text-sm text-[#EEEEEE]">Email</p>
-                  <p className="font-bold text-sm text-[#EEEEEE]">xyz@xyz.com</p>
-                </div>
-                {/* Email */}
-                <div className="flex flex-col border-b  border-b-[#F1F1F11A]  py-2 sm:py-4 px-5 md:px-4 ">
-                  <p className="font-normal text-sm text-[#EEEEEE]">Contact Number</p>
-                  <p className="font-bold text-sm text-[#EEEEEE]">+1-333-9898987</p>
-                </div>
-                {/* Contact Number */}
-                <div className="flex flex-col   py-2 sm:py-4 px-5 md:px-4 ">
-                  <p className="font-normal text-sm text-[#EEEEEE]">Contact Number</p>
-                  <p className="font-bold text-sm text-[#EEEEEE]">+1-333-9898987</p>
-                </div>
-              </div>
-            </div>
-            }
-            {/* form end */}
+                <X size={14} />
+              </button>
+            )}
+
+            {/* UPLOAD BUTTON — now outside overflow-hidden ✅ */}
+            <button
+              onClick={() => setIsUploadModalOpen(true)}
+              className="absolute -bottom-1 -right-1 z-50 w-8 h-8 bg-[#5FDA78] rounded-full flex items-center justify-center font-bold shadow-md"
+            >
+              +
+            </button>
 
           </div>
         </div>
 
-    </>
+        {/* MODAL */}
+        <UploadImageModal
+          isOpen={isUploadModalOpen}
+          setIsOpen={setIsUploadModalOpen}
+          galleryInputRef={galleryInputRef}
+          cameraInputRef={cameraInputRef}
+          selectedFile={selectedFile}
+          setSelectedFile={setSelectedFile}
+          previewImage={previewImage}
+          setPreviewImage={setPreviewImage}
+          updateProfilePhoto={updateProfilePhoto}
+          refetch={refetch}
+        />
+
+        {/* CONTENT */}
+        {/* CONTENT */}
+        {isFormOpen ? (
+
+          <div className="  ">
+
+            {/* CLOSE BUTTON */}
+            <div className="flex justify-end">
+              <button
+                onClick={() => setIsFormOpen(false)}
+                className="
+       
+        text-white
+        hover:text-red-500
+        transition-all duration-200
+        cursor-pointer
+        z-10
+        bg-red-500
+        rounded-full
+      
+       
+        flex justify-end
+      "
+              >
+                <X className="w-2 h-2" />
+              </button>
+            </div>
+
+            {/* FORM */}
+            <ProfileInfoEditForm profileInfoData={data} setIsFormOpen={setIsFormOpen} />
+
+          </div>
+
+        ) : (
+
+          <>
+            {/* EDIT BUTTON */}
+            <div className="flex justify-end mt-10">
+              <button
+                onClick={() => setIsFormOpen(true)}
+                className="cursor-pointer"
+              >
+                <ProfileEditIcon />
+              </button>
+            </div>
+
+            {/* PROFILE INFO */}
+            <ShowProfileInfo data={data} />
+          </>
+
+        )}
+
+      </div>
+    </div>
   )
 }
 
-export default page
+export default Page

@@ -4,6 +4,7 @@ import { useState } from "react"
 import Button from "../../../components/elements/Button"
 import Input from "../../../components/elements/Input"
 import { useForgotPassword } from "../hooks/useForgotPassword"
+import { saveData } from "@/app/utils/storage/storageHelper"
 
 const ForgotPasswordform = () => {
     const router = useRouter()
@@ -13,7 +14,7 @@ const ForgotPasswordform = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        
+
         if (!email) {
             return
         }
@@ -21,6 +22,8 @@ const ForgotPasswordform = () => {
         const result = await handleForgotPassword({ email })
 
         if (result.success) {
+            // ✅ SAVE EMAIL IN LOCAL STORAGE
+            saveData("email", email, "session")
             router.push(`/verify-otp?source=${source}`)
         }
     }
@@ -35,12 +38,12 @@ const ForgotPasswordform = () => {
                 onChange={(e) => setEmail(e.target.value)}
             />
             <div className="mt-5 w-full">
-                <Button 
-                    type="submit" 
-                    className='py-2! md:py-4!' 
+                <Button
+                    type="submit"
+                    className='py-2! md:py-4!'
                     disabled={isLoading}
                 >
-            {isLoading ? "Sending..." : "Next"}
+                    {isLoading ? "Sending..." : "Next"}
                 </Button>
             </div>
             {error && (

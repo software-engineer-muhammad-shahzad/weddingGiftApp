@@ -1,7 +1,6 @@
 "use client"
 import Image from "next/image"
 import { useState } from "react"
-import Support from "./support/Support"
 import Balance from "@/app/features/dashboard/home/Balance"
 import Banner from "@/app/features/dashboard/home/Banner"
 import ContributorList from "@/app/features/dashboard/home/ContributorList"
@@ -9,6 +8,7 @@ import FooterAppShare from "@/app/features/dashboard/home/FooterAppShare"
 import Header from "@/app/features/dashboard/home/Header"
 import StatisticChart from "@/app/features/dashboard/home/StatisticChart"
 import { useDashboard } from "@/app/features/dashboard/hooks/useDashboard"
+import Support from "@/app/features/dashboard/support/Support"
 
 const page = () => {
   const [isSupportOpen, setIsSupportOpen] = useState(false)

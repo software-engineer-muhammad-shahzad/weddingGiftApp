@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from "axios"
-import ENV from "../env"
+
 
 interface AxiosRequestConfigWithSkipAuth extends AxiosRequestConfig {
   skipAuth?: boolean
@@ -7,7 +7,7 @@ interface AxiosRequestConfigWithSkipAuth extends AxiosRequestConfig {
 
 // Prefer the explicit app/env API_URL, then NEXT_PUBLIC_API_URL, then server API_URL
 const baseURL =
-  (ENV && ENV.API_URL) ||
+  
   process.env.NEXT_PUBLIC_API_URL ||
   (typeof process !== "undefined" ? process.env.API_URL : undefined) ||
   ""
@@ -27,9 +27,9 @@ export { baseURL }
  */
 const apiClient = axios.create({
   baseURL,
-  headers: {
-    "Content-Type": "application/json",
-  },
+  // headers: {
+  //   "Content-Type": "application/json",
+  // },
 });
 
 

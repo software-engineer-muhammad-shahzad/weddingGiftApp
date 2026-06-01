@@ -31,10 +31,10 @@ const FooterAppShare = ({ inviteData, isLoading }: FooterAppShareProps) => {
     },
     {
       id: 3,
-      href: "",
+      href: "/dashboard/invite",
       icon: <Blocks className="w-5 h-5" />,
       alt: "app-share-icon",
-      isActive: pathname === ""
+      isActive: pathname === "/dashboard/invite"
     },
     {
       id: 4,

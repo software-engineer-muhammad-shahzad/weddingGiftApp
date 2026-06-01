@@ -16,6 +16,9 @@ import type {
   CoupleBankDetailsResponse,
 } from "../types/coupleBankDetails"
 import { getRequest } from "@/app/services/http"
+import { CoupleProfileDetailsData, CoupleProfileDetailsResponse } from "../types/coupleProfileDetails"
+import { deleteCoupleProfile, getCoupleProfileDetails, submitCoupleSupportTicket, updateCoupleBankDetails, updateCoupleProfile, updateCoupleProfileDetails } from "../api/dashboardApi"
+import { CoupleSupportTicketPayload, CoupleSupportTicketResponse } from "../types/submitSupportTicket"
 
 // getDashboardData
 export const getDashboardData = async (): Promise<CoupleDashboardData> => {
@@ -68,3 +71,63 @@ export const getCoupleBankDetailsData = async (): Promise<CoupleBankDetailsData>
 
   return response.data
 }
+
+
+// updateBankDetails
+
+
+
+export const updateBankDetails = async (data: any): Promise<void> => {
+  await updateCoupleBankDetails(data)
+  // ✅ if no error thrown = success, done!
+}
+
+// coupleProfileDetails
+export const getCoupleProfileDetailsData =
+  async (): Promise<CoupleProfileDetailsData> => {
+
+    const response = await getCoupleProfileDetails()
+
+    if (response.statusCode !== 200 || !response.data) {
+      throw new Error(
+        response.statusMessage ||
+        "Failed to fetch couple profile details"
+      )
+    }
+
+    return response.data
+  }
+
+// coupleUpdateProfile
+
+export const updateCoupleProfileData = async (data: any): Promise<void> => {
+  await updateCoupleProfileDetails(data)
+  // ✅ if no error thrown = success, done!
+}
+
+
+// updateCoupleProfile
+export const updateCouplePhotoData = async (data: any): Promise<void> => {
+  await updateCoupleProfile(data)
+  // ✅ if no error thrown = success, done!
+}
+
+// delete-couple-profile
+export const deleteCoupleProfileData = async (): Promise<void> => {
+  await deleteCoupleProfile()
+
+}
+
+// submit-support-ticket
+export const submitSupportTicketService = async (
+  data: CoupleSupportTicketPayload
+): Promise<CoupleSupportTicketResponse> => {
+  try {
+    const response = await submitCoupleSupportTicket(data)
+
+    return response
+  } catch (error) {
+    throw error
+  }
+}
+

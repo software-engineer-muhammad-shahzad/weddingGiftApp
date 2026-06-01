@@ -1,4 +1,5 @@
 const endpoints = {
+  // audth-details
   auth: {
     signup: "/Auth/register",
     verifyOtp: "/Auth/verifysignup",
@@ -8,21 +9,43 @@ const endpoints = {
     setNewPassword: "/Auth/resetpassword",
 
   },
+  // dashboard-details
   dashboard: {
     coupleDashboard: "/couple/dashboard",
-    coupleContributionList:"/couple/contributions"
+    coupleContributionList: "/couple/contributions"
 
   },
-  notifications:{
+  // notification-details
+  notifications: {
 
-    coupleNotification:"/couple/notifications"
+    coupleNotification: "/couple/notifications"
   },
-  
-  bankdetails:{
-    coupleBankDetails:"/couple/bankdetails"
+  // bank-details
+  bankdetails: {
+    coupleBankDetails: "/couple/bankdetails"
 
 
+  },
+  // couple-profile-details
+  coupleProfile: {
+
+    coupleProfileDetails: "/couple/profile",
+    updateCoupleProfile: "/couple/profile/photo",
+    deleteCoupleProfile: "/couple/profile/photo"
+  },
+
+
+  // support-ticket
+  support: {
+    coupleSubmitTicket: "/couple/support/tickets"
+  },
+  greetings: {
+    coupleGreetings: "/couple/greetings"
+  },
+  qrCode: {
+    getQrCode: "/couple/invite"
   }
 };
+
 
 export default endpoints;
