@@ -1,5 +1,7 @@
 "use client"
 
+import { inter } from "@/app/lib/fonts";
+
 interface TabsProps {
     activeTab: string;
     setActiveTab: (tab: string) => void;
@@ -66,7 +68,7 @@ const Tabs = ({activeTab,setActiveTab}: TabsProps) => {
       <button
         onClick={() => setActiveTab("video")}
         style={getTabStyle("video")}
-        className={getTabClass("video")}
+        className={getTabClass("video") + " " + inter.className}
       >
         Video
       </button>

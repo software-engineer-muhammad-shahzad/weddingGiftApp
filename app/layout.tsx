@@ -5,15 +5,9 @@ import { Toaster } from "sonner";
 import { manrope,figtree,inter } from "./lib/fonts";
 import AuthGuard from "./(auth)/AuthGuard";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+
+
 
 
 
@@ -30,7 +24,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${manrope.variable} ${figtree.variable} ${inter.variable} h-full antialiased`}
+      className={` ${manrope.variable} ${figtree.variable} ${inter.variable} h-full antialiased`}
     >
     <body className={`${figtree.className} min-h-full bg-red-500 flex flex-col`}>{children}
     <AuthGuard>

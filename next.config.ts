@@ -8,7 +8,7 @@ const nextConfig: NextConfig = {
 
       // ✅ Production API Images
       {
-        protocol: "http",s
+        protocol: "http",
         hostname: "www.shagundirect.somee.com",
         pathname: "/uploads/profiles/**",
       },
