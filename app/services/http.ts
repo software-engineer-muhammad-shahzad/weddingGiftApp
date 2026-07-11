@@ -6,8 +6,25 @@ export const getRequest = async <T = any>(
   url: string,
   config: AxiosRequestConfig & { skipAuth?: boolean } = {}
 ): Promise<T> => {
-  const response = await apiClient.get(url, config);
-  return response.data;
+  try {
+    const response = await apiClient.get(url, config);
+    return response.data;
+  } catch (err: any) {
+    const status = err?.response?.status;
+
+    // If caller explicitly opted out of auth, swallow backend 401s and
+    // return a safe fallback shaped object so calling services can handle
+    // it without the app throwing an unhandled AxiosError.
+    if (config?.skipAuth && status === 401) {
+      return ({
+        statusCode: 401,
+        statusMessage: "Unauthorized",
+        data: null,
+      } as unknown) as T;
+    }
+
+    throw err;
+  }
 };
 
 // post request

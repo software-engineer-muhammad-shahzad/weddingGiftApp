@@ -18,9 +18,8 @@ const Button = ({
   style
 }: ButtonProps) => {
 
-  const defaultClass =
-    "text-[20px] w-full  z-100 py-6 text-[#330065] bg-[#5FDA78] hover:bg-[#4ecb68] transition-colors duration-300 ease-in-out text-[#330065] rounded-[9.1875rem]  text-center font-medium cursor-pointer flex items-center border border-[#5FDA78] justify-center gap-2"
-
+ const defaultClass =
+  "text-[20px] z-100 text-[#330065] bg-[#5FDA78] hover:bg-[#4ecb68] transition-colors duration-300 ease-in-out rounded-[9.1875rem] text-center font-medium cursor-pointer flex items-center border border-[#5FDA78] justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-[#5FDA78] disabled:pointer-events-none";
   return (
     <button
       type={type}

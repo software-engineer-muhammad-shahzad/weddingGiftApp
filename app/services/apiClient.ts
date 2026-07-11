@@ -27,6 +27,10 @@ export { baseURL }
  */
 const apiClient = axios.create({
   baseURL,
+  // Axios has no timeout by default, so a hung backend request would
+  // otherwise leave callers (e.g. a "Processing..." submit button) stuck
+  // forever with no error ever surfacing.
+  timeout: 20000,
   // headers: {
   //   "Content-Type": "application/json",
   // },
@@ -64,15 +68,27 @@ apiClient.interceptors.response.use(
     const status = error?.response?.status;
 
     // 🔐 unauthorized handling
-    if (status === 401 && typeof window !== "undefined") {
+    // If the request explicitly opted out of auth (skipAuth), don't auto-redirect on 401.
+    const requestConfig = error?.config as AxiosRequestConfigWithSkipAuth | undefined
+    const skipAuth = requestConfig?.skipAuth === true
+
+    if (status === 401 && typeof window !== "undefined" && !skipAuth) {
       localStorage.removeItem("token");
       window.location.href = "/login";
     }
 
-    console.error(
-      "API Error:",
-      error?.response?.data || error.message
-    );
+    // Avoid noisy console errors for requests that explicitly opted out of auth
+    // (skipAuth) — backend may still return 401 for those endpoints and that's
+    // expected during temporary auth removal. Only log when not skipAuth or
+    // when the status is not 401.
+    const shouldLog = !(skipAuth && status === 401)
+
+    if (shouldLog) {
+      console.error(
+        "API Error:",
+        error?.response?.data || error.message
+      );
+    }
 
     return Promise.reject(error);
   }

@@ -1,7 +1,12 @@
 import Image from "next/image"
+import { useSendGiftUser } from "./hooks/useSendGiftUser"
 
 
 const ProfileDescription = () => {
+    const { data, isLoading } = useSendGiftUser()
+
+    const coupleName = data ? `${data.fullName} & ${data.partnerName}` : isLoading ? "Loading..." : "Ahmad & Sana"
+
     return (
         <> {/* shagun logo */}
             <div className="flex items-center gap-4 justify-center">
@@ -10,7 +15,7 @@ const ProfileDescription = () => {
                 </div>
 
                 <div className="flex flex-col gap-1  md:gap-2 text-white">
-                    <p className="font-semibold text-lg sm:text-xl">Ahmad & Sana</p>
+                    <p className="font-semibold text-lg sm:text-xl">{coupleName}</p>
                     <p className="font-normal text-sm">Skip the Envelope, Send the Love.</p>
                 </div>
             </div>
@@ -23,7 +28,7 @@ const ProfileDescription = () => {
 </div>
                 {/* name and date */}
                 <div className="flex flex-col">
-                    <p className="text-white font-semibold text-xl">Ahmad & Sana</p>
+                    <p className="text-white font-semibold text-xl">{coupleName}</p>
                     <p className="text-white font-normal text-[11px]"><span>Event Date:Monday 10 june</span></p>
                 </div>
             </div></>

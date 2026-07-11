@@ -2,44 +2,57 @@
 
 import { Bell, ChevronLeft, Copy, Settings, Share2, Download } from "lucide-react"
 import Link from "next/link"
-import { QRCodeCanvas } from "qrcode.react"
 import { ShagunLogo, WelcomeLogo } from "@/app/components/icons/Icons"
-import { downloadQRCode } from "@/app/utils/handleDownloadQr"
 import { handleShare } from "@/app/utils/handleShareQr"
-
-
-import { useMemo } from "react"
+import { formatDateWithWeekday } from "@/app/utils/formatDate"
+import { useEffect, useMemo, useState } from "react"
 import { useQrCode } from "@/app/features/dashboard/qrCode/hooks/useGetQrCodeUrl"
+import { getQrCodeImage } from "@/app/features/dashboard/qrCode/api/qrCodeApi"
 import { showSuccess } from "@/app/lib/toast"
 import QrHeaders from "@/app/features/dashboard/invite/QrHeaders"
 
 
 
-const QR_CANVAS_ID = "qr-code-canvas"
-
 const Page = () => {
 
     const { data, isLoading, error } = useQrCode()
-
+    const [qrImageUrl, setQrImageUrl] = useState<string | null>(null)
     const userData = useMemo(() => {
         if (!data) return null
 
         const inviteUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/invite/${data.publicSlug}`
-        console.log("inviturl is :", inviteUrl);
+
         return {
-            name: "AHMED & SANA",
-            date: "MONDAY, 10 JUNE",
+            name: data.coupleName.toUpperCase(),
+            date: formatDateWithWeekday(data.coupleEventDate),
             inviteUrl: inviteUrl,
-
-            // ✅ FIXED: QR now uses BASE_URL + slug
-            qrValue: inviteUrl,
-
+            qrDownloadUrl: data.qrDownloadUrl,
             notificationCount: 1,
         }
     }, [data])
-    const handleDownload = () => {
+
+    useEffect(() => {
         if (!userData) return
-        downloadQRCode(QR_CANVAS_ID, userData.name)
+
+        let objectUrl: string | null = null
+        getQrCodeImage(userData.qrDownloadUrl).then((blob) => {
+            objectUrl = URL.createObjectURL(blob)
+            setQrImageUrl(objectUrl)
+        })
+
+        return () => {
+            if (objectUrl) URL.revokeObjectURL(objectUrl)
+        }
+    }, [userData?.qrDownloadUrl])
+
+    const handleDownload = () => {
+        if (!userData || !qrImageUrl) return
+        const link = document.createElement("a")
+        link.href = qrImageUrl
+        link.download = `${userData.name}-qr-code.png`
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
     }
 
     const handleCopy = () => {
@@ -115,15 +128,15 @@ const Page = () => {
 
                         {/* QR CODE */}
                         <div className="flex justify-center my-5">
-                            <div className="bg-white p-3 rounded-xl">
-                                <QRCodeCanvas
-                                    id={QR_CANVAS_ID}
-                                    value={userData.qrValue}
-                                    size={160}
-                                    bgColor="#ffffff"
-                                    fgColor="#330065"
-                                    level="H"
-                                />
+                            <div className="bg-white p-3 rounded-xl w-40 h-40 flex items-center justify-center">
+                                {qrImageUrl && (
+                                    <img
+                                        src={qrImageUrl}
+                                        alt="QR Code"
+                                        width={160}
+                                        height={160}
+                                    />
+                                )}
                             </div>
                         </div>
 
@@ -153,7 +166,7 @@ const Page = () => {
 
                 </div>
 
-             
+
 
                 {/* DONE */}
                 <div className="py-6 mt-8">

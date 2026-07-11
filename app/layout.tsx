@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./styles/globals.css"
 import { Toaster } from "sonner";
-import { manrope,figtree,inter } from "./lib/fonts";
+import { manrope, figtree, inter } from "./lib/fonts";
 import AuthGuard from "./(auth)/AuthGuard";
 
 
@@ -26,16 +26,16 @@ export default function RootLayout({
       lang="en"
       className={` ${manrope.variable} ${figtree.variable} ${inter.variable} h-full antialiased`}
     >
-    <body className={`${figtree.className} min-h-full bg-red-500 flex flex-col`}>{children}
-    <AuthGuard>
+      <body suppressHydrationWarning className={`${figtree.className} min-h-full bg-red-500 flex flex-col`}>{children}
+        {/* <AuthGuard> */}
         <Toaster
           position="top-right"
           richColors
           closeButton
         />
-        </AuthGuard>
-    </body>
-      
+        {/* </AuthGuard> */}
+      </body>
+
     </html>
   );
 }

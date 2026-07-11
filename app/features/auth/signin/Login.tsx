@@ -102,6 +102,8 @@ const Login = () => {
           alt="Rainbow"
           width={700}
           height={700}
+          loading="eager"
+          style={{ width: 'auto', height: 'auto' }}
           className="object-contain scale-x-[-1] md:scale-x-100"
         />
       </div>

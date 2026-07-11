@@ -12,10 +12,10 @@ import { showSuccess } from "@/app/lib/toast"
 const page = () => {
     const [isLogoutOpen, setIsLogoutOpen] = useState(false);
     const [activeButton, setActiveButton] = useState('no');
-const router = useRouter();
+    const router = useRouter();
     return (
-        <div className="min-h-screen overflow-auto w-full max-w-382.5 flex justify-center mx-auto ">
-            <div className="w-full bg-[#330065] max-w-200 py-8 border   border-yellow-500  px-6">
+        <div className="min-h-screen overflow-auto  bg-[#330065] max-w-400 w-full   flex justify-center mx-auto ">
+            <div className="w-full  max-w-200 py-8  px-6">
                 {/* notification header */}
                 <Link href="/dashboard" className="flex w-fit items-center gap-2">
                     <ChevronLeft className='text-white' />
@@ -98,8 +98,8 @@ const router = useRouter();
                                         setIsLogoutOpen(false);
                                     }}
                                     className={`border border-[#330065] px-4 cursor-pointer py-2 h-12 w-20 rounded-[20px] transition-colors ${activeButton === 'no'
-                                            ? 'bg-[#330065] text-[#5FDA78]'
-                                            : 'text-[#330065] hover:bg-[#330065] hover:text-[#5FDA78]'
+                                        ? 'bg-[#330065] text-[#5FDA78]'
+                                        : 'text-[#330065] hover:bg-[#330065] hover:text-[#5FDA78]'
                                         }`}
                                 >
                                     No
@@ -114,8 +114,8 @@ const router = useRouter();
                                         router.push("/login");
                                     }}
                                     className={`border border-[#330065] py-2 h-12 cursor-pointer rounded-[20px] w-20 px-4 transition-colors ${activeButton === 'yes'
-                                            ? 'bg-[#330065] text-[#5FDA78]'
-                                            : 'text-[#330065] hover:bg-[#330065] hover:text-[#5FDA78]'
+                                        ? 'bg-[#330065] text-[#5FDA78]'
+                                        : 'text-[#330065] hover:bg-[#330065] hover:text-[#5FDA78]'
                                         }`}
                                 >
                                     Yes

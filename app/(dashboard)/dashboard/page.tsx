@@ -15,17 +15,21 @@ const page = () => {
   const { data, isLoading, error } = useDashboard()
 
   return (
-    <div className="flex  justify-center  bg-[#330065] min-h-screen overflow-y-auto w-full mx-auto py-10 md:px-10 md:max-w-382.5">
-      <div className=" relative w-full max-w-200 h-full ">
+    <div className="flex  justify-center max-w-400  bg-[#330065] min-h-screen overflow-y-auto w-full mx-auto py-10 md:px-10   ">
+      <div className=" relative w-full  h-full max-w-200  overflow-hidden">
         <div className="px-4 md:px-0 h-full">
           <Header data={data} isLoading={isLoading} />
           <Balance data={data} isLoading={isLoading} />
-          <Banner inviteData={data?.invite} />
+          <Banner
+            inviteData={data?.invite}
+            coupleName={data ? `${data.fullName} & ${data.partnerName}`.toUpperCase() : undefined}
+            eventDate={data?.eventDate}
+          />
           <StatisticChart data={data?.weeklyStats} isLoading={isLoading} />
         </div>
         <ContributorList />
         <FooterAppShare inviteData={data?.invite} isLoading={isLoading} />
-        <div className="absolute right-10 bottom-6 cursor-pointer" onClick={()=>setIsSupportOpen(true)}>
+        <div className="absolute right-10 bottom-6 cursor-pointer" onClick={() => setIsSupportOpen(true)}>
           <Image src="/images/support-icon.svg" alt="" width={46} height={46} />
         </div>
       </div>

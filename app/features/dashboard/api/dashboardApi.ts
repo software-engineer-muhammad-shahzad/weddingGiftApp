@@ -5,13 +5,13 @@ import type { CoupleBankDetailsResponse } from "@/app/features/dashboard/types/c
 import { CoupleProfileDetailsResponse } from "../types/coupleProfileDetails"
 import { CoupleSupportTicketPayload, CoupleSupportTicketResponse } from "../types/submitSupportTicket"
 
-export const getCoupleDashboard = async (): Promise<CoupleDashboardResponse> => {
-  return getRequest(endpoints.dashboard.coupleDashboard)
+export const getCoupleDashboard = async (config: any = {}): Promise<CoupleDashboardResponse> => {
+  return getRequest(endpoints.dashboard.coupleDashboard, config)
 }
 
 // get-bank-details
-export const getCoupleBankDetails = async (): Promise<CoupleBankDetailsResponse> => {
-  return getRequest(endpoints.bankdetails.coupleBankDetails)
+export const getCoupleBankDetails = async (config: any = {}): Promise<CoupleBankDetailsResponse> => {
+  return getRequest(endpoints.bankdetails.coupleBankDetails, config)
 }
 
 // update-bank-details
@@ -20,8 +20,8 @@ export const updateCoupleBankDetails = async (data: any): Promise<any> => {
 }
 
 // call couple-profile-details api
-export const getCoupleProfileDetails = async (): Promise<CoupleProfileDetailsResponse> => {
-  return getRequest(endpoints.coupleProfile.coupleProfileDetails)
+export const getCoupleProfileDetails = async (config: any = {}): Promise<CoupleProfileDetailsResponse> => {
+  return getRequest(endpoints.coupleProfile.coupleProfileDetails, config)
 }
 
 // call couple-update-profile

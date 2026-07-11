@@ -42,15 +42,17 @@ const page = () => {
             
 
             {/* form end */}
-           <div className="absolute  left-0 top-110 md:top-60  ">
-                  <Image
-                    src="/images/bg-images/left-rainbow.png"
-                    alt="Rainbow"
-                    width={650}
-                    height={600}
-                    className="object-contain  "
-                  />
-                </div>
+                                <div className="absolute  left-0 top-110 md:top-60  ">
+                                    <Image
+                                        src="/images/bg-images/left-rainbow.png"
+                                        alt="Rainbow"
+                                        width={650}
+                                        height={600}
+                                        loading="eager"
+                                        style={{ width: 'auto', height: 'auto' }}
+                                        className="object-contain  "
+                                    />
+                                </div>
                 </div>
 
         </div>

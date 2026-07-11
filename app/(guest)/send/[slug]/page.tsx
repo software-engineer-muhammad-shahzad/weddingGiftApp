@@ -3,6 +3,7 @@ import AddCard from "@/app/features/giftsend/AddCard"
 import ProfileDescription from "@/app/features/giftsend/ProfileDescription"
 import SecurityCodeCard from "@/app/features/giftsend/SecurityCodeCard"
 import SelectCardModal from "@/app/features/giftsend/SelectCardModal"
+import StripeCardModal from "@/app/features/giftsend/StripeCardModal"
 import WishAmount from "@/app/features/giftsend/WishAmount"
 import WishCard from "@/app/features/giftsend/WishCard"
 import WishForm from "@/app/features/giftsend/WishForm"
@@ -11,12 +12,13 @@ import WishVideo from "@/app/features/giftsend/WishVideo"
 import { useState } from 'react'
 
 // Define modal types
-type ModalType = 'selectCard' | 'addCard' | 'securityCode' | null
+type ModalType = 'selectCard' | 'addCard' | 'securityCode' | 'stripeCard' | null
 
 const page = () => {
     const [greetingText, setGreetingText] = useState("Congratulations! Wishing you a lifetime of happiness together.")
     const [activeModal, setActiveModal] = useState<ModalType>(null)
     const [video, setVideo] = useState(null);
+    const [amount, setAmount] = useState("");
 
     const handleChange = (e: any) => {
         const file = e.target.files[0];
@@ -44,9 +46,9 @@ const page = () => {
                     <WishMessage greetingText={greetingText} setGreetingText={setGreetingText} />
 
                     <WishCard openModal={() => openModal('selectCard')} />
-                    <WishVideo video={video} setVideo={setVideo}/>
-                    <WishAmount />
-                    <WishForm openModal={() => openModal('selectCard')} />
+                    <WishVideo video={video} setVideo={setVideo} />
+                    <WishAmount amount={amount} setAmount={setAmount} />
+                    <WishForm openStripeModal={() => openModal('stripeCard')} />
 
                     {/* Render modals based on type */}
                     {activeModal === 'selectCard' && (
@@ -69,6 +71,14 @@ const page = () => {
                         <SecurityCodeCard
                             isModalOpen={activeModal === 'securityCode'}
                             setIsModalOpen={closeModal}
+                        />
+                    )}
+
+                    {activeModal === 'stripeCard' && (
+                        <StripeCardModal
+                            isModalOpen={activeModal === 'stripeCard'}
+                            setIsModalOpen={closeModal}
+                            amount={amount}
                         />
                     )}
                 </div>

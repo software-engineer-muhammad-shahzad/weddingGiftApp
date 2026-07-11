@@ -50,23 +50,23 @@ const ModalLayer = ({
 
       className={`fixed inset-0  z-[9999] ${
 
-        position === "responsive" 
+        position === "responsive"
 
-          ? "flex items-center justify-center md:items-end md:justify-center" 
+          ? "flex items-center justify-center md:items-end md:justify-center"
 
-          : position === "bottom" 
+          : position === "bottom"
 
-            ? "flex items-end justify-end" 
+            ? "flex items-end justify-end"
 
-            : "flex items-center justify-center"
+            : "flex items-start justify-center"
 
       } ${
 
-        position === "bottom" || position === "responsive" 
+        position === "bottom" || position === "responsive"
 
-          ? " overflow-hidden" 
+          ? " overflow-hidden"
 
-          : ""
+          : "overflow-y-auto py-8"
 
       } ${overlayColor}`}
 
@@ -80,11 +80,11 @@ const ModalLayer = ({
 
         className={`${className} ${
 
-          position === "bottom" || position === "responsive" 
+          position === "bottom" || position === "responsive"
 
-            ? "rounded-t-2xl overflow-hidden" 
+            ? "rounded-t-2xl overflow-hidden"
 
-            : "rounded-2xl overflow-hidden"
+            : "rounded-2xl overflow-hidden my-auto"
 
         } ${modalWidth || ""}`}
 

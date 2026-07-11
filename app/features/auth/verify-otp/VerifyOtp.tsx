@@ -36,6 +36,8 @@ const VerifyOtp = () => {
             alt="Left Rainbow"
             width={600}
             height={600}
+            loading="eager"
+            style={{ width: 'auto', height: 'auto' }}
             className="object-contain"
           />
         </div>
