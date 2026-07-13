@@ -15,7 +15,7 @@ const endpoints = {
   },
   // notification-details
   notifications: {
-    coupleNotification: "/couple/notifications",
+    coupleNotification: "/notifications/getusernotifications",
   },
   // bank-details
   bankdetails: {
@@ -24,13 +24,13 @@ const endpoints = {
   // couple-profile-details
   coupleProfile: {
     coupleProfileDetails: "/couple/profile",
-    updateCoupleProfile: "/couple/profile/photo",
-    deleteCoupleProfile: "/couple/profile/photo",
+    updateCoupleProfile: "/usermanagement/users/profile/photo",
+    deleteCoupleProfile: "/usermanagement/users/profile/photo",
   },
 
   // support-ticket
   support: {
-    coupleSubmitTicket: "/couple/support/tickets",
+    coupleSubmitTicket: "/notifications/support",
   },
   greetings: {
     coupleGreetings: "/couple/greetings",

@@ -9,6 +9,7 @@ import { showSuccess } from "@/app/lib/toast"
 interface ProfileInfoEditFormProps {
     profileInfoData: CoupleProfileDetailsData | null
     setIsFormOpen: (value: boolean) => void  // ✅ correct type — it's a function
+    refetch?: () => void
 }
 
 type FormValues = {
@@ -22,6 +23,7 @@ type FormValues = {
 const ProfileInfoEditForm = ({
     profileInfoData,
     setIsFormOpen,  // ✅ destructure it
+    refetch,
 }: ProfileInfoEditFormProps) => {
 
     const { updateProfile, isLoading, isSuccess, setIsSuccess } =
@@ -51,6 +53,7 @@ const ProfileInfoEditForm = ({
 
     const onSubmit = async (data: FormValues) => {
         await updateProfile(data)
+        refetch?.()
     }
 
     return (
@@ -62,7 +65,7 @@ const ProfileInfoEditForm = ({
                 <Input label="Email" type="email" {...register("email")} />
                 <Input label="Contact Number" {...register("phoneNumber")} />
                 <div className="mt-5 w-full">
-                    <Button type="submit" disabled={isLoading}>
+                    <Button type="submit" className="w-full py-3! md:py-4!" disabled={isLoading}>
                         {isLoading ? "Updating..." : "Update"}
                     </Button>
                 </div>

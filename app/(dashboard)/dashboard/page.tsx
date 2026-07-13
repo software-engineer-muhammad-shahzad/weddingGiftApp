@@ -1,6 +1,7 @@
 "use client"
 import Image from "next/image"
 import { useState } from "react"
+import Announcement from "@/app/features/dashboard/home/Announcement"
 import Balance from "@/app/features/dashboard/home/Balance"
 import Banner from "@/app/features/dashboard/home/Banner"
 import ContributorList from "@/app/features/dashboard/home/ContributorList"
@@ -20,6 +21,7 @@ const page = () => {
         <div className="px-4 md:px-0 h-full">
           <Header data={data} isLoading={isLoading} />
           <Balance data={data} isLoading={isLoading} />
+          <Announcement />
           <Banner
             inviteData={data?.invite}
             coupleName={data ? `${data.fullName} & ${data.partnerName}`.toUpperCase() : undefined}

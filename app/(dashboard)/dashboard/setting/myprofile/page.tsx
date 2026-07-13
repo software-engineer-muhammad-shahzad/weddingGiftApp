@@ -182,7 +182,7 @@ const Page = () => {
             </div>
 
             {/* FORM */}
-            <ProfileInfoEditForm profileInfoData={data} setIsFormOpen={setIsFormOpen} />
+            <ProfileInfoEditForm profileInfoData={data} setIsFormOpen={setIsFormOpen} refetch={refetch} />
 
           </div>
 

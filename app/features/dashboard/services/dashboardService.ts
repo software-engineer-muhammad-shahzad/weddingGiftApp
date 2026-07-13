@@ -15,7 +15,7 @@ import type {
   CoupleBankDetailsData,
   CoupleBankDetailsResponse,
 } from "../types/coupleBankDetails"
-import { getRequest } from "@/app/services/http"
+import { getRequest, postRequest } from "@/app/services/http"
 import { CoupleProfileDetailsData, CoupleProfileDetailsResponse } from "../types/coupleProfileDetails"
 import { deleteCoupleProfile, getCoupleProfileDetails, submitCoupleSupportTicket, updateCoupleBankDetails, updateCoupleProfile, updateCoupleProfileDetails } from "../api/dashboardApi"
 import { CoupleSupportTicketPayload, CoupleSupportTicketResponse } from "../types/submitSupportTicket"
@@ -23,8 +23,7 @@ import { CoupleSupportTicketPayload, CoupleSupportTicketResponse } from "../type
 // getDashboardData
 export const getDashboardData = async (): Promise<CoupleDashboardData> => {
   const response = await getRequest<CoupleDashboardResponse>(
-    endpoints.dashboard.coupleDashboard,
-    { skipAuth: true }
+    endpoints.dashboard.coupleDashboard
   )
 
   if (response.statusCode !== 200 || !response.data) {
@@ -36,52 +35,82 @@ export const getDashboardData = async (): Promise<CoupleDashboardData> => {
 
 // getContributorList
 export const getContributorList = async (page: number = 1): Promise<ContributorListData> => {
-  const response = await getRequest<ContributorListResponse>(
-    `${endpoints.dashboard.coupleContributionList}?page=${page}`,
-    { skipAuth: true }
+  const pageSize = 10
+  const offset = (page - 1) * pageSize
+
+  const response = await postRequest<ContributorListResponse>(
+    endpoints.dashboard.coupleContributionList,
+    {
+      isIncludeGuests: true,
+      isIncludeCouples: true,
+    },
+    { params: { offset, length: pageSize } }
   )
 
-  // If backend returned 401 for unauthenticated requests (we're temporarily
-  // skipping auth on the client), return an empty shape so callers can
-  // continue rendering without throwing.
   if (response.statusCode !== 200 || !response.data) {
     return {
       items: [],
       page,
-      pageSize: 10,
+      pageSize,
       totalCount: 0,
     }
   }
 
-  return response.data
+  return {
+    items: response.data.items ?? [],
+    page: response.data.page ?? page,
+    pageSize: response.data.pageSize ?? pageSize,
+    totalCount: response.data.totalCount ?? 0,
+  }
 }
 
 // getNotifications
 export const getNotifications = async (page: number = 1): Promise<NotificationListData> => {
-  const response = await getRequest<NotificationListResponse>(
-    `${endpoints.notifications.coupleNotification}?page=${page}`,
-    { skipAuth: true }
+  const pageSize = 10
+  const offset = (page - 1) * pageSize
+
+  const response = await postRequest<NotificationListResponse>(
+    endpoints.notifications.coupleNotification,
+    {},
+    { params: { offset, length: pageSize } }
   )
 
   if (response.statusCode !== 200 || !response.data) {
-    throw new Error(response.statusMessage || "Failed to fetch notifications")
+    return {
+      items: [],
+      page,
+      pageSize,
+      totalCount: 0,
+    }
   }
 
-  return response.data
+  return {
+    items: response.data.items ?? [],
+    page: response.data.page ?? page,
+    pageSize: response.data.pageSize ?? pageSize,
+    totalCount: response.data.totalCount ?? 0,
+  }
 }
 
 // coupleBankDetails
-export const getCoupleBankDetailsData = async (): Promise<CoupleBankDetailsData> => {
-  const response = await getRequest<CoupleBankDetailsResponse>(
-    endpoints.bankdetails.coupleBankDetails,
-    { skipAuth: true }
-  )
+export const getCoupleBankDetailsData = async (): Promise<CoupleBankDetailsData | null> => {
+  try {
+    const response = await getRequest<CoupleBankDetailsResponse>(
+      endpoints.bankdetails.coupleBankDetails
+    )
 
-  if (response.statusCode !== 200 || !response.data) {
-    throw new Error(response.statusMessage || "Failed to fetch bank details")
+    if (response.statusCode !== 200 || !response.data) {
+      throw new Error(response.statusMessage || "Failed to fetch bank details")
+    }
+
+    return response.data
+  } catch (err: any) {
+    // Not set up yet — treat as an empty state, not an error.
+    if (err?.response?.status === 404) {
+      return null
+    }
+    throw err
   }
-
-  return response.data
 }
 
 
@@ -98,7 +127,7 @@ export const updateBankDetails = async (data: any): Promise<void> => {
 export const getCoupleProfileDetailsData =
   async (): Promise<CoupleProfileDetailsData> => {
 
-    const response = await getCoupleProfileDetails({ skipAuth: true })
+    const response = await getCoupleProfileDetails()
 
     if (response.statusCode !== 200 || !response.data) {
       throw new Error(

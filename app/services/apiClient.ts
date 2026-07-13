@@ -81,7 +81,7 @@ apiClient.interceptors.response.use(
     // (skipAuth) — backend may still return 401 for those endpoints and that's
     // expected during temporary auth removal. Only log when not skipAuth or
     // when the status is not 401.
-    const shouldLog = !(skipAuth && status === 401)
+    const shouldLog = !(skipAuth && status === 401) && status !== 404
 
     if (shouldLog) {
       console.error(
