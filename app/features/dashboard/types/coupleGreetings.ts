@@ -5,7 +5,6 @@ export interface ApiResponse<T> {
 }
 
 export interface PaginatedResponse<T> {
-  data: any;
   items: T[];
   page: number;
   pageSize: number;
@@ -14,7 +13,7 @@ export interface PaginatedResponse<T> {
 
 export interface MessageItemDTO {
   id: number;
-  guestName: string;
+  guestName: string | null;
   amount: number;
   currency: string;
   messagePreview: string;

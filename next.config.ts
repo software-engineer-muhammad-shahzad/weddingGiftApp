@@ -8,6 +8,13 @@ const nextConfig: NextConfig = {
 
       // ✅ Production API Images
       {
+        protocol: "https",
+        hostname: "adminapis.shagundirect.com",
+        pathname: "/uploads/profiles/**",
+      },
+
+      // Old backend host, kept for images uploaded before the migration
+      {
         protocol: "http",
         hostname: "www.shagundirect.somee.com",
         pathname: "/uploads/profiles/**",

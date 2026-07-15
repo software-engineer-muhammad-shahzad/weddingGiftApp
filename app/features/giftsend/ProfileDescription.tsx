@@ -1,11 +1,16 @@
 import Image from "next/image"
-import { useSendGiftUser } from "./hooks/useSendGiftUser"
+import { formatDateWithWeekday } from "@/app/utils/formatDate"
+import { GuestInviteData } from "./types"
 
+interface ProfileDescriptionProps {
+    data: GuestInviteData | null
+    isLoading: boolean
+}
 
-const ProfileDescription = () => {
-    const { data, isLoading } = useSendGiftUser()
-
+const ProfileDescription = ({ data, isLoading }: ProfileDescriptionProps) => {
     const coupleName = data ? `${data.fullName} & ${data.partnerName}` : isLoading ? "Loading..." : "Ahmad & Sana"
+
+    const eventDate = data?.eventDate ? formatDateWithWeekday(data.eventDate) : "Event date not set"
 
     return (
         <> {/* shagun logo */}
@@ -23,13 +28,23 @@ const ProfileDescription = () => {
             {/* profile image && name */}
             <div className="flex gap-6 glass-card items-center px-4 py-4 border border-[#5FDA78] rounded-[20px]"
                 >
-<div>
-                <div className="border border-[#5FDA78] w-13 h-13 rounded-full"></div>
-</div>
+                <div>
+                    {data?.profileImageUrl ? (
+                        <Image
+                            src={data.profileImageUrl}
+                            alt={coupleName}
+                            width={52}
+                            height={52}
+                            className="w-13 h-13 rounded-full object-cover border border-[#5FDA78]"
+                        />
+                    ) : (
+                        <div className="border border-[#5FDA78] w-13 h-13 rounded-full"></div>
+                    )}
+                </div>
                 {/* name and date */}
                 <div className="flex flex-col">
                     <p className="text-white font-semibold text-xl">{coupleName}</p>
-                    <p className="text-white font-normal text-[11px]"><span>Event Date:Monday 10 june</span></p>
+                    <p className="text-white font-normal text-[11px]"><span>Event Date: {eventDate}</span></p>
                 </div>
             </div></>
     )

@@ -3,10 +3,7 @@ import { getMessages } from "../api/coupleGreetingsServices";
 import { PaginatedResponse, MessageItemDTO } from "../types/coupleGreetings";
 
 export const coupleGreetingsService = {
-  getMessages: async (
-    page: number,
-    pageSize: number
-  ): Promise<PaginatedResponse<MessageItemDTO>> => {
-    return await getMessages(page, pageSize);
+  getMessages: async (): Promise<PaginatedResponse<MessageItemDTO>> => {
+    return await getMessages();
   },
 };

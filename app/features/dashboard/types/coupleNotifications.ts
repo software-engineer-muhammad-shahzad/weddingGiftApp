@@ -1,6 +1,6 @@
 export interface NotificationItem {
   id: number
-  guestName: string
+  guestName: string | null
   amount: number
   currency: string
   receivedAtUtc: string

@@ -8,9 +8,10 @@ import { useRouter } from "next/navigation"
 interface SetPasswordFormProps {
     setIsModalOpen: (value: boolean) => void;
     isModalOpen: boolean;
+    email: string | null;
 }
 
-const page = ({setIsModalOpen,isModalOpen}: SetPasswordFormProps) => {
+const page = ({setIsModalOpen,isModalOpen,email}: SetPasswordFormProps) => {
     const router=useRouter()
     const handleSubmit=(e:any)=>{
 

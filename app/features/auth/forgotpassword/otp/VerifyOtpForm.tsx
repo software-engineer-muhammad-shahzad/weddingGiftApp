@@ -169,8 +169,8 @@ const VerifyOtpForm = ({ source, showPaymentSuccess, setShowPaymentSuccess }: Ve
                 </div>
 
                 {/* Continue Button */}
-                <div className="mb-8 ">
-                    <Button type="button" onClick={handleVerifyOtp} disabled={isVerifying} className="px-10 py-3!   ">
+                <div className="mb-8 w-full">
+                    <Button type="button" onClick={handleVerifyOtp} disabled={isVerifying} className="w-full px-10 py-3!   ">
                         {isVerifying ? "Verifying..." : "Continue"}
                     </Button>
                 </div>

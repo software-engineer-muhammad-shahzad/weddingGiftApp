@@ -5,9 +5,11 @@ import { X, Upload, RotateCcw } from "lucide-react"
 interface VideoUpload {
   video: any;
   setVideo: (video: any) => void;
+  addonAmount: number;
+  currency: string;
 }
 
-const WishVideo = ({ video, setVideo }: VideoUpload) => {
+const WishVideo = ({ video, setVideo, addonAmount, currency }: VideoUpload) => {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [videoPreview, setVideoPreview] = useState<string | null>(null)
 
@@ -60,7 +62,7 @@ const WishVideo = ({ video, setVideo }: VideoUpload) => {
     <div className="flex gap-4 glass-card flex-col pt-8 border border-[#5FDA78] rounded-[20px]">
       <div className="relative px-8">
         <p className="text-white text-start text-[16px] pb-6">
-          Add wishing video for just £ 1.00
+          Add wishing video for just {currency} {addonAmount.toFixed(2)}
         </p>
 
         <div className="absolute bottom-0 left-0 w-full h-px 

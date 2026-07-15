@@ -65,6 +65,7 @@ const SignupForm = () => {
           type="text"
           id="fullName"
           placeholder="Enter your name"
+          error={errors.fullName?.message}
           {...register("fullName")}
         />
         {errors.fullName && <p className="text-sm text-red-400">{errors.fullName.message}</p>}
@@ -73,6 +74,7 @@ const SignupForm = () => {
           label="Partner Name"
           type="text"
           placeholder="Enter your partner name"
+          error={errors.partnerName?.message}
           {...register("partnerName")}
         />
         {errors.partnerName && <p className="text-sm text-red-400">{errors.partnerName.message}</p>}
@@ -81,6 +83,7 @@ const SignupForm = () => {
           label="Event Date"
           type="date"
           placeholder="Select event date"
+          error={errors.eventDate?.message}
           {...register("eventDate")}
         />
         {errors.eventDate && <p className="text-sm text-red-400">{errors.eventDate.message}</p>}
@@ -89,6 +92,7 @@ const SignupForm = () => {
           label="Email"
           type="email"
           placeholder="Enter your email"
+          error={errors.email?.message}
           {...register("email")}
         />
         {errors.email && <p className="text-sm text-red-400">{errors.email.message}</p>}
@@ -97,6 +101,7 @@ const SignupForm = () => {
           label="Phone Number"
           type="tel"
           placeholder="Enter your phone number"
+          error={errors.phoneNumber?.message}
           {...register("phoneNumber")}
         />
         {errors.phoneNumber && <p className="text-sm text-red-400">{errors.phoneNumber.message}</p>}
@@ -107,6 +112,7 @@ const SignupForm = () => {
           placeholder="Enter your password"
           showPassword={showPassword}
           onTogglePasswordVisibility={() => setShowPassword(!showPassword)}
+          error={errors.password?.message}
           {...register("password")}
         />
         {errors.password && <p className="text-sm text-red-400">{errors.password.message}</p>}
@@ -117,6 +123,7 @@ const SignupForm = () => {
           placeholder="Confirm Password"
           showPassword={showConfirmPassword}
           onTogglePasswordVisibility={() => setShowConfirmPassword(!showConfirmPassword)}
+          error={errors.confirmPassword?.message}
           {...register("confirmPassword")}
         />
         {errors.confirmPassword && (
@@ -124,7 +131,7 @@ const SignupForm = () => {
         )}
 
         <div className="mt-5 w-full">
-          <Button type="submit" className="py-3! md:py-4!" disabled={isSubmitting}>
+          <Button type="submit" className="w-full py-3! md:py-4!" disabled={isSubmitting}>
             {isSubmitting ? "Signing up..." : "Sign Up"}
           </Button>
         </div>

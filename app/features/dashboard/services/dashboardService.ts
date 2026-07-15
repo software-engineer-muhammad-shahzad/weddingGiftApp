@@ -148,9 +148,8 @@ export const updateCoupleProfileData = async (data: any): Promise<void> => {
 
 
 // updateCoupleProfile
-export const updateCouplePhotoData = async (data: any): Promise<void> => {
-  await updateCoupleProfile(data)
-  // ✅ if no error thrown = success, done!
+export const updateCouplePhotoData = async (data: any): Promise<any> => {
+  return await updateCoupleProfile(data)
 }
 
 // delete-couple-profile

@@ -77,7 +77,7 @@ const ContributorList = () => {
                 </p>
             </div>
             {/* Content area */}
-            <div ref={contributorListRef} className={`flex flex-col gap-5 mt-3 px-6`}>
+            <div ref={contributorListRef} className={`flex flex-col gap-5 mt-3 px-6 pb-24`}>
                 {isLoading && items.length === 0 ? (
                     <p className="text-white text-center">Loading...</p>
                 ) : items.length === 0 ? (
@@ -93,7 +93,7 @@ const ContributorList = () => {
                                             {/* image */}
                                             <div className='border border-[#5FDA78] w-10 h-10 rounded-full flex justify-center'>
                                                 <div className="w-full h-full flex items-center justify-center text-white text-xs">
-                                                    {contributor.guestName.charAt(0)}
+                                                    {contributor.guestName?.charAt(0)}
                                                 </div>
                                             </div>
                                             {/* username && date */}
@@ -118,7 +118,7 @@ const ContributorList = () => {
                                             {/* image */}
                                             <div className='border border-[#5FDA78] w-10 h-10 rounded-full flex justify-center'>
                                                 <div className="w-full h-full flex items-center justify-center text-white text-xs">
-                                                    {contributor.guestName.charAt(0)}
+                                                    {contributor.guestName?.charAt(0)}
                                                 </div>
                                             </div>
                                             {/* username && date */}

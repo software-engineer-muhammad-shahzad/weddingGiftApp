@@ -235,10 +235,10 @@ export const WelcomeLogo = () => {
 
 // qr-download-logo-dashboard-screen
 
-export const DownloadLogo = () => {
+export const DownloadLogo = ({ className }: { className?: string } = {}) => {
     return (
-        <svg width="146" height="288" viewBox="0 0 146 288" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <foreignObject x="-24" y="0" width="170" height="288"><div xmlns="http://www.w3.org/1999/xhtml" style={{ backdropFilter: "blur(12.5px)", clipPath: "url(#bgblur_0_435_762_clip_path)", height: "100%", width: "100%" }}></div></foreignObject><g filter="url(#filter0_dddi_435_762)" data-figma-bg-blur-radius="25">
+        <svg className={className} width="146" height="288" viewBox="0 0 146 288" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <foreignObject x="-24" y="0" width="170" height="288"><div style={{ backdropFilter: "blur(12.5px)", clipPath: "url(#bgblur_0_435_762_clip_path)", height: "100%", width: "100%" }}></div></foreignObject><g filter="url(#filter0_dddi_435_762)" data-figma-bg-blur-radius="25">
                 <rect x="21" y="45" width="80" height="198" rx="30" fill="url(#paint0_linear_435_762)" />
                 <rect x="21" y="45" width="80" height="198" rx="30" fill="url(#paint1_linear_435_762)" />
                 <rect x="21" y="45" width="80" height="198" rx="30" fill="white" fillOpacity="0.01" />
@@ -313,10 +313,10 @@ export const DownloadLogo = () => {
 
 // dashboard screen invite-now-badge
 
-export const InviteNowBadge = () => {
+export const InviteNowBadge = ({ className }: { className?: string } = {}) => {
 
     return (
-        <svg width="305" height="198" viewBox="0 0 305 198" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg className={className} width="305" height="198" viewBox="0 0 305 198" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect width="305" height="198" rx="30" fill="#5FDA78" />
             <mask id="mask0_795_4171" style={{ maskType: 'alpha' }} maskUnits="userSpaceOnUse" x="0" y="0" width="305" height="198">
                 <rect width="305" height="198" rx="30" fill="#5FDA78" />
@@ -331,10 +331,10 @@ export const InviteNowBadge = () => {
 
 // dashboard screen share-icon
 
-export const ShareIcon = () => {
+export const ShareIcon = ({ className }: { className?: string } = {}) => {
 
     return (
-        <svg width="33" height="33" viewBox="0 0 33 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg className={className} width="33" height="33" viewBox="0 0 33 33" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M12.375 30.25H20.625C27.5 30.25 30.25 27.5 30.25 20.625V12.375C30.25 5.5 27.5 2.75 20.625 2.75H12.375C5.5 2.75 2.75 5.5 2.75 12.375V20.625C2.75 27.5 5.5 30.25 12.375 30.25Z" stroke="#330065" strokeWidth="1.38947" strokeLinecap="round" strokeLinejoin="round" />
             <path d="M23.5814 19.0025L19.4014 23.1825" stroke="#330065" strokeWidth="1.38947" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
             <path d="M9.41895 19.0025H23.5814" stroke="#330065" strokeWidth="1.38947" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />

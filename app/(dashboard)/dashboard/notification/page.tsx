@@ -42,7 +42,7 @@ const page = () => {
 
   // Filter notifications based on search input (name only)
   const filteredNotifications = items.filter(notification =>
-    notification.guestName.toLowerCase().includes(search.toLowerCase())
+    (notification.guestName ?? "").toLowerCase().includes(search.toLowerCase())
   );
 
   

@@ -10,6 +10,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   register?: UseFormRegisterReturn
   showPassword?: boolean
   onTogglePasswordVisibility?: () => void
+  error?: string
 }
 
 const Input = ({
@@ -23,13 +24,13 @@ const Input = ({
   register,
   showPassword = false,
   onTogglePasswordVisibility,
+  error,
   ...inputProps
 }: InputProps) => {
   const defaultInputClass =
     "border-none outline-none font-normal text-[#989898] placeholder:text-[#989898] text-sm bg-transparent w-full"
 
-  const defaultContainerClass =
-    "border border-[#5FDA78] rounded-[147px] glass-card"
+  const defaultContainerClass = `border ${error ? "border-red-500" : "border-[#5FDA78]"} rounded-[147px] glass-card`
 
   const isPasswordField = type === "password"
   const inputType = isPasswordField && showPassword ? "text" : type

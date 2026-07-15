@@ -7,10 +7,11 @@ import ModalLayer from "../../components/ui/ModalLayer"
 interface SelectCardModalProps {
   isModalOpen: boolean
   setIsModalOpen: (value: boolean) => void
-  openAddCardModal: () => void
+  openStripeModal: () => void
+  imageUrl?: string
 }
 
-const SelectCardModal = ({ isModalOpen, setIsModalOpen, openAddCardModal }: SelectCardModalProps) => {
+const SelectCardModal = ({ isModalOpen, setIsModalOpen, openStripeModal, imageUrl }: SelectCardModalProps) => {
   const [activeButton, setActiveButton] = useState<"cancel" | "select" | null>(null)
 
   const handleClose = () => {
@@ -19,7 +20,7 @@ const SelectCardModal = ({ isModalOpen, setIsModalOpen, openAddCardModal }: Sele
 
   const handleSelectCard = () => {
     setIsModalOpen(false)
-    openAddCardModal()
+    openStripeModal()
   }
 
   if (!isModalOpen) return null
@@ -35,12 +36,11 @@ const SelectCardModal = ({ isModalOpen, setIsModalOpen, openAddCardModal }: Sele
       <div className="bg-[#5FDA78] h-full w-full p-6 flex flex-col items-center justify-center">
         <div className="w-full">
   <Image
-    src="/images/congrates-card.svg"
+    src={imageUrl || "/images/congrates-card.svg"}
     alt="card-image"
     width={374}
     height={265}
-  
-   
+    unoptimized={!!imageUrl}
   />
 </div>
 

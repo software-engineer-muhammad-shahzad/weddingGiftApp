@@ -3,9 +3,10 @@ import Input from "../../components/elements/Input"
 interface WishAmountProps {
   amount: string
   setAmount: (value: string) => void
+  currency: string
 }
 
-const WishAmount = ({ amount, setAmount }: WishAmountProps) => {
+const WishAmount = ({ amount, setAmount, currency }: WishAmountProps) => {
   return (
     <div>
 
@@ -20,7 +21,7 @@ const WishAmount = ({ amount, setAmount }: WishAmountProps) => {
 
                        {/* input */}
                        <div className="relative">
-                       <Input  type="text" placeholder="300.50 £ " value={amount} onChange={(e) => setAmount(e.target.value)} containerClassName="border-none" className="text-center   font-semibold text-[50px] py-2  outline-none w-full text-white placeholder:text-white "/>
+                       <Input  type="text" placeholder={`300.50 ${currency}`} value={amount} onChange={(e) => setAmount(e.target.value)} containerClassName="border-none" className="text-center   font-semibold text-[50px] py-2  outline-none w-full text-white placeholder:text-white "/>
 
    {/* <span className="absolute right-58 bottom-5 text-white text-sm "></span> */}
    </div>

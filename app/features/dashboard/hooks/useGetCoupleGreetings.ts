@@ -15,9 +15,9 @@ export const useCoupleGreetings = () => {
       try {
         setLoading(true);
 
-        const res = await coupleGreetingsService.getMessages(1, 1000);
+        const res = await coupleGreetingsService?.getMessages();
 
-        setAllItems(res.data.items); // store full dataset
+        setAllItems(res.items); // store full dataset
       } finally {
         setLoading(false);
       }
@@ -32,17 +32,17 @@ export const useCoupleGreetings = () => {
 
     // TAB FILTER
     if (activeTab === "video") {
-      filtered = filtered.filter((x) => x.hasVideo);
+      filtered = filtered?.filter((x) => x.hasVideo);
     }
 
     if (activeTab === "greeting") {
-      filtered = filtered.filter((x) => x.mediaType === "greeting");
+      filtered = filtered?.filter((x) => x.mediaType === "greeting");
     }
 
     // SEARCH FILTER
     if (search.trim()) {
       filtered = filtered.filter((x) =>
-        x.guestName.toLowerCase().includes(search.toLowerCase())
+        (x.guestName ?? "").toLowerCase().includes(search.toLowerCase())
       );
     }
 

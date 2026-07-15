@@ -100,7 +100,7 @@ const Page = () => {
         ) : (
           /* EDIT MODE */
           <UpdateBankInfo
-            data={data}
+            data={data ?? undefined}
             onCancel={() => setIsEditMode(false)}
             onSuccess={() => {
               setIsEditMode(false)

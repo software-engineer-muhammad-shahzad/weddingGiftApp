@@ -27,34 +27,34 @@ const Banner = ({ inviteData, coupleName = "OUR WEDDING", eventDate = "" }: Bann
 
     return (
         <>
-            <div className="flex  justify-between items-center gap-2 mt-10 md:mt-16">
+            <div className="flex overflow-hidden justify-between items-center gap-1 md:gap-2 mt-10 md:mt-16">
 
                 {/* LEFT IMAGE */}
-                <div >
+                <div className="w-22 sm:w-28 md:w-44 shrink-0">
 
-                    <button onClick={() => setIsQrModalOpen(true)} className=" cursor-pointer ">
+                    <button onClick={() => setIsQrModalOpen(true)} className="cursor-pointer block w-full">
 
-                        <DownloadLogo />
+                        <DownloadLogo className="w-full h-auto" />
                     </button>
 
                 </div>
 
                 {/* RIGHT BANNER */}
-                <div className=" relative  max-w-94   ">
-                    <InviteNowBadge />
-                    <div className="absolute left-4 bottom-4 right-20 z-10">
-                        <p className="text-md text-[#330065] font-normal">Invite Now</p>
-                        <p className="text-2xl text-[#330065] font-semibold">Invite<br />
+                <div className="relative w-full max-w-47.5 sm:max-w-60 md:max-w-94">
+                    <InviteNowBadge className="w-full h-auto block" />
+                    <div className="absolute left-[5%] bottom-[8%] right-[27%] z-10">
+                        <p className="text-[10px] sm:text-xs md:text-md text-[#330065] font-normal">Invite Now</p>
+                        <p className="text-sm sm:text-lg md:text-2xl text-[#330065] font-semibold leading-tight">Invite<br />
                             Guest</p>
                     </div>
 
-                    <div className="w-10 h-10 absolute top-10 cursor-pointer left-4 z-10">
-                        <ShareIcon />
+                    <div className="absolute w-[11%] aspect-square top-[16%] left-[5%] cursor-pointer z-10">
+                        <ShareIcon className="w-full h-full" />
                     </div>
 
                     <a href={inviteData?.inviteUrl || "#"} target="_blank" rel="noopener noreferrer">
                         <button
-                            className="group absolute right-3 sm:right-5 z-10 cursor-pointer border-white gap-1 text-white px-2 py-1 flex justify-center items-center rounded-[30px] text-sm font-light bottom-6 backdrop-blur-[25px] transition-all duration-300"
+                            className="group absolute right-[4%] bottom-[10%] z-10 cursor-pointer border-white gap-1 text-white px-2 py-1 flex justify-center items-center rounded-[30px] text-[10px] sm:text-xs md:text-sm font-light backdrop-blur-[25px] transition-all duration-300"
                             style={{
                                 background: `
       radial-gradient(38.46% 38.46% at 11.54% 19.23%, rgba(255, 235, 255, 0) 0%, rgba(230, 255, 240, 0) 70%, rgba(240, 240, 255, 0) 100%),
@@ -129,9 +129,10 @@ const Banner = ({ inviteData, coupleName = "OUR WEDDING", eventDate = "" }: Bann
                             <div className="flex justify-center pb-6">
                                 <Button
                                     onClick={handleDownload}
-                                    className="w-8 h-8 p-2 rounded-full! bg-[#2a0050]! text-white! border-[#5FDA78]!"
+                                    className="w-12 h-12 sm:w-10 sm:h-10 p-2 rounded-full! bg-[#2a0050]! text-white! border-[#5FDA78]!"
                                 >
-                                    <Download size={18} />
+                                    <Download size={22} className="sm:hidden" />
+                                    <Download size={18} className="hidden sm:block" />
                                 </Button>
                             </div>
                         </div>

@@ -1,12 +1,19 @@
 "use client"
 
 import { useState } from "react"
-import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js"
+import {
+  CardCvcElement,
+  CardExpiryElement,
+  CardNumberElement,
+  useElements,
+  useStripe,
+} from "@stripe/react-stripe-js"
+import type { StripeElementStyle } from "@stripe/stripe-js"
 import Button from "@/app/components/elements/Button"
 import { showError, showSuccess } from "@/app/lib/toast"
 import { getData } from "@/app/utils/storage/storageHelper"
 import type { LoginData } from "@/app/features/auth/types/login"
-import { createCard, makePayment } from "./api/paymentApi"
+import { attachPaymentMethod, createCard, makePayment } from "./api/paymentApi"
 import {
   GUEST_EMAIL_KEY,
   GUEST_FULL_NAME_KEY,
@@ -19,6 +26,16 @@ interface StripeCardFormProps {
   amount: string
 }
 
+const elementStyle: StripeElementStyle = {
+  base: {
+    fontSize: "16px",
+    color: "#330065",
+    fontFamily: "inherit",
+    "::placeholder": { color: "#9a8fae" },
+  },
+  invalid: { color: "#dc2626" },
+}
+
 const StripeCardForm = ({ onClose, amount }: StripeCardFormProps) => {
   const stripe = useStripe()
   const elements = useElements()
@@ -28,18 +45,18 @@ const StripeCardForm = ({ onClose, amount }: StripeCardFormProps) => {
   const handleSubmit = async () => {
     if (!stripe || !elements) return
 
-    setIsSubmitting(true)
     setError(null)
 
-    const { error: submitError } = await elements.submit()
-    if (submitError) {
-      setIsSubmitting(false)
-      setError(submitError.message || "Card details are invalid")
+    const parsedAmount = Number(amount)
+    if (!amount || Number.isNaN(parsedAmount) || parsedAmount <= 0) {
+      setError("Please enter a wishing amount before adding a card.")
       return
     }
 
-    const cardElement = elements.getElement(CardElement)
-    if (!cardElement) {
+    setIsSubmitting(true)
+
+    const cardNumberElement = elements.getElement(CardNumberElement)
+    if (!cardNumberElement) {
       setIsSubmitting(false)
       setError("Card details are not available. Please try again.")
       return
@@ -47,7 +64,7 @@ const StripeCardForm = ({ onClose, amount }: StripeCardFormProps) => {
 
     const { error: stripeError, paymentMethod } = await stripe.createPaymentMethod({
       type: "card",
-      card: cardElement,
+      card: cardNumberElement,
     })
 
     if (stripeError || !paymentMethod) {
@@ -80,16 +97,26 @@ const StripeCardForm = ({ onClose, amount }: StripeCardFormProps) => {
         cardLast4Digits: card?.last4 ?? "",
         expMonth: card?.exp_month ?? 0,
         expYear: card?.exp_year ?? 0,
-        cvc: "",
+        // Stripe Elements never exposes the raw CVC to client JS (PCI scope) —
+        // send a masked placeholder to satisfy the backend's required field,
+        // same as cardLast4Digits standing in for the full card number.
+        cvc: "***",
         name: guestFullName ?? "",
         email: guestEmail ?? "",
         cardBrand: card?.brand ?? "",
       })
 
+      // Links the payment method to the guest's Stripe customer before
+      // charging — the charge call fails if the method isn't attached first.
+      await attachPaymentMethod({
+        userId: guestUserId,
+        paymentMethodId: paymentMethod.id,
+      })
+
       await makePayment({
         recipientUserId: authData.userId,
         guestUserId: guestUserId,
-        amount: Number(amount) || 0,
+        amount: parsedAmount,
         paymentMethodId: paymentMethod.id,
         customerId: stripeCustomerId,
         stripeCustomerId,
@@ -116,8 +143,27 @@ const StripeCardForm = ({ onClose, amount }: StripeCardFormProps) => {
     <div className="w-full flex flex-col gap-4">
       <p className="text-[#330065] font-semibold text-base sm:text-lg">Enter Card Details</p>
 
-      <div className="bg-white rounded-xl border border-[#330065] px-3 py-3 sm:px-4">
-        <CardElement options={{ hidePostalCode: true }} />
+      <div className="flex flex-col gap-1">
+        <label className="text-[#330065] text-xs font-medium">Card Number</label>
+        <div className="bg-white rounded-xl border border-[#330065] px-3 py-3 sm:px-4">
+          <CardNumberElement options={{ style: elementStyle }} />
+        </div>
+      </div>
+
+      <div className="flex gap-3">
+        <div className="flex flex-1 flex-col gap-1">
+          <label className="text-[#330065] text-xs font-medium">Expiry Date</label>
+          <div className="bg-white rounded-xl border border-[#330065] px-3 py-3 sm:px-4">
+            <CardExpiryElement options={{ style: elementStyle }} />
+          </div>
+        </div>
+
+        <div className="flex flex-1 flex-col gap-1">
+          <label className="text-[#330065] text-xs font-medium">CVC</label>
+          <div className="bg-white rounded-xl border border-[#330065] px-3 py-3 sm:px-4">
+            <CardCvcElement options={{ style: elementStyle }} />
+          </div>
+        </div>
       </div>
 
       {error && <p className="text-red-600 text-xs sm:text-sm">{error}</p>}

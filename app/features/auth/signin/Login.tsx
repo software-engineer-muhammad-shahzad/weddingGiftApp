@@ -5,24 +5,35 @@ import Image from "next/image"
 import LeftBannerText from "@/app/features/auth/LeftBannerText"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
 import Input from "@/app/components/elements/Input"
 import Button from "@/app/components/elements/Button"
 import Checkbox from "@/app/components/elements/Checkbox"
 import { useLogin } from "@/app/features/auth/hooks/useLogin"
+import { loginSchema, type LoginFormValues } from "@/app/features/auth/validations/loginSchema"
 
 const Login = () => {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const router = useRouter()
   const { handleLogin, isLoading, error } = useLogin()
 
-  const handleLoginResponse = async () => {
-    if (!email || !password) {
-      return
-    }
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+    mode: "onBlur",
+    reValidateMode: "onChange",
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  })
 
-    const result = await handleLogin({ email, password })
+  const onSubmit = async (values: LoginFormValues) => {
+    const result = await handleLogin(values)
 
     if (result.success) {
       router.push("/dashboard")
@@ -40,26 +51,30 @@ const Login = () => {
           </div>
 
           {/* Right */}
-          <form className="flex-1 space-y-5 sm:space-y-6 mt-14">
-            <Input
-              label="Email"
-              type="email"
-              placeholder="Enter your email"
-              name="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
+          <form className="flex-1 space-y-5 sm:space-y-6 mt-14" onSubmit={handleSubmit(onSubmit)}>
+            <div>
+              <Input
+                label="Email"
+                type="email"
+                placeholder="Enter your email"
+                error={errors.email?.message}
+                {...register("email")}
+              />
+              {errors.email && <p className="text-sm text-red-400 mt-1">{errors.email.message}</p>}
+            </div>
 
-            <Input
-              label="Password"
-              type="password"
-              placeholder="Enter your password"
-              name="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              showPassword={showPassword}
-              onTogglePasswordVisibility={() => setShowPassword((prev) => !prev)}
-            />
+            <div>
+              <Input
+                label="Password"
+                type="password"
+                placeholder="Enter your password"
+                showPassword={showPassword}
+                onTogglePasswordVisibility={() => setShowPassword((prev) => !prev)}
+                error={errors.password?.message}
+                {...register("password")}
+              />
+              {errors.password && <p className="text-sm text-red-400 mt-1">{errors.password.message}</p>}
+            </div>
 
             {/* Remember + Forgot */}
             <div className="flex items-center justify-between text-sm text-gray-200 ">
@@ -71,10 +86,9 @@ const Login = () => {
             </div>
 
             <div className="mt-10 w-full z-50">
-              <Button 
-                type="button" 
-                className="h-12 w-full z-50" 
-                onClick={handleLoginResponse}
+              <Button
+                type="submit"
+                className="h-12 w-full z-50"
                 disabled={isLoading}
               >
                 {isLoading ? "Signing in..." : "Sign In"}

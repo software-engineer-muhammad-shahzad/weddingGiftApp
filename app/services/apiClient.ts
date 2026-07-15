@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig } from "axios"
+import axios, { AxiosRequestConfig, InternalAxiosRequestConfig } from "axios"
 
 
 interface AxiosRequestConfigWithSkipAuth extends AxiosRequestConfig {
@@ -40,22 +40,20 @@ const apiClient = axios.create({
 // request interceptor
 
 apiClient.interceptors.request.use(
-  (config) => {
-    const requestConfig = config as AxiosRequestConfigWithSkipAuth
+  (config: InternalAxiosRequestConfig) => {
+    const skipAuth = (config as AxiosRequestConfigWithSkipAuth).skipAuth === true
 
     if (typeof window !== "undefined") {
       const token = localStorage.getItem("token")
-      const skipAuth = requestConfig.skipAuth === true
 
       // ✅ default: attach token
       // ❌ only skip if skipAuth is true
       if (!skipAuth && token) {
-        requestConfig.headers = requestConfig.headers || {}
-        requestConfig.headers.Authorization = `Bearer ${token}`
+        config.headers.Authorization = `Bearer ${token}`
       }
     }
 
-    return requestConfig
+    return config
   },
   (error) => Promise.reject(error)
 );

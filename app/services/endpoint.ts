@@ -33,7 +33,7 @@ const endpoints = {
     coupleSubmitTicket: "/notifications/support",
   },
   greetings: {
-    coupleGreetings: "/couple/greetings",
+    coupleGreetings: "/couple/greetings/list",
   },
   qrCode: {
     getQrCode: "/couple/getqrcodeinfo",
@@ -46,7 +46,13 @@ const endpoints = {
   },
   payment: {
     createCard: "/payments/stripe/customer/createcard",
+    attachPaymentMethod: "/payments/stripe/paymentmethod/attach",
+   
+
     makePayment: "/payments/payment/chargepayment",
+  },
+  guest: {
+    getCoupleDetails: "/guest/invite/{publicSlug}",
   },
 };
 

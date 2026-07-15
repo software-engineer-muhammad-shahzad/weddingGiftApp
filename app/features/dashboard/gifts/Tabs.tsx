@@ -3,14 +3,14 @@
 import { inter } from "@/app/lib/fonts";
 
 interface TabsProps {
-    activeTab: string;
-    setActiveTab: (tab: string) => void;
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
 }
 
-const Tabs = ({activeTab,setActiveTab}: TabsProps) => {
-  
+const Tabs = ({ activeTab, setActiveTab }: TabsProps) => {
 
-    
+
+
   // ✅ Glass style for inactive tabs
   const glassStyle = {
     background: `
@@ -37,10 +37,9 @@ const Tabs = ({activeTab,setActiveTab}: TabsProps) => {
 
   // ✅ Helper for classes
   const getTabClass = (tab: string) =>
-    `w-40 flex justify-center items-center glass-card  border cursor-pointer border-[#5FDA78] rounded-[30px] font-medium transition-all duration-300 ${
-      activeTab === tab
-        ? "bg-[#5FDA78]! text-[#330065] font-medium"
-        : "text-[#919191]! glass-card! hover:text-[#330065]! hover:bg-[#5FDA78]!"
+    `flex-1 min-w-0 px-2 whitespace-nowrap text-xs sm:text-sm md:text-base flex justify-center items-center glass-card  border cursor-pointer border-[#5FDA78] rounded-[30px] font-medium transition-all duration-300 ${activeTab === tab
+      ? "bg-[#5FDA78]! text-[#330065] font-medium"
+      : "text-[#919191]! glass-card! hover:text-[#330065]! hover:bg-[#5FDA78]!"
     }`
 
   return (

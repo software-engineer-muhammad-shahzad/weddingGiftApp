@@ -200,7 +200,7 @@ const Page = () => {
             </div>
 
             {/* PROFILE INFO */}
-            <ShowProfileInfo data={data} />
+            <ShowProfileInfo data={data ?? undefined} />
           </>
 
         )}

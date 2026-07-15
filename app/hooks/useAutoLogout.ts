@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { clearAuthAndRedirect } from "../lib/auth/logout";
 
 export function useAutoLogout() {
-  const timerRef = useRef(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const expiry = localStorage.getItem("tokenExpiry");

@@ -7,8 +7,8 @@ import { DashboardIcon, DashboardGiftsICon } from "../../../components/icons/Ico
 import type { Invite } from "@/app/features/dashboard/types/coupleDashboard"
 
 interface FooterAppShareProps {
-  inviteData: Invite | undefined
-  isLoading: boolean
+  inviteData?: Invite
+  isLoading?: boolean
 }
 
 const FooterAppShare = ({ inviteData, isLoading }: FooterAppShareProps) => {
@@ -38,16 +38,16 @@ const FooterAppShare = ({ inviteData, isLoading }: FooterAppShareProps) => {
     },
     {
       id: 4,
-      href: "",
+      href: "/dashboard/statistic",
       icon: <Wallet className="w-5 h-5" />,
       alt: "wallet-icon",
-      isActive: pathname === ""
+      isActive: pathname === "/dashboard/statistic"
     }
   ];
 
   return (
     <div className="fixed bottom-0 left-0 right-0 flex justify-center z-100 " >
-      <div className="flex py-2 gap-2 justify-center w-full    max-w-200 bg-[#34016694] backdrop-blur-[10px]">
+      <div className="flex py-2 gap-2 justify-center w-full    max-w-200 bg-[#3401660d] backdrop-blur-[10px] shadow-[0_10px_25px_0_rgba(0,0,0,0.45)]">
         {navLinks.map((link) => (
           <Link
             key={link.id}

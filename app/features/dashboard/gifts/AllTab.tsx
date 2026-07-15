@@ -28,7 +28,7 @@ const AllTab = ({ receivedGiftData }: AllTabProps) => {
         className="flex flex-col gap-4 max-h-96 overflow-y-auto"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
-        {receivedGiftData.map((item) => (
+        {receivedGiftData?.map((item) => (
           <div
             key={item.id}
             className="flex justify-between py-6 md:py-8 border-b border-[#47038A] cursor-pointer"
@@ -60,14 +60,16 @@ const AllTab = ({ receivedGiftData }: AllTabProps) => {
               </div>
             </div>
 
-            <div>
-              <Image
-                src={item.mediaUrl}
-                alt="card-image"
-                width={85}
-                height={60}
-              />
-            </div>
+            {item.mediaUrl && (
+              <div>
+                <Image
+                  src={item.mediaUrl}
+                  alt="card-image"
+                  width={85}
+                  height={60}
+                />
+              </div>
+            )}
           </div>
         ))}
       </div>
@@ -83,13 +85,15 @@ const AllTab = ({ receivedGiftData }: AllTabProps) => {
         >
           <div className="bg-[#5FDA78] h-full w-full p-6 flex flex-col items-center justify-center">
             <div className="flex flex-col items-center gap-4 w-full">
-              <Image
-                src={selectedData.mediaUrl}
-                alt="gift-image"
-                width={300}
-                height={150}
-                className="rounded-sm"
-              />
+              {selectedData.mediaUrl && (
+                <Image
+                  src={selectedData.mediaUrl}
+                  alt="gift-image"
+                  width={300}
+                  height={150}
+                  className="rounded-sm"
+                />
+              )}
 
               <h3 className="text-white text-xl font-semibold">
                 {selectedData.guestName}

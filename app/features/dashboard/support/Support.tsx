@@ -6,7 +6,7 @@ import Button from "@/app/components/elements/Button"
 import { useSupportTicket } from "../hooks/useSubmitSupportTicket"
 import { useForm } from "react-hook-form"
 import { CoupleSupportTicketPayload } from "../types/submitSupportTicket"
-
+import { X } from "lucide-react";
 
 interface SupportProps {
   isOpen: boolean
@@ -42,8 +42,14 @@ const Support = ({ isOpen, onClose }: SupportProps) => {
         className="bg-clip-padding"
         overlayColor="bg-[#171515EB]"
       >
-        <div className="bg-[#5FDA78] w-full rounded-t-md md:rounded-md h-full p-6 md:p-8 overflow-y-auto">
-
+        <div className="relative bg-[#5FDA78] scrollbar-hide w-full rounded-t-md md:rounded-md h-full p-6 md:p-8 overflow-y-auto">
+          <Button
+            type="button"
+            onClick={onClose}
+            className="absolute top-4 transition duration-200 group right-4  bg-transparent hover:bg-[#330065] shadow-none p-1 text-[#330065]"
+          >
+            <X className="w-6 h-6 group-hover:text-white" />
+          </Button>
           <h2 className="text-[#330065] text-center text-2xl font-bold mb-4">
             Support
           </h2>

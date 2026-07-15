@@ -16,12 +16,12 @@ const page = () => {
   const { data, isLoading, error } = useDashboard()
 
   return (
-    <div className="flex  justify-center max-w-400  bg-[#330065] min-h-screen overflow-y-auto w-full mx-auto py-10 md:px-10   ">
-      <div className=" relative w-full  h-full max-w-200  overflow-hidden">
-        <div className="px-4 md:px-0 h-full">
+    <div className="w-full max-w-400 bg-[#330065] min-h-dvh mx-auto pt-10 md:px-10">
+      <div className="relative w-full max-w-200 mx-auto">
+        <div className="px-4 md:px-0">
           <Header data={data} isLoading={isLoading} />
           <Balance data={data} isLoading={isLoading} />
-          <Announcement />
+          <Announcement latestAnnouncement={data?.latestAnnouncement} />
           <Banner
             inviteData={data?.invite}
             coupleName={data ? `${data.fullName} & ${data.partnerName}`.toUpperCase() : undefined}
@@ -31,8 +31,12 @@ const page = () => {
         </div>
         <ContributorList />
         <FooterAppShare inviteData={data?.invite} isLoading={isLoading} />
-        <div className="absolute right-10 bottom-6 cursor-pointer" onClick={() => setIsSupportOpen(true)}>
-          <Image src="/images/support-icon.svg" alt="" width={46} height={46} />
+      </div>
+      <div className="fixed inset-x-0 bottom-20 md:bottom-18 z-110 flex justify-center pointer-events-none">
+        <div className="relative w-full max-w-200">
+          <div className="absolute right-6 cursor-pointer pointer-events-auto" onClick={() => setIsSupportOpen(true)}>
+            <Image src="/images/support-icon.svg" alt="" width={46} height={46} />
+          </div>
         </div>
       </div>
       {/* support modal */}

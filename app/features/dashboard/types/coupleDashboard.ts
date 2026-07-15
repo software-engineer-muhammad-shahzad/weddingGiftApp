@@ -28,6 +28,7 @@ export interface CoupleDashboardData {
   weeklyStats: WeeklyStat[]
   recentContributors: RecentContributor[]
   invite: Invite
+  latestAnnouncement?: string
 }
 
 export interface CoupleDashboardResponse {

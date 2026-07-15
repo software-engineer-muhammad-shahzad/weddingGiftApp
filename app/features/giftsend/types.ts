@@ -1,3 +1,50 @@
+export interface GreetingCardDTO {
+  id: number
+  cardImagePath: string
+  cardPrice: number
+  videoPrice: number
+  platformFeePercent: number
+  greetingMediaType: string
+}
+
+export interface CardTemplateDTO {
+  id: number
+  cardPrice: number
+  videoPrice: number
+  platformFeePercent: number
+  greetingMediaType: string
+  greetingCards: GreetingCardDTO[]
+  cardUrl: string | null
+}
+
+export interface AnnouncementDTO {
+  id: number
+  announcedBy: number
+  adminFullName: string | null
+  content: string
+}
+
+export interface GuestInviteData {
+  publicSlug: string
+  fullName: string
+  partnerName: string
+  eventDate: string
+  profileImageUrl: string | null
+  currency: string
+  wishingCardAddonAmount: number
+  wishingVideoAddonAmount: number
+  platformServiceFeeAmount: number
+  stripePublishableKey: string
+  cardTemplate: CardTemplateDTO
+  announcement: AnnouncementDTO | null
+}
+
+export interface GuestInviteResponse {
+  statusCode: number
+  statusMessage: string
+  data: GuestInviteData
+}
+
 export interface SendGiftUserData {
   displayId: string
   userId: number
@@ -45,6 +92,17 @@ export interface CreateCardPayload {
 }
 
 export interface CreateCardResponse {
+  statusCode: number
+  statusMessage: string
+  data: any
+}
+
+export interface AttachPaymentMethodPayload {
+  userId: number
+  paymentMethodId: string
+}
+
+export interface AttachPaymentMethodResponse {
   statusCode: number
   statusMessage: string
   data: any

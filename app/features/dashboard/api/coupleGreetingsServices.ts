@@ -1,4 +1,4 @@
-import { getRequest } from "@/app/services/http";
+import { postRequest } from "@/app/services/http";
 import {
     ApiResponse,
     MessageItemDTO,
@@ -7,12 +7,10 @@ import {
 import endpoint from "@/app/services/endpoint";
 
 
-export const getMessages = async (page: number, pageSize: number) => {
-    const res = await getRequest<
+export const getMessages = async () => {
+    const res = await postRequest<
         ApiResponse<PaginatedResponse<MessageItemDTO>>
-    >(endpoint.greetings.coupleGreetings, {
-        params: { page, pageSize },
-    });
+    >(endpoint.greetings.coupleGreetings, {});
 
-    return res.data.data;
+    return res.data;
 };
