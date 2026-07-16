@@ -93,17 +93,28 @@ const ContributorList = () => {
                                             {/* image */}
                                             <div className='border border-[#5FDA78] w-10 h-10 rounded-full flex justify-center'>
                                                 <div className="w-full h-full flex items-center justify-center text-white text-xs">
-                                                    {contributor.guestName?.charAt(0)}
+                                                    {contributor.guestProfilePic ? (
+                                                        <img src={contributor.guestProfilePic} alt={contributor.guestName ?? 'Guest'} className="w-full h-full object-cover rounded-full" />
+                                                    ) : (
+                                                        contributor.guestName?.charAt(0)
+                                                    )}
                                                 </div>
                                             </div>
                                             {/* username && date */}
                                             <div className='text-white flex flex-col gap-1'>
                                                 <p className='font-semibold text-[12px]'>{contributor.guestName}</p>
-                                                <p className='font-light text-[11px] '>{new Date(contributor.receivedAtUtc).toLocaleDateString()}</p>
+                                                <p className='font-light text-[11px] '>
+                                                    {new Date(contributor.resourceMetadata.createdOn).toLocaleDateString("en-GB", 
+                                                    {
+                                                        weekday: "long",
+                                                        day: "numeric",
+                                                        month: "long",
+                                                        year: "numeric",
+                                                    })}</p>
                                             </div>
                                         </div>
                                         {/* price */}
-                                        <p className='font-medium text-md text-white'>{contributor.amount} {contributor.currency}</p>
+                                        <p className='font-medium text-md text-white'>{contributor.currency} {contributor.amount}</p>
                                     </div>
                                 ))}
                             </>
@@ -117,18 +128,29 @@ const ContributorList = () => {
                                         <div className='flex  gap-4'>
                                             {/* image */}
                                             <div className='border border-[#5FDA78] w-10 h-10 rounded-full flex justify-center'>
-                                                <div className="w-full h-full flex items-center justify-center text-white text-xs">
-                                                    {contributor.guestName?.charAt(0)}
+                                                <div className="w-12 h-12 flex items-center justify-center text-white text-xs">
+                                                    {contributor.guestProfilePic ? (
+                                                        <img src={contributor.guestProfilePic} alt={contributor.guestName ?? 'Guest'} className="w-full h-full object-cover rounded-full" />
+                                                    ) : (
+                                                        contributor.guestName?.charAt(0)
+                                                    )}
                                                 </div>
                                             </div>
                                             {/* username && date */}
                                             <div className='text-white flex flex-col gap-1'>
                                                 <p className='font-semibold text-[12px]'>{contributor.guestName}</p>
-                                                <p className='font-light text-[11px] '>{new Date(contributor.receivedAtUtc).toLocaleDateString()}</p>
+                                                <p className='font-light text-[11px] '>
+                                                    {new Date(contributor.resourceMetadata.createdOn).toLocaleDateString("en-GB", 
+                                                    {
+                                                        weekday: "long",
+                                                        day: "numeric",
+                                                        month: "long",
+                                                        year: "numeric",
+                                                    })}</p>
                                             </div>
                                         </div>
                                         {/* price */}
-                                        <p className='font-medium text-md text-white'>{contributor.amount} {contributor.currency}</p>
+                                        <p className='font-medium text-md text-white'>{contributor.currency} {contributor.amount}</p>
                                     </div>
                                 ))}
                                 {isLoading && hasMore && (

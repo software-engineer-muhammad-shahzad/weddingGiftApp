@@ -1,11 +1,14 @@
+import { ResourceMetadata } from "./ResourceMetadata"
+
 export interface ContributorItem {
   id: number
   guestName: string | null
+  guestProfilePic: string | null
   amount: number
   currency: string
-  receivedAtUtc: string
   messagePreview: string
   isRead: boolean
+  resourceMetadata: ResourceMetadata
 }
 
 export interface ContributorListData {

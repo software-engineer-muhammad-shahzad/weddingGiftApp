@@ -36,12 +36,11 @@ const AllTab = ({ receivedGiftData }: AllTabProps) => {
           >
             <div className="flex gap-3 md:gap-4 items-center">
               <div className="border border-[#5FDA78] rounded-full w-12 h-12">
-                <Image
-                  src="/images/profile-pic.png"
-                  alt="profile"
-                  width={40}
-                  height={40}
-                />
+                {item.guestProfilePic ? (
+                                                        <img src={item.guestProfilePic} alt={item.guestName ?? 'Guest'} className="w-full h-full object-cover rounded-full" />
+                                                    ) : (
+                                                        item.guestName?.charAt(0)
+                                                    )}
               </div>
 
               <div className="flex flex-col gap-2">
@@ -51,25 +50,37 @@ const AllTab = ({ receivedGiftData }: AllTabProps) => {
                 </p>
 
                 <p className="text-white text-sm font-light">
-                  {item.messagePreview}
+                  {item.wishingContent}
                 </p>
 
                 <p className="text-white text-xs font-light">
-                  {new Date(item.receivedAtUtc).toDateString()}
-                </p>
+                  {new Date(item.resourceMetadata.createdOn).toLocaleDateString("en-GB", 
+                                                    {
+                                                        weekday: "long",
+                                                        day: "numeric",
+                                                        month: "long",
+                                                        year: "numeric",
+                                                    })}</p>
               </div>
             </div>
 
-            {item.mediaUrl && (
-              <div>
-                <Image
-                  src={item.mediaUrl}
-                  alt="card-image"
-                  width={85}
-                  height={60}
-                />
-              </div>
-            )}
+            {item.wishingCardPath ? (
+  <div>
+    <Image
+      src={item.wishingCardPath}
+      alt="card-image"
+      width={85}
+      height={60}
+    />
+  </div>
+) : item.wishingVideoPath ? (
+  <div>
+    <video width={85} height={60} controls>
+      <source src={item.wishingVideoPath} type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+  </div>
+) : null}
           </div>
         ))}
       </div>
@@ -85,15 +96,23 @@ const AllTab = ({ receivedGiftData }: AllTabProps) => {
         >
           <div className="bg-[#5FDA78] h-full w-full p-6 flex flex-col items-center justify-center">
             <div className="flex flex-col items-center gap-4 w-full">
-              {selectedData.mediaUrl && (
-                <Image
-                  src={selectedData.mediaUrl}
-                  alt="gift-image"
-                  width={300}
-                  height={150}
-                  className="rounded-sm"
-                />
-              )}
+              {selectedData.wishingCardPath ? (
+  <div>
+    <Image
+      src={selectedData.wishingCardPath}
+      alt="card-image"
+      width={85}
+      height={60}
+    />
+  </div>
+) : selectedData.wishingVideoPath ? (
+  <div>
+    <video width={85} height={60} controls>
+      <source src={selectedData.wishingVideoPath} type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+  </div>
+) : null}
 
               <h3 className="text-white text-xl font-semibold">
                 {selectedData.guestName}
@@ -103,7 +122,7 @@ const AllTab = ({ receivedGiftData }: AllTabProps) => {
               </h3>
 
               <p className="text-white text-lg">
-                {selectedData.messagePreview}
+                {selectedData.wishingContent}
               </p>
 
               <div className="flex gap-4 mt-4">

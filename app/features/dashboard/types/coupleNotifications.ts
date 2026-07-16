@@ -1,11 +1,14 @@
+import { ResourceMetadata } from "./ResourceMetadata"
+
 export interface NotificationItem {
   id: number
   guestName: string | null
   amount: number
   currency: string
-  receivedAtUtc: string
-  messagePreview: string
+  message: string
+  subject: string
   isRead: boolean
+  resourceMetadata: ResourceMetadata
 }
 
 export interface NotificationListData {

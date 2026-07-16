@@ -80,11 +80,18 @@ const page = () => {
                 <div className='flex items-start gap-4'>
                   
                   <div className='flex-1'>
-                    <p className='text-white font-semibold text-[16px] '>{notification.guestName} <span className='font-light'>{notification.amount} {notification.currency}</span></p>
-                    <p className='font-semibold text-white text-[16px]'>Message:<span className='text-white font-light'> {notification.messagePreview}</span></p>
+                    <p className='font-semibold text-white text-[16px]'><span className='text-white font-light'> {notification.subject}</span></p>
+                    <p className='font-semibold text-white text-[16px]'>Message:<span className='text-white font-light'> {notification.message}</span></p>
                     <div className='flex items-center gap-2 mt-2'>
                      
-                      <p className='text-white/80 text-xs'>{new Date(notification.receivedAtUtc).toLocaleDateString()}</p>
+                      <p className='text-white/80 text-xs'>
+                      {new Date(notification.resourceMetadata.createdOn).toLocaleDateString("en-GB", 
+                                                    {
+                                                        weekday: "long",
+                                                        day: "numeric",
+                                                        month: "long",
+                                                        year: "numeric",
+                                                    })}</p>
                     </div>
                   </div>
                 </div>

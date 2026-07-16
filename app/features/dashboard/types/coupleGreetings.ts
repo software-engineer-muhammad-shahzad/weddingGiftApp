@@ -1,3 +1,5 @@
+import { ResourceMetadata } from "./ResourceMetadata";
+
 export interface ApiResponse<T> {
   statusCode: number;
   statusMessage: string;
@@ -14,12 +16,11 @@ export interface PaginatedResponse<T> {
 export interface MessageItemDTO {
   id: number;
   guestName: string | null;
+  guestProfilePic: string | null;
   amount: number;
-  currency: string;
-  messagePreview: string;
-  receivedAtUtc: string; // keep string in API layer
-  isRead: boolean;
-  mediaType: string;
-  mediaUrl: string;
-  hasVideo: boolean;
+  wishingContent: string;
+  wishingCardPath: string;
+  wishingVideoPath: string;
+  isAttachment: boolean;
+  resourceMetadata: ResourceMetadata;
 }
