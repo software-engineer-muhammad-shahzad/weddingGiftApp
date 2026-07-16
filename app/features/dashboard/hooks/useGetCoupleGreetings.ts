@@ -1,53 +1,38 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { MessageItemDTO } from "../types/coupleGreetings";
 import { coupleGreetingsService } from "../services/coupleGreetingsServices";
 
+const TAB_TO_FILTER_TYPE: Record<string, "Image" | "Video" | undefined> = {
+  all: undefined,
+  greeting: "Image",
+  video: "Video",
+};
+
 export const useCoupleGreetings = () => {
-  const [allItems, setAllItems] = useState<MessageItemDTO[]>([]);
+  const [items, setItems] = useState<MessageItemDTO[]>([]);
   const [loading, setLoading] = useState(false);
 
   const [activeTab, setActiveTab] = useState("all");
   const [search, setSearch] = useState("");
 
-  // ✅ ONLY ONE API CALL
+  // ✅ API CALL — refetches whenever the search term or tab changes
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
 
-        const res = await coupleGreetingsService?.getMessages();
+        const filterType = TAB_TO_FILTER_TYPE[activeTab];
+        const res = await coupleGreetingsService?.getMessages(search.trim(), filterType);
 
-        setAllItems(res.items); // store full dataset
+        setItems(res.items);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchData();
-  }, []);
-
-  // ✅ FILTER LOCALLY (NO API CALL)
-  const items = useMemo(() => {
-    let filtered = allItems;
-
-    // TAB FILTER
-    if (activeTab === "video") {
-      filtered = filtered?.filter((x) => x.hasVideo);
-    }
-
-    if (activeTab === "greeting") {
-      filtered = filtered?.filter((x) => x.mediaType === "greeting");
-    }
-
-    // SEARCH FILTER
-    if (search.trim()) {
-      filtered = filtered.filter((x) =>
-        (x.guestName ?? "").toLowerCase().includes(search.toLowerCase())
-      );
-    }
-
-    return filtered;
-  }, [allItems, activeTab, search]);
+    const timeoutId = setTimeout(fetchData, 300);
+    return () => clearTimeout(timeoutId);
+  }, [search, activeTab]);
 
   return {
     items,

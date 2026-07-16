@@ -7,6 +7,7 @@ import {
   CreateCardResponse,
   MakePaymentPayload,
   MakePaymentResponse,
+  UploadWishingVideoResponse,
 } from "../types"
 
 export const createCard = async (payload: CreateCardPayload): Promise<CreateCardResponse> => {
@@ -21,4 +22,19 @@ export const attachPaymentMethod = async (
 
 export const makePayment = async (payload: MakePaymentPayload): Promise<MakePaymentResponse> => {
   return postRequest(endpoints.payment.makePayment, payload)
+}
+
+export const uploadWishingVideo = async (
+  coupleId: number,
+  file: File
+): Promise<UploadWishingVideoResponse> => {
+  const formData = new FormData()
+  formData.append("file", file)
+
+  return postRequest(endpoints.payment.uploadWishingVideo, formData, {
+    params: { coupleId },
+    // Video files (up to 25MB) can take longer than the default 20s API
+    // timeout to upload, especially on slower connections.
+    timeout: 120000,
+  })
 }

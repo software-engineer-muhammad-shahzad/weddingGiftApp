@@ -47,9 +47,8 @@ const endpoints = {
   payment: {
     createCard: "/payments/stripe/customer/createcard",
     attachPaymentMethod: "/payments/stripe/paymentmethod/attach",
-   
-
     makePayment: "/payments/payment/chargepayment",
+    uploadWishingVideo: "/payments/upload/wishingvideo",
   },
   guest: {
     getCoupleDetails: "/guest/invite/{publicSlug}",

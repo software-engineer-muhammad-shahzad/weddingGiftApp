@@ -67,7 +67,7 @@ const Page = () => {
         <StatisticTable items={items} loading={loading} />
 
         {/* download */}
-        <Button onClick={handleDownload} className="w-full mt-8 py-4">
+        <Button onClick={handleDownload} className="w-full mt-8 py-3.5">
           Download
         </Button>
       </div>

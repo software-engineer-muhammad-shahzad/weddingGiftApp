@@ -131,9 +131,27 @@ const Page = () => {
             {/* UPLOAD BUTTON — now outside overflow-hidden ✅ */}
             <button
               onClick={() => setIsUploadModalOpen(true)}
-              className="absolute -bottom-1 -right-1 z-50 w-8 h-8 bg-[#5FDA78] rounded-full flex items-center justify-center font-bold shadow-md"
+              className="absolute -bottom-1 -right-1 z-50 w-8 h-8 rounded-full flex items-center justify-center cursor-pointer"
+              style={{
+                background: `
+                  radial-gradient(38.46% 38.46% at 11.54% 19.23%, rgba(255, 235, 255, 0) 0%, rgba(230, 255, 240, 0) 70%, rgba(240, 240, 255, 0) 100%),
+                  linear-gradient(316.97deg, rgba(255, 255, 255, 0.044) 17.24%, rgba(255, 255, 255, 0) 58.62%, rgba(217, 235, 255, 0) 86.21%),
+                  linear-gradient(0deg, rgba(0, 0, 0, 0.066) 0%, rgba(0, 0, 0, 0.022) 30%, rgba(0, 0, 0, 0) 70%, rgba(0, 0, 0, 0) 100%),
+                  linear-gradient(0deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.01))
+                `,
+                boxShadow: `
+                  0px 0px 1.5px 0px #FF264000 inset,
+                  0px 0px 1.5px 0px #2673FF00 inset,
+                  0px 1.5px 3.33px 0px #FFFFFF19 inset,
+                  0px 0px 8px 0px #D1E5FF00 inset,
+                  0px 3px 12px -3px #00000026,
+                  0px 10px 28px -6px #00000040,
+                  0px 0px 45px 0px #FFFFFF05
+                `,
+                backdropFilter: "blur(25px)",
+              }}
             >
-              +
+              <ProfileEditIcon />
             </button>
 
           </div>

@@ -25,6 +25,10 @@ export interface AnnouncementDTO {
 }
 
 export interface GuestInviteData {
+  // Not yet returned by /guest/invite/{publicSlug} — needs a backend change.
+  // Once added, this is the couple's numeric userId (used as `coupleId` for
+  // the wishing-video upload and as `recipientUserId` for the payment charge).
+  coupleUserId?: number
   publicSlug: string
   fullName: string
   partnerName: string
@@ -115,10 +119,26 @@ export interface MakePaymentPayload {
   paymentMethodId: string
   customerId?: string
   stripeCustomerId?: string
+  greetingMediaType?: "Image" | "Video"
+  wishingCardAmount?: number
+  wishingVideoAmount?: number
+  wishingVideoPath?: string
+  wishingCardPath?: string
+  wishingContent?: string
 }
 
 export interface MakePaymentResponse {
   statusCode: number
   statusMessage: string
   data: any
+}
+
+export interface UploadWishingVideoData {
+  profileImageUrl: string
+}
+
+export interface UploadWishingVideoResponse {
+  statusCode: number
+  statusMessage: string
+  data: UploadWishingVideoData
 }

@@ -12,7 +12,6 @@ import type { StripeElementStyle } from "@stripe/stripe-js"
 import Button from "@/app/components/elements/Button"
 import { showError, showSuccess } from "@/app/lib/toast"
 import { getData } from "@/app/utils/storage/storageHelper"
-import type { LoginData } from "@/app/features/auth/types/login"
 import { attachPaymentMethod, createCard, makePayment } from "./api/paymentApi"
 import {
   GUEST_EMAIL_KEY,
@@ -24,6 +23,13 @@ import {
 interface StripeCardFormProps {
   onClose: () => void
   amount: string
+  recipientUserId: number | null
+  wishingCardPath?: string
+  wishingVideoPath?: string
+  wishingContent?: string
+  wishingCardAmount?: number
+  wishingVideoAmount?: number
+  greetingMediaType?: "Image" | "Video"
 }
 
 const elementStyle: StripeElementStyle = {
@@ -36,7 +42,17 @@ const elementStyle: StripeElementStyle = {
   invalid: { color: "#dc2626" },
 }
 
-const StripeCardForm = ({ onClose, amount }: StripeCardFormProps) => {
+const StripeCardForm = ({
+  onClose,
+  amount,
+  recipientUserId,
+  wishingCardPath,
+  wishingVideoPath,
+  wishingContent,
+  wishingCardAmount,
+  wishingVideoAmount,
+  greetingMediaType,
+}: StripeCardFormProps) => {
   const stripe = useStripe()
   const elements = useElements()
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -77,9 +93,8 @@ const StripeCardForm = ({ onClose, amount }: StripeCardFormProps) => {
     const stripeCustomerId = getData<string>(STRIPE_CUSTOMER_ID_KEY, "local")
     const guestFullName = getData<string>(GUEST_FULL_NAME_KEY, "local")
     const guestEmail = getData<string>(GUEST_EMAIL_KEY, "local")
-    const authData = getData<LoginData>("authData", "local")
 
-    if (!guestUserId || !stripeCustomerId || !authData?.userId) {
+    if (!guestUserId || !stripeCustomerId || !recipientUserId) {
       setIsSubmitting(false)
       setError("Missing guest or recipient details. Please refresh and try again.")
       return
@@ -114,12 +129,18 @@ const StripeCardForm = ({ onClose, amount }: StripeCardFormProps) => {
       })
 
       await makePayment({
-        recipientUserId: authData.userId,
+        recipientUserId,
         guestUserId: guestUserId,
         amount: parsedAmount,
         paymentMethodId: paymentMethod.id,
         customerId: stripeCustomerId,
         stripeCustomerId,
+        wishingCardPath,
+        wishingVideoPath,
+        wishingContent,
+        wishingCardAmount,
+        wishingVideoAmount,
+        greetingMediaType,
       })
 
       showSuccess("Payment successful")

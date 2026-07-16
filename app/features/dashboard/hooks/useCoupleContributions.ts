@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 import type { ContributionItem } from "../types/coupleContributions"
 import { getContributions } from "../services/coupleContributionsServices"
 
 export const useCoupleContributions = () => {
-  const [allItems, setAllItems] = useState<ContributionItem[]>([])
+  const [items, setItems] = useState<ContributionItem[]>([])
   const [loading, setLoading] = useState(false)
   const [search, setSearch] = useState("")
 
@@ -11,23 +11,16 @@ export const useCoupleContributions = () => {
     const fetchData = async () => {
       try {
         setLoading(true)
-        const res = await getContributions()
-        setAllItems(res.items)
+        const res = await getContributions(search.trim())
+        setItems(res.items)
       } finally {
         setLoading(false)
       }
     }
 
-    fetchData()
-  }, [])
-
-  const items = useMemo(() => {
-    if (!search.trim()) return allItems
-
-    return allItems.filter((item) =>
-      (item.guestName ?? "").toLowerCase().includes(search.toLowerCase())
-    )
-  }, [allItems, search])
+    const timeoutId = setTimeout(fetchData, 300)
+    return () => clearTimeout(timeoutId)
+  }, [search])
 
   return {
     items,

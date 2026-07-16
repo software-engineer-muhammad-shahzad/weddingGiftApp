@@ -27,24 +27,24 @@ const Banner = ({ inviteData, coupleName = "OUR WEDDING", eventDate = "" }: Bann
 
     return (
         <>
-            <div className="flex overflow-hidden justify-between items-center gap-1 md:gap-2 mt-10 md:mt-16">
+            <div className="flex overflow-hidden justify-between items-center  md:gap-1 mt-10 md:mt-16">
 
                 {/* LEFT IMAGE */}
-                <div className="w-22 sm:w-28 md:w-44 shrink-0">
+                <div className="h-46 sm:h-55 md:h-55 shrink-0">
 
-                    <button onClick={() => setIsQrModalOpen(true)} className="cursor-pointer block w-full">
+                    <button onClick={() => setIsQrModalOpen(true)} className="cursor-pointer block h-full">
 
-                        <DownloadLogo className="w-full h-auto" />
+                        <DownloadLogo className="h-full w-auto" />
                     </button>
 
                 </div>
 
                 {/* RIGHT BANNER */}
-                <div className="relative w-full max-w-47.5 sm:max-w-60 md:max-w-94">
-                    <InviteNowBadge className="w-full h-auto block" />
+                <div className="relative h-32 sm:h-28 md:h-36 shrink-0">
+                    <InviteNowBadge className="h-full w-auto block" />
                     <div className="absolute left-[5%] bottom-[8%] right-[27%] z-10">
-                        <p className="text-[10px] sm:text-xs md:text-md text-[#330065] font-normal">Invite Now</p>
-                        <p className="text-sm sm:text-lg md:text-2xl text-[#330065] font-semibold leading-tight">Invite<br />
+                        <p className="text-xs sm:text-sm md:text-md text-[#330065] font-normal">Invite Now</p>
+                        <p className="text-lg sm:text-xl md:text-2xl text-[#330065] font-semibold leading-tight">Invite<br />
                             Guest</p>
                     </div>
 
@@ -54,7 +54,7 @@ const Banner = ({ inviteData, coupleName = "OUR WEDDING", eventDate = "" }: Bann
 
                     <a href={inviteData?.inviteUrl || "#"} target="_blank" rel="noopener noreferrer">
                         <button
-                            className="group absolute right-[4%] bottom-[10%] z-10 cursor-pointer border-white gap-1 text-white px-2 py-1 flex justify-center items-center rounded-[30px] text-[10px] sm:text-xs md:text-sm font-light backdrop-blur-[25px] transition-all duration-300"
+                            className="group absolute right-[4%] bottom-[10%] z-10 cursor-pointer border-white gap-1 text-white px-3 py-1.5 flex justify-center items-center rounded-[30px] text-xs sm:text-sm md:text-sm font-light backdrop-blur-[25px] transition-all duration-300"
                             style={{
                                 background: `
       radial-gradient(38.46% 38.46% at 11.54% 19.23%, rgba(255, 235, 255, 0) 0%, rgba(230, 255, 240, 0) 70%, rgba(240, 240, 255, 0) 100%),
@@ -84,7 +84,7 @@ const Banner = ({ inviteData, coupleName = "OUR WEDDING", eventDate = "" }: Bann
                     overlayColor="bg-black/60"
                     position="center"
                     modalHeight="auto"
-                    modalWidth="w-full max-w-[390px] mx-4"
+                    modalWidth="w-full md:max-w-[390px] mx-4"
                 >
                     <div className="w-full">
                         {/* Close button */}

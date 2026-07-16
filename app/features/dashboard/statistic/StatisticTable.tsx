@@ -9,10 +9,10 @@ interface StatisticTableProps {
 
 const StatisticTable = ({ items, loading }: StatisticTableProps) => {
   return (
-    <div className="glass-card border border-[#5FDA78] rounded-2xl mt-8 overflow-x-auto">
+    <div className="glass-card border border-[#5FDA78] py-5 rounded-[40px]  mt-8 overflow-x-auto">
       <table className="w-full min-w-125 text-left border-collapse">
-        <thead>
-          <tr className="text-[#C2C2C2] text-xs sm:text-sm border-b border-[#47038A]">
+        <thead >
+          <tr className="text-[#C2C2C2] px-5  text-xs sm:text-sm border-b border-[#47038A]">
             <th className="font-medium py-4 px-4">Sr#</th>
             <th className="font-medium py-4 px-4">Names</th>
             <th className="font-medium py-4 px-4">Amount Received</th>
@@ -34,12 +34,12 @@ const StatisticTable = ({ items, loading }: StatisticTableProps) => {
               const hasAttachment = item.isAttachment ?? Boolean(item.wishingCardPath || item.wishingVideoPath)
 
               return (
-                <tr key={item.id} className="text-white text-xs sm:text-sm border-b border-[#47038A]/50 last:border-b-0">
-                  <td className="py-4 px-4">{index + 1}</td>
-                  <td className="py-4 px-4">{item.guestName || "Guest"}</td>
-                  <td className="py-4 px-4">£{item.amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
-                  <td className="py-4 px-4">{hasAttachment ? "Yes" : "No"}</td>
-                  <td className="py-4 px-4">
+                <tr key={item.id} className="text-white text-xs sm:text-sm border-[#47038A]/50 last:border-b-0">
+                  <td className="py-4 px-4 font-bold">{index + 1}</td>
+                  <td className="py-4 px-4 font-light">{item.guestName || "Guest"}</td>
+                  <td className="py-4 px-4 font-light">£{item.amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
+                  <td className="py-4 px-4 font-light">{hasAttachment ? "Yes" : "No"}</td>
+                  <td className="py-4 px-4 font-light">
                     {new Date(item.resourceMetadata.createdOn).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" })}
                   </td>
                 </tr>

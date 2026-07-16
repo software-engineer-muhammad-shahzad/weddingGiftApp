@@ -39,7 +39,7 @@ const Tabs = ({ activeTab, setActiveTab }: TabsProps) => {
   const getTabClass = (tab: string) =>
     `flex-1 min-w-0 px-2 whitespace-nowrap text-xs sm:text-sm md:text-base flex justify-center items-center glass-card  border cursor-pointer border-[#5FDA78] rounded-[30px] font-medium transition-all duration-300 ${activeTab === tab
       ? "bg-[#5FDA78]! text-[#330065] font-medium"
-      : "text-[#919191]! glass-card! hover:text-[#330065]! hover:bg-[#5FDA78]!"
+      : "text-[#919191]! glass-card! hover:text-[#330065]! hover:bg-[#5FDA78]/40!"
     }`
 
   return (

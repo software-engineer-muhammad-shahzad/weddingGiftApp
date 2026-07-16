@@ -65,13 +65,13 @@ export const getContributorList = async (page: number = 1): Promise<ContributorL
 }
 
 // getNotifications
-export const getNotifications = async (page: number = 1): Promise<NotificationListData> => {
+export const getNotifications = async (page: number = 1, search = ""): Promise<NotificationListData> => {
   const pageSize = 10
   const offset = (page - 1) * pageSize
 
   const response = await postRequest<NotificationListResponse>(
     endpoints.notifications.coupleNotification,
-    {},
+    { search },
     { params: { offset, length: pageSize } }
   )
 

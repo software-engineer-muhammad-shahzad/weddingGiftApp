@@ -1,20 +1,40 @@
 import Image from "next/image"
+import { useState } from "react"
 import { buildContentImageUrl } from "@/app/utils/imageUrl"
+import SelectCardModal from "./SelectCardModal"
 import { GreetingCardDTO } from "./types"
 
+const FALLBACK_CARD_IMAGE = "/images/congrates-card.svg"
+
 interface openSelectImageProps {
-    openModal: () => void
     greetingCards: GreetingCardDTO[]
     selectedCardId: number | null
-    onSelectCard: (id: number) => void
+    onSelectCard: (id: number | null) => void
     addonAmount: number
     currency: string
 }
 
-const WishCard = ({ openModal, greetingCards, selectedCardId, onSelectCard, addonAmount, currency }: openSelectImageProps) => {
-    const handleSelect = (id: number) => {
-        onSelectCard(id)
-        openModal()
+const CardThumbnail = ({ path }: { path: string }) => {
+    const [hasError, setHasError] = useState(false)
+
+    return (
+        <Image
+            src={hasError ? FALLBACK_CARD_IMAGE : buildContentImageUrl(path)}
+            alt="wishing-card"
+            width={100}
+            height={100}
+            unoptimized={!hasError}
+            onError={() => setHasError(true)}
+            className="w-full h-auto object-cover"
+        />
+    )
+}
+
+const WishCard = ({ greetingCards, selectedCardId, onSelectCard, addonAmount, currency }: openSelectImageProps) => {
+    const [previewCard, setPreviewCard] = useState<GreetingCardDTO | null>(null)
+
+    const handleThumbnailClick = (card: GreetingCardDTO) => {
+        setPreviewCard(card)
     }
 
     return (
@@ -40,16 +60,10 @@ const WishCard = ({ openModal, greetingCards, selectedCardId, onSelectCard, addo
                             <button
                                 key={card.id}
                                 type="button"
-                                onClick={() => handleSelect(card.id)}
+                                onClick={() => handleThumbnailClick(card)}
                                 className={`rounded-md overflow-hidden border-2 ${selectedCardId === card.id ? "border-[#5FDA78]" : "border-transparent"}`}
                             >
-                                <Image
-                                    src={buildContentImageUrl(card.cardImagePath)}
-                                    alt="wishing-card"
-                                    width={100}
-                                    height={100}
-                                    unoptimized
-                                />
+                                <CardThumbnail path={card.cardImagePath} />
                             </button>
                         ))
                     ) : (
@@ -60,6 +74,19 @@ const WishCard = ({ openModal, greetingCards, selectedCardId, onSelectCard, addo
 
 
             </div>
+
+            {previewCard && (
+                <SelectCardModal
+                    isModalOpen={!!previewCard}
+                    setIsModalOpen={(open) => {
+                        if (!open) setPreviewCard(null)
+                    }}
+                    isSelected={selectedCardId === previewCard.id}
+                    onSelect={() => onSelectCard(previewCard.id)}
+                    onRemove={() => onSelectCard(null)}
+                    imageUrl={buildContentImageUrl(previewCard.cardImagePath)}
+                />
+            )}
         </>
     )
 }

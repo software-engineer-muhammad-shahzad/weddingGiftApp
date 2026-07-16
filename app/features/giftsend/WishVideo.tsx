@@ -1,19 +1,42 @@
 import Image from "next/image"
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { X, Upload, RotateCcw } from "lucide-react"
+import { showError } from "@/app/lib/toast"
+import { uploadWishingVideo } from "./api/paymentApi"
 
 interface VideoUpload {
   video: any;
   setVideo: (video: any) => void;
   addonAmount: number;
   currency: string;
+  coupleId: number | null;
+  onVideoUrlChange: (url: string | null) => void;
+  disabled?: boolean;
 }
 
-const WishVideo = ({ video, setVideo, addonAmount, currency }: VideoUpload) => {
+const WishVideo = ({ video, setVideo, addonAmount, currency, coupleId, onVideoUrlChange, disabled = false }: VideoUpload) => {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [videoPreview, setVideoPreview] = useState<string | null>(null)
+  const [isUploading, setIsUploading] = useState(false)
 
-  const handleVideoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // A wishing card and a wishing video are mutually exclusive — clear any
+  // video already picked when a card gets selected elsewhere on the page.
+  useEffect(() => {
+    if (!disabled) return
+
+    setVideo(null)
+    onVideoUrlChange(null)
+    setVideoPreview((prev) => {
+      if (prev) URL.revokeObjectURL(prev)
+      return null
+    })
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [disabled])
+
+  const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
       // Check file size (25MB = 25 * 1024 * 1024 bytes)
@@ -23,14 +46,31 @@ const WishVideo = ({ video, setVideo, addonAmount, currency }: VideoUpload) => {
         return
       }
       setVideo(file)
-      
+      onVideoUrlChange(null)
+
       // Create preview URL
       const videoUrl = URL.createObjectURL(file)
       setVideoPreview(videoUrl)
+
+      if (!coupleId) {
+        showError("Missing recipient details. Please refresh and try again.")
+        return
+      }
+
+      try {
+        setIsUploading(true)
+        const res = await uploadWishingVideo(coupleId, file)
+        onVideoUrlChange(res.data.profileImageUrl)
+      } catch (err: any) {
+        showError(err?.response?.data?.statusMessage || "Video upload failed. Please try again.")
+      } finally {
+        setIsUploading(false)
+      }
     }
   }
 
   const handleLabelClick = () => {
+    if (disabled) return
     fileInputRef.current?.click()
   }
 
@@ -44,6 +84,7 @@ const WishVideo = ({ video, setVideo, addonAmount, currency }: VideoUpload) => {
 
   const handleRemoveVideo = () => {
     setVideo(null)
+    onVideoUrlChange(null)
     if (videoPreview) {
       URL.revokeObjectURL(videoPreview)
       setVideoPreview(null)
@@ -55,6 +96,7 @@ const WishVideo = ({ video, setVideo, addonAmount, currency }: VideoUpload) => {
   }
 
   const handleChangeVideo = () => {
+    if (disabled) return
     fileInputRef.current?.click()
   }
 
@@ -71,29 +113,36 @@ const WishVideo = ({ video, setVideo, addonAmount, currency }: VideoUpload) => {
 
       {/* Video upload div */}
       {!videoPreview && !video ? (
-        <div className="flex flex-col items-center justify-center gap-6 px-4 glass-card py-8 border border-[#5FDA78] rounded-[20px] cursor-pointer"
-             onClick={handleLabelClick}>
-          
+        <div
+          className={`flex flex-col items-center justify-center gap-6 px-4 glass-card py-8 border border-[#5FDA78] rounded-[20px] ${
+            disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"
+          }`}
+          onClick={handleLabelClick}
+        >
+
           {/* Hidden file input */}
           <input
             ref={fileInputRef}
             type="file"
             accept="video/*"
             onChange={handleVideoUpload}
+            disabled={disabled}
             className="hidden"
           />
 
           {/* Video icon */}
-          <Image 
-            src="/images/video-upload.svg" 
-            alt="add-video" 
-            width={27} 
-            height={27} 
+          <Image
+            src="/images/video-upload.svg"
+            alt="add-video"
+            width={27}
+            height={27}
           />
 
           {/* Upload text */}
           <p className="text-white font-light text-sm text-center">
-            Video must not exceed 25MB
+            {disabled
+              ? "Remove the selected wishing card to upload a video instead"
+              : "Video must not exceed 25MB"}
           </p>
         </div>
       ) : videoPreview ? (
@@ -119,7 +168,7 @@ const WishVideo = ({ video, setVideo, addonAmount, currency }: VideoUpload) => {
           {/* Video info and action buttons */}
           <div className="mt-4 text-center">
             <p className="text-[#5FDA78] font-medium text-sm mb-4">
-              Selected: {video?.name}
+              {isUploading ? "Uploading video..." : `Selected: ${video?.name}`}
             </p>
             
             {/* Action buttons */}

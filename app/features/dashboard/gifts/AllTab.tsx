@@ -3,15 +3,15 @@
 import Image from "next/image";
 import { useState } from "react";
 import ModalLayer from "../../../components/ui/ModalLayer";
-import { Download, Share2 } from "lucide-react";
-import Button from "../../../components/elements/Button";
+import { ChevronLeft, Download, Share2, X } from "lucide-react";
 import { MessageItemDTO } from "../types/coupleGreetings";
 
 interface AllTabProps {
   receivedGiftData: MessageItemDTO[];
+  activeTab?: string;
 }
 
-const AllTab = ({ receivedGiftData }: AllTabProps) => {
+const AllTab = ({ receivedGiftData, activeTab = "all" }: AllTabProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedData, setSelectedData] = useState<MessageItemDTO | null>(
     null
@@ -22,10 +22,87 @@ const AllTab = ({ receivedGiftData }: AllTabProps) => {
     setIsModalOpen(true);
   };
 
+  // ✅ on the Video tab prefer the video even when a card image is also present
+  const getMediaType = (item: MessageItemDTO): "image" | "video" | null => {
+    if (activeTab === "video" && item.wishingVideoPath) return "video";
+    if (item.wishingCardPath) return "image";
+    if (item.wishingVideoPath) return "video";
+    return null;
+  };
+
+  const getSelectedMedia = () => {
+    if (!selectedData) return null;
+
+    if (getMediaType(selectedData) === "video" && selectedData.wishingVideoPath) {
+      return { url: selectedData.wishingVideoPath, type: "video/mp4", extension: "mp4" };
+    }
+
+    if (selectedData.wishingCardPath) {
+      return { url: selectedData.wishingCardPath, type: "image/jpeg", extension: "jpg" };
+    }
+
+    return null;
+  };
+
+  const handleDownload = async () => {
+    const media = getSelectedMedia();
+    if (!media) return;
+
+    try {
+      const response = await fetch(media.url);
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = `${selectedData?.guestName ?? "gift"}.${media.extension}`;
+      link.click();
+
+      URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error("Download failed:", error);
+      window.open(media.url, "_blank");
+    }
+  };
+
+  const handleShare = async () => {
+    const media = getSelectedMedia();
+    if (!media) return;
+
+    try {
+      const response = await fetch(media.url);
+      const blob = await response.blob();
+      const file = new File([blob], `gift.${media.extension}`, { type: media.type });
+
+      if (navigator.canShare?.({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: selectedData?.guestName ?? "Gift",
+          text: selectedData?.wishingContent ?? "",
+        });
+        return;
+      }
+
+      if (navigator.share) {
+        await navigator.share({
+          title: selectedData?.guestName ?? "Gift",
+          text: selectedData?.wishingContent ?? "",
+          url: media.url,
+        });
+        return;
+      }
+
+      await navigator.clipboard.writeText(media.url);
+      alert("Link copied to clipboard!");
+    } catch (error) {
+      console.error("Share failed:", error);
+    }
+  };
+
   return (
     <>
       <div
-        className="flex flex-col gap-4 max-h-96 overflow-y-auto"
+        className="flex flex-col gap-4 max-h-96 overflow-y-auto pb-24"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         {receivedGiftData?.map((item) => (
@@ -34,53 +111,54 @@ const AllTab = ({ receivedGiftData }: AllTabProps) => {
             className="flex justify-between py-6 md:py-8 border-b border-[#47038A] cursor-pointer"
             onClick={() => handleItemClick(item)}
           >
-            <div className="flex gap-3 md:gap-4 items-center">
-              <div className="border border-[#5FDA78] rounded-full w-12 h-12">
+            <div className="flex gap-3.5 md:gap-5 items-center">
+              <div className="border border-[#5FDA78] rounded-full w-12.5 h-12.5">
                 {item.guestProfilePic ? (
-                                                        <img src={item.guestProfilePic} alt={item.guestName ?? 'Guest'} className="w-full h-full object-cover rounded-full" />
-                                                    ) : (
-                                                        item.guestName?.charAt(0)
-                                                    )}
+                  <img src={item.guestProfilePic} alt={item.guestName ?? 'Guest'} className="w-full h-full object-cover rounded-full" />
+                ) : (
+                  item.guestName?.charAt(0)
+                )}
               </div>
 
               <div className="flex flex-col gap-2">
-                <p className="text-white font-semibold">
-                  {item.guestName}{" "}
+                <p className="text-white text-xs font-semibold">
+                  {item.guestName}
                   <span className="ms-2">{item.amount}</span>
                 </p>
 
-                <p className="text-white text-sm font-light">
+                <p className="text-white text-[11px] font-normal">
                   {item.wishingContent}
                 </p>
 
-                <p className="text-white text-xs font-light">
-                  {new Date(item.resourceMetadata.createdOn).toLocaleDateString("en-GB", 
-                                                    {
-                                                        weekday: "long",
-                                                        day: "numeric",
-                                                        month: "long",
-                                                        year: "numeric",
-                                                    })}</p>
+                <p className="text-white text-[11px] font-light">
+                  {new Date(item.resourceMetadata.createdOn).toLocaleDateString("en-GB",
+                    {
+                      weekday: "long",
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                    })}</p>
               </div>
             </div>
 
-            {item.wishingCardPath ? (
-  <div>
-    <Image
-      src={item.wishingCardPath}
-      alt="card-image"
-      width={85}
-      height={60}
-    />
-  </div>
-) : item.wishingVideoPath ? (
-  <div>
-    <video width={85} height={60} controls>
-      <source src={item.wishingVideoPath} type="video/mp4" />
-      Your browser does not support the video tag.
-    </video>
-  </div>
-) : null}
+            <div className="flex gap-2">
+              {activeTab !== "video" && item.wishingCardPath ? (
+                <Image
+                  src={item.wishingCardPath}
+                  alt="card-image"
+                  width={60}
+                  height={60}
+                  className="rounded-[13px]"
+                />
+              ) : null}
+
+              {activeTab !== "greeting" && item.wishingVideoPath ? (
+                <video width={85} height={60} controls className="rounded-[13px]">
+                  <source src={item.wishingVideoPath} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              ) : null}
+            </div>
           </div>
         ))}
       </div>
@@ -89,51 +167,78 @@ const AllTab = ({ receivedGiftData }: AllTabProps) => {
       {isModalOpen && selectedData && (
         <ModalLayer
           onClose={() => setIsModalOpen(false)}
-          modalHeight="h-full md:h-[400px]"
-          modalWidth="w-full max-w-[400px]"
+          modalHeight=""
+          modalWidth=""
+          className="w-full h-full md:h-auto md:max-h-[85vh] max-w-[80vw] sm:max-w-[90vw] md:max-w-105"
           overlayColor="bg-[#171515EB]"
           position="center"
         >
-          <div className="bg-[#5FDA78] h-full w-full p-6 flex flex-col items-center justify-center">
-            <div className="flex flex-col items-center gap-4 w-full">
-              {selectedData.wishingCardPath ? (
-  <div>
-    <Image
-      src={selectedData.wishingCardPath}
-      alt="card-image"
-      width={85}
-      height={60}
-    />
-  </div>
-) : selectedData.wishingVideoPath ? (
-  <div>
-    <video width={85} height={60} controls>
-      <source src={selectedData.wishingVideoPath} type="video/mp4" />
-      Your browser does not support the video tag.
-    </video>
-  </div>
-) : null}
+          <div className="bg-[#330065]  pb-2 h-full w-full flex flex-col text-white overflow-y-auto">
+            {/* header */}
+            <div className="flex items-center justify-end px-4  py-2">
 
-              <h3 className="text-white text-xl font-semibold">
+
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="cursor-pointer w-9 h-9 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors duration-200"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* image / video */}
+            <div className="flex-1 flex items-center justify-center px-6 min-h-0 overflow-hidden">
+              {getMediaType(selectedData) === "video" ? (
+                <video controls className="max-h-[30vh] sm:max-h-[40vh] max-w-full rounded-2xl">
+                  <source src={selectedData.wishingVideoPath} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              ) : getMediaType(selectedData) === "image" ? (
+                <Image
+                  src={selectedData.wishingCardPath}
+                  alt="card-image"
+                  width={500}
+                  height={500}
+                  className="max-h-[40vh] sm:max-h-[42vh] max-w-full w-auto h-auto object-contain rounded-2xl"
+                />
+              ) : null}
+            </div>
+
+            {/* guest info */}
+            <div className="text-center px-6 pt-4">
+              <h3 className="text-white  text-lg font-semibold">
                 {selectedData.guestName}
-                <span className="text-[#391F68] ms-4">
-                  {selectedData.amount}
-                </span>
+
               </h3>
 
-              <p className="text-white text-lg">
+              <p className="text-white text-lg font-normal mt-1">
                 {selectedData.wishingContent}
               </p>
 
-              <div className="flex gap-4 mt-4">
-                <Button className="w-12 h-12 rounded-full">
-                  <Share2 className="w-5 h-5" />
-                </Button>
+              <p className="text-white text-lg font-light mt-1">
+                {new Date(selectedData.resourceMetadata.createdOn).toLocaleDateString("en-GB", {
+                  weekday: "long",
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })}
+              </p>
+            </div>
 
-                <Button className="w-12 h-12 rounded-full">
-                  <Download className="w-5 h-5" />
-                </Button>
-              </div>
+            {/* bottom actions */}
+            <div className="flex justify-center gap-4 py-6">
+              <button
+                onClick={handleShare}
+                className="cursor-pointer border border-[#5FDA78] glass-card w-12 h-12 rounded-full flex items-center justify-center"
+              >
+                <Share2 className="w-5 h-5" />
+              </button>
+              <button
+                onClick={handleDownload}
+                className="cursor-pointer border border-[#5FDA78] glass-card w-12 h-12 rounded-full flex items-center justify-center"
+              >
+                <Download className="w-5 h-5" />
+              </button>
             </div>
           </div>
         </ModalLayer>

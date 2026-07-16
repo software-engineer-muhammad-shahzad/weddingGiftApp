@@ -20,7 +20,7 @@ const Page = () => {
   } = useCoupleGreetings();
 
   return (
-    <div className="flex justify-center bg-[#330065] min-h-screen overflow-auto w-full mx-auto pt-10 px-5 md:px-10 max-w-382.5">
+    <div className="flex justify-center bg-[#330065] min-h-screen overflow-auto w-full mx-auto pt-10 px-6 md:px-10 max-w-382.5">
       <div className="max-w-150 w-full">
         <Header />
 
@@ -32,7 +32,7 @@ const Page = () => {
           {loading ? (
             <p className="text-white">Loading...</p>
           ) : (
-            <AllTab receivedGiftData={items} />
+            <AllTab receivedGiftData={items} activeTab={activeTab} />
           )}
 
           <FooterAppShare />

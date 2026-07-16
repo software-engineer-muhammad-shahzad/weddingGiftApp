@@ -10,14 +10,14 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "adminapis.shagundirect.com",
-        pathname: "/uploads/profiles/**",
+        pathname: "/uploads/**",
       },
 
       // Old backend host, kept for images uploaded before the migration
       {
         protocol: "http",
         hostname: "www.shagundirect.somee.com",
-        pathname: "/uploads/profiles/**",
+        pathname: "/uploads/**",
       },
 
       // ✅ Localhost Images (optional)
@@ -25,7 +25,7 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "localhost",
         port: "7241",
-        pathname: "/uploads/profiles/**",
+        pathname: "/uploads/**",
       },
 
     ],
