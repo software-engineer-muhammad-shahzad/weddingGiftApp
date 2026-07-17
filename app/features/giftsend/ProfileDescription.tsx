@@ -1,5 +1,6 @@
 import Image from "next/image"
 import { formatDateWithWeekday } from "@/app/utils/formatDate"
+import Skeleton from "@/app/components/ui/Skeleton"
 import { GuestInviteData } from "./types"
 
 interface ProfileDescriptionProps {
@@ -8,7 +9,7 @@ interface ProfileDescriptionProps {
 }
 
 const ProfileDescription = ({ data, isLoading }: ProfileDescriptionProps) => {
-    const coupleName = data ? `${data.fullName} & ${data.partnerName}` : isLoading ? "Loading..." : "Ahmad & Sana"
+    const coupleName = data ? `${data.fullName} & ${data.partnerName}` : "Ahmad & Sana"
 
     const eventDate = data?.eventDate ? formatDateWithWeekday(data.eventDate) : "Event date not set"
 
@@ -20,7 +21,11 @@ const ProfileDescription = ({ data, isLoading }: ProfileDescriptionProps) => {
                 </div>
 
                 <div className="flex flex-col gap-1  md:gap-2 text-white">
-                    <p className="font-semibold text-lg sm:text-xl">{coupleName}</p>
+                    {isLoading ? (
+                        <Skeleton className="h-5 w-40" />
+                    ) : (
+                        <p className="font-semibold text-lg sm:text-xl">{coupleName}</p>
+                    )}
                     <p className="font-normal text-sm">Skip the Envelope, Send the Love.</p>
                 </div>
             </div>
@@ -29,7 +34,9 @@ const ProfileDescription = ({ data, isLoading }: ProfileDescriptionProps) => {
             <div className="flex gap-6 glass-card items-center px-4 py-4 border border-[#5FDA78] rounded-[20px]"
                 >
                 <div>
-                    {data?.profileImageUrl ? (
+                    {isLoading ? (
+                        <Skeleton className="w-13 h-13 rounded-full" />
+                    ) : data?.profileImageUrl ? (
                         <Image
                             src={data.profileImageUrl}
                             alt={coupleName}
@@ -42,9 +49,18 @@ const ProfileDescription = ({ data, isLoading }: ProfileDescriptionProps) => {
                     )}
                 </div>
                 {/* name and date */}
-                <div className="flex flex-col">
-                    <p className="text-white font-semibold text-xl">{coupleName}</p>
-                    <p className="text-white font-normal text-[11px]"><span>Event Date: {eventDate}</span></p>
+                <div className="flex flex-col gap-2">
+                    {isLoading ? (
+                        <>
+                            <Skeleton className="h-5 w-36" />
+                            <Skeleton className="h-3 w-28" />
+                        </>
+                    ) : (
+                        <>
+                            <p className="text-white font-semibold text-xl">{coupleName}</p>
+                            <p className="text-white font-normal text-[11px]"><span>Event Date: {eventDate}</span></p>
+                        </>
+                    )}
                 </div>
             </div></>
     )

@@ -14,6 +14,13 @@
    --font-figtree: var(--font-figtree);
 }
 
+/* Custom breakpoints so `xs:`/`xs2:` cover 370px/400px and up, letting the
+   unprefixed class target screens below them (e.g. h-40 xs:h-46 xs2:h-50 sm:h-55). */
+@theme {
+  --breakpoint-xs: 370px;
+  --breakpoint-xs2: 400px;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;

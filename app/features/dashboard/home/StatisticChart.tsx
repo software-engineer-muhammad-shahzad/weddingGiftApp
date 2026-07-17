@@ -2,6 +2,7 @@
 import React from 'react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import type { WeeklyStat } from "@/app/features/dashboard/types/coupleDashboard"
+import Skeleton from "@/app/components/ui/Skeleton"
 
 interface StatisticChartProps {
   data: WeeklyStat[] | undefined
@@ -30,6 +31,13 @@ const StatisticChart: React.FC<StatisticChartProps> = ({ data, isLoading }) => {
         }}
       >
 
+        {isLoading ? (
+          <div className="w-full h-full flex items-end gap-3 px-2 pb-2">
+            {[40, 65, 30, 80, 45, 55, 35].map((h, i) => (
+              <Skeleton key={i} className="flex-1 rounded-t-md" style={{ height: `${h}%` }} />
+            ))}
+          </div>
+        ) : (
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData} margin={{ top: 0, right: 0, bottom: 0, left: 10 }}>
 
@@ -72,6 +80,7 @@ const StatisticChart: React.FC<StatisticChartProps> = ({ data, isLoading }) => {
 
           </BarChart>
         </ResponsiveContainer>
+        )}
 
       </div>
     </div>

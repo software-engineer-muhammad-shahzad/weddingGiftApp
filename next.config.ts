@@ -6,11 +6,11 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
 
-      // ✅ Production API Images
+      // ✅ Production API Images (uploads, wishing-card content, etc.)
       {
         protocol: "https",
         hostname: "adminapis.shagundirect.com",
-        pathname: "/uploads/**",
+        pathname: "/**",
       },
 
       // Old backend host, kept for images uploaded before the migration

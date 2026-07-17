@@ -5,8 +5,19 @@ import Link from 'next/link';
 
 import { useRef, useEffect } from 'react';
 import Input from '@/app/components/elements/Input';
+import Skeleton from '@/app/components/ui/Skeleton';
 import { useCoupleNotification } from '@/app/features/dashboard/hooks/useCoupleNotification';
 import type { NotificationItem } from '@/app/features/dashboard/types/coupleNotifications';
+
+const NotificationSkeleton = () => (
+  <div className='w-full p-4 flex justify-between rounded-[40px] glass-card border-[0.5px] border-[#5FDA78] pb-4'>
+    <div className='flex-1 flex flex-col gap-2'>
+      <Skeleton className="h-4 w-2/3" />
+      <Skeleton className="h-4 w-full" />
+      <Skeleton className="h-3 w-1/2 mt-1" />
+    </div>
+  </div>
+)
 
 const page = () => {
   const sentinelRef = useRef<HTMLDivElement>(null);
@@ -60,7 +71,11 @@ const page = () => {
         {/* user list */}
         <div className='flex flex-col gap-8 mt-8'>
           {isLoading && items.length === 0 ? (
-            <p className="text-white text-center">Loading...</p>
+            <>
+              <NotificationSkeleton />
+              <NotificationSkeleton />
+              <NotificationSkeleton />
+            </>
           ) : items.length === 0 ? (
             <p className="text-white text-center">No notifications yet</p>
           ) : (
@@ -93,9 +108,7 @@ const page = () => {
               </div>
             ))
           )}
-          {isLoading && hasMore && (
-            <p className="text-white text-center">Loading more...</p>
-          )}
+          {isLoading && items.length > 0 && <NotificationSkeleton />}
           <div ref={sentinelRef} className="h-1" />
         </div>
       </div>

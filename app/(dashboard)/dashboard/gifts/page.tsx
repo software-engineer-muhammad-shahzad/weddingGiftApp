@@ -6,6 +6,7 @@ import Tabs from "@/app/features/dashboard/gifts/Tabs";
 import FooterAppShare from "@/app/features/dashboard/home/FooterAppShare";
 import AllTab from "@/app/features/dashboard/gifts/AllTab";
 import { useCoupleGreetings } from "@/app/features/dashboard/hooks/useGetCoupleGreetings";
+import Skeleton from "@/app/components/ui/Skeleton";
 
 // import { useCoupleGreetings } from "@/app/hooks/useCoupleGreetings";
 
@@ -30,7 +31,21 @@ const Page = () => {
 
         <div className="mt-8">
           {loading ? (
-            <p className="text-white">Loading...</p>
+            <div className="flex flex-col gap-4">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="flex justify-between py-6 md:py-8 border-b border-[#47038A]">
+                  <div className="flex gap-3.5 md:gap-5 items-center">
+                    <Skeleton className="w-12.5 h-12.5 rounded-full" />
+                    <div className="flex flex-col gap-2">
+                      <Skeleton className="h-3 w-28" />
+                      <Skeleton className="h-3 w-40" />
+                      <Skeleton className="h-3 w-32" />
+                    </div>
+                  </div>
+                  <Skeleton className="w-15 h-15 rounded-[13px]" />
+                </div>
+              ))}
+            </div>
           ) : (
             <AllTab receivedGiftData={items} activeTab={activeTab} />
           )}

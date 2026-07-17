@@ -1,6 +1,7 @@
 "use client"
 
 import type { ContributionItem } from "../types/coupleContributions"
+import Skeleton from "@/app/components/ui/Skeleton"
 
 interface StatisticTableProps {
   items: ContributionItem[]
@@ -22,9 +23,15 @@ const StatisticTable = ({ items, loading }: StatisticTableProps) => {
         </thead>
         <tbody>
           {loading ? (
-            <tr>
-              <td colSpan={5} className="text-white text-center py-8">Loading...</td>
-            </tr>
+            [1, 2, 3, 4, 5].map((i) => (
+              <tr key={i} className="border-[#47038A]/50">
+                <td className="py-4 px-4"><Skeleton className="h-3 w-4" /></td>
+                <td className="py-4 px-4"><Skeleton className="h-3 w-20" /></td>
+                <td className="py-4 px-4"><Skeleton className="h-3 w-16" /></td>
+                <td className="py-4 px-4"><Skeleton className="h-3 w-10" /></td>
+                <td className="py-4 px-4"><Skeleton className="h-3 w-24" /></td>
+              </tr>
+            ))
           ) : items.length === 0 ? (
             <tr>
               <td colSpan={5} className="text-white text-center py-8">No contributions yet</td>

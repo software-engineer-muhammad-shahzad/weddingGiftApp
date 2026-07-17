@@ -40,7 +40,7 @@ const ForgotPasswordform = () => {
             <div className="mt-5 w-full">
                 <Button
                     type="submit"
-                    className='py-2! md:py-4!'
+                    className='w-full py-2! md:py-4!'
                     disabled={isLoading}
                 >
                     {isLoading ? "Sending..." : "Next"}

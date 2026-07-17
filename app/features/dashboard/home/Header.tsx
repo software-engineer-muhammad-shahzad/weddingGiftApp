@@ -3,9 +3,12 @@
 import { Bell, Settings } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import type { CoupleDashboardData } from "@/app/features/dashboard/types/coupleDashboard"
-import { useCoupleNotification } from "@/app/features/dashboard/hooks/useCoupleNotification"
+import type { LoginData } from "@/app/features/auth/types/login"
+import { getData } from "@/app/utils/storage/storageHelper"
+import { markAllNotificationsRead } from "@/app/features/dashboard/services/dashboardService"
+import Skeleton from "@/app/components/ui/Skeleton"
 
 interface HeaderProps {
     data: CoupleDashboardData | null
@@ -13,43 +16,67 @@ interface HeaderProps {
 }
 
 const Header = ({ data, isLoading }: HeaderProps) => {
-    const { items, fetchNotifications } = useCoupleNotification()
+    const unreadCount = data?.unReadNotificationCount ?? 0
 
+    // localStorage isn't available during SSR, so read it after mount to
+    // avoid a hydration mismatch between the server and client markup.
+    const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null)
     useEffect(() => {
-        fetchNotifications(1)
+        setProfileImageUrl(getData<LoginData>("authData", "local")?.profileImageUrl ?? null)
     }, [])
 
-    const hasUnread = items.some((item) => !item.isRead)
+    const firstLetter = data?.fullName?.trim().charAt(0).toUpperCase() || "?"
 
     return (
         <div className="flex justify-between items-center">
             {/* image and name */}
             <div className="flex gap-2 sm:gap-4 items-center  ">
                 <div className=" w-12   h-12 border border-[#5FDA78] rounded-full overflow-hidden">
-                    <Image
-                        src="/profileDelete.png"
-                        alt="error"
-                        width={84}
-                        height={84}
-                        className="w-full h-full object-cover"
-                    />
+                    {profileImageUrl ? (
+                        <Image
+                            src={profileImageUrl}
+                            alt="profile"
+                            width={84}
+                            height={84}
+                            className="w-full h-full object-cover"
+                        />
+                    ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-[#5FDA7833] text-white font-medium">
+                            {firstLetter}
+                        </div>
+                    )}
                 </div>
                 {/* name date */}
-                <div className="flex flex-col text-white ">
-                    <p className="text-sm sm:text-xl ">
-                        {isLoading ? "..." : `${data?.fullName} & ${data?.partnerName}`}
-                    </p>
-                    <p className="text-sm md:text-md font-light text-[#E6E6E6]">
-                        {isLoading ? "..." : new Date(data?.eventDate || "").toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
-                    </p>
+                <div className="flex flex-col text-white gap-2">
+                    {isLoading ? (
+                        <>
+                            <Skeleton className="h-5 w-32" />
+                            <Skeleton className="h-3 w-20" />
+                        </>
+                    ) : (
+                        <>
+                            <p className="text-sm sm:text-xl ">
+                                {`${data?.fullName} & ${data?.partnerName}`}
+                            </p>
+                            <p className="text-sm md:text-md font-light text-[#E6E6E6]">
+                                {new Date(data?.eventDate || "").toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
+                            </p>
+                        </>
+                    )}
                 </div>
             </div>
             {/* icons */}
             <div className="flex gap-2">
 
-                <Link href="/dashboard/notification" className="border glass-card  relative w-10 h-10 border-[#5FDA78]  rounded-full flex items-center justify-center p-2">
-                    {hasUnread && (
-                        <div className="absolute top-1.5 right-1.5 bg-red-500 rounded-full w-2.5 h-2.5" />
+                <Link
+                    href="/dashboard/notification"
+                    onClick={() => markAllNotificationsRead().catch((err) => console.error("Failed to mark notifications read:", err))}
+                    className="border glass-card  relative w-10 h-10 border-[#5FDA78]  rounded-full flex items-center justify-center p-2"
+                >
+                    {unreadCount > 0 && (
+                        <div className="absolute -top-1 -right-1 min-w-4.5 h-4.5 px-1 flex items-center justify-center bg-red-500 rounded-full text-white text-[10px] font-medium leading-none">
+                            {unreadCount > 99 ? "99+" : unreadCount}
+                        </div>
                     )}
                     <Bell className="text-white" />
                 </Link>

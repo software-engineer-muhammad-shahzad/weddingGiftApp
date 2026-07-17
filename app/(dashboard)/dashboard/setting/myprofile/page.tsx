@@ -13,6 +13,7 @@ import { useDeleteCouplePhoto } from "@/app/features/dashboard/hooks/useDeleteCo
 import ShowProfileInfo from "@/app/features/dashboard/myprofile/ShowProfileInfo"
 import ProfileInfoNavigation from "@/app/features/dashboard/myprofile/ProfileInfoNavigation"
 import UploadImageModal from "@/app/features/dashboard/myprofile/UploadImageModal"
+import Skeleton from "@/app/components/ui/Skeleton"
 
 const Page = () => {
   const [isFormOpen, setIsFormOpen] = useState(false)
@@ -24,7 +25,7 @@ const Page = () => {
   const galleryInputRef = useRef<HTMLInputElement | null>(null)
   const cameraInputRef = useRef<HTMLInputElement | null>(null)
 
-  const { data, refetch } = useCoupleProfileDetails()
+  const { data, isLoading, refetch } = useCoupleProfileDetails()
   const { updateProfilePhoto } = useUpdateCouplePhoto()
   const { deleteProfilePhoto } = useDeleteCouplePhoto()
   console.log("data is herE:", data);
@@ -102,7 +103,9 @@ const Page = () => {
 
             {/* image with border and overflow-hidden only on image wrapper */}
             <div className="w-30 h-30 rounded-full border border-[#5FDA78] overflow-hidden">
-              {imageSrc ? (
+              {isLoading ? (
+                <Skeleton className="w-full h-full rounded-full" />
+              ) : imageSrc ? (
                 <Image
                   src={imageSrc}
                   alt="profile"
@@ -218,7 +221,21 @@ const Page = () => {
             </div>
 
             {/* PROFILE INFO */}
-            <ShowProfileInfo data={data ?? undefined} />
+            {isLoading ? (
+              <div className="border glass-card border-[#5FDA78] rounded-[30px] mt-4 mb-8">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <div
+                    key={i}
+                    className={`flex flex-col gap-2 py-2 sm:py-4 px-5 md:px-4 ${i < 5 ? "border-b border-b-[#F1F1F11A]" : ""}`}
+                  >
+                    <Skeleton className="h-3 w-24" />
+                    <Skeleton className="h-4 w-36" />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <ShowProfileInfo data={data ?? undefined} />
+            )}
           </>
 
         )}

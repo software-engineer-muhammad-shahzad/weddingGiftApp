@@ -6,6 +6,7 @@ import { useState } from "react"
 
 import { useCoupleBankDetails } from "@/app/features/dashboard/hooks/useCoupleBankDetails"
 import UpdateBankInfo from "@/app/features/dashboard/bankinformation/UpdateBankInfo"
+import Skeleton from "@/app/components/ui/Skeleton"
 
 
 const Page = () => {
@@ -21,7 +22,17 @@ const Page = () => {
             <p className="text-white text-2xl">Bank Information</p>
           </Link>
 
-          <p className="text-white mt-8">Loading...</p>
+          <div className="border border-[#5FDA78] rounded-[30px] mt-10 glass-card">
+            {[1, 2, 3, 4].map((i) => (
+              <div
+                key={i}
+                className={`flex flex-col gap-2 py-3 px-5 ${i < 4 ? "border-b border-[#F1F1F11A]" : ""}`}
+              >
+                <Skeleton className="h-3 w-32" />
+                <Skeleton className="h-4 w-40" />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     )

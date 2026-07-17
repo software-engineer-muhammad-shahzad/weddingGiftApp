@@ -1,11 +1,11 @@
 "use client"
 
 import { useState } from "react"
-import { MoveRight, X, Download } from "lucide-react"
+import { X, Download } from "lucide-react"
 import Image from "next/image"
 import { QRCodeCanvas } from "qrcode.react"
 import type { Invite } from "@/app/features/dashboard/types/coupleDashboard"
-import { DownloadLogo, InviteNowBadge, ShagunLogo, ShareIcon, WelcomeLogo } from "@/app/components/icons/Icons"
+import { ShagunLogo, ShareIcon, WelcomeLogo } from "@/app/components/icons/Icons"
 import { downloadQRCode } from "@/app/utils/handleDownloadQr"
 import ModalLayer from "@/app/components/ui/ModalLayer"
 import Button from "@/app/components/elements/Button"
@@ -27,53 +27,45 @@ const Banner = ({ inviteData, coupleName = "OUR WEDDING", eventDate = "" }: Bann
 
     return (
         <>
-            <div className="flex overflow-hidden justify-between items-center  md:gap-1 mt-10 md:mt-16">
+            <div className="flex overflow-hidden justify-between items-center gap-0 mt-10 md:mt-16">
 
                 {/* LEFT IMAGE */}
-                <div className="h-46 sm:h-55 md:h-55 shrink-0">
+                <div className="h-43 xs:h-52 xs2:h-63  p-0 sm:h-55 md:h-55 shrink-0 ">
 
-                    <button onClick={() => setIsQrModalOpen(true)} className="cursor-pointer block h-full">
+                    <button onClick={() => setIsQrModalOpen(true)} className="cursor-pointer h-full">
 
-                        <DownloadLogo className="h-full w-auto" />
+                        <Image
+                            src="/images/qr-code.png"
+                            alt="QR Download"
+                            width={584}
+                            height={1152}
+                            className="h-full w-auto object-contain"
+                        />
                     </button>
 
                 </div>
 
                 {/* RIGHT BANNER */}
-                <div className="relative h-32 sm:h-28 md:h-36 shrink-0">
-                    <InviteNowBadge className="h-full w-auto block" />
-                    <div className="absolute left-[5%] bottom-[8%] right-[27%] z-10">
-                        <p className="text-xs sm:text-sm md:text-md text-[#330065] font-normal">Invite Now</p>
-                        <p className="text-lg sm:text-xl md:text-2xl text-[#330065] font-semibold leading-tight">Invite<br />
-                            Guest</p>
-                    </div>
+                <div className="relative h-34 xs:h-37 xs2:h-43  sm:h-20 md:h-36 shrink-0">
+                    <Image
+                        src="/images/send-card.png"
+                        alt="Invite Guest"
+                        width={1320}
+                        height={820}
+                        className="h-full w-auto object-contain block"
+                    />
 
-                    <div className="absolute w-[11%] aspect-square top-[16%] left-[5%] cursor-pointer z-10">
-                        <ShareIcon className="w-full h-full" />
-                    </div>
+                    {/* Icon kept above the card image so it stays a real, styleable element */}
 
-                    <a href={inviteData?.inviteUrl || "#"} target="_blank" rel="noopener noreferrer">
-                        <button
-                            className="group absolute right-[4%] bottom-[10%] z-10 cursor-pointer border-white gap-1 text-white px-3 py-1.5 flex justify-center items-center rounded-[30px] text-xs sm:text-sm md:text-sm font-light backdrop-blur-[25px] transition-all duration-300"
-                            style={{
-                                background: `
-      radial-gradient(38.46% 38.46% at 11.54% 19.23%, rgba(255, 235, 255, 0) 0%, rgba(230, 255, 240, 0) 70%, rgba(240, 240, 255, 0) 100%),
-      linear-gradient(316.97deg, rgba(255, 255, 255, 0.044) 17.24%, rgba(255, 255, 255, 0) 58.62%, rgba(217, 235, 255, 0) 86.21%),
-      linear-gradient(0deg, rgba(0, 0, 0, 0.066) 0%, rgba(0, 0, 0, 0.022) 30%, rgba(0, 0, 0, 0) 70%, rgba(0, 0, 0, 0) 100%),
-      linear-gradient(0deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.01))
-    `,
-                                boxShadow: `
-      0px 0px 1.5px 0px #FF264000 inset,
-      0px 0px 1.5px 0px #2673FF00 inset,
-      0px 0px 8px 0px #D1E5FF00 inset,
-      0px 3px 12px -3px #00000026
-    `,
-                            }}
-                        >
-                            Send
-                            <MoveRight className="text-white ml-0 transition-transform duration-300 group-hover:translate-x-1" />
-                        </button>
-                    </a>
+
+                    {/* Invisible hit-area over the "Send" pill baked into the card image */}
+                    <a
+                        href={inviteData?.inviteUrl || "#"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Send invite"
+                        className="absolute right-[5%] bottom-[9%] w-[28%] h-[15%] z-10 cursor-pointer"
+                    />
                 </div>
             </div>
 

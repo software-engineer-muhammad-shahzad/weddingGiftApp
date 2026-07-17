@@ -20,6 +20,8 @@ interface StripeCardModalProps {
   wishingContent?: string
   wishingCardAmount?: number
   wishingVideoAmount?: number
+  platformServiceFeeAmount?: number
+  currency?: string
   greetingMediaType?: "Image" | "Video"
 }
 
@@ -33,6 +35,8 @@ const StripeCardModal = ({
   wishingContent,
   wishingCardAmount,
   wishingVideoAmount,
+  platformServiceFeeAmount,
+  currency,
   greetingMediaType,
 }: StripeCardModalProps) => {
   if (!isModalOpen) return null
@@ -59,6 +63,8 @@ const StripeCardModal = ({
               wishingContent={wishingContent}
               wishingCardAmount={wishingCardAmount}
               wishingVideoAmount={wishingVideoAmount}
+              platformServiceFeeAmount={platformServiceFeeAmount}
+              currency={currency}
               greetingMediaType={greetingMediaType}
             />
           </Elements>

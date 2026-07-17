@@ -16,6 +16,7 @@ const endpoints = {
   // notification-details
   notifications: {
     coupleNotification: "/notifications/getusernotifications",
+    markAllRead: "/notifications/markallread",
   },
   // bank-details
   bankdetails: {

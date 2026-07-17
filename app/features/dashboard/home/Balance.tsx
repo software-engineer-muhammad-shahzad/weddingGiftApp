@@ -1,6 +1,7 @@
 "use client"
 
 import type { CoupleDashboardData } from "@/app/features/dashboard/types/coupleDashboard"
+import Skeleton from "@/app/components/ui/Skeleton"
 
 interface BalanceProps {
   data: CoupleDashboardData | null
@@ -10,12 +11,15 @@ interface BalanceProps {
 const Balance = ({ data, isLoading }: BalanceProps) => {
   return (
     <div>
-        <div className="flex flex-col mt-12 md:mt-16">
+        <div className="flex flex-col mt-12 md:mt-16 gap-2">
             <p className="text-[#C2C2C2] text-lg font-light">Received Balance</p>
-            <h2 className="text-white  font-medium text-[45px] sm:text-[56px]">
-                {isLoading ? "..." : data ? `${data.receivedBalance.toFixed(2)} ${data.currency}` : "..."}
-            </h2>
-
+            {isLoading ? (
+                <Skeleton className="h-12 sm:h-14 w-48" />
+            ) : (
+                <h2 className="text-white  font-medium text-[45px] sm:text-[56px]">
+                    {data ? `${data.receivedBalance.toFixed(2)} ${data.currency}` : "0.00"}
+                </h2>
+            )}
         </div>
     </div>
   )

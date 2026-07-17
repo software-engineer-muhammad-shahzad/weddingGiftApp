@@ -1,4 +1,5 @@
 "use client"
+import GuestCheckoutForm from "@/app/features/giftsend/GuestCheckoutForm"
 import ProfileDescription from "@/app/features/giftsend/ProfileDescription"
 import StripeCardModal from "@/app/features/giftsend/StripeCardModal"
 import WishAmount from "@/app/features/giftsend/WishAmount"
@@ -6,6 +7,7 @@ import WishCard from "@/app/features/giftsend/WishCard"
 import WishForm from "@/app/features/giftsend/WishForm"
 import WishMessage from "@/app/features/giftsend/WishMessage"
 import WishVideo from "@/app/features/giftsend/WishVideo"
+import { useGuestCheckout } from "@/app/features/giftsend/hooks/useGuestCheckout"
 import { useGuestInviteDetails } from "@/app/features/giftsend/hooks/useGuestInviteDetails"
 import Announcement from "@/app/features/dashboard/home/Announcement"
 import { getData } from "@/app/utils/storage/storageHelper"
@@ -19,6 +21,7 @@ type ModalType = 'stripeCard' | null
 const page = () => {
     const { slug } = useParams<{ slug: string }>()
     const { data: coupleDetails, isLoading: isCoupleDetailsLoading } = useGuestInviteDetails(slug)
+    const { isReady: isGuestReady, isLoading: isGuestLoading, submitGuestDetails } = useGuestCheckout()
 
     const [greetingText, setGreetingText] = useState("Congratulations! Wishing you a lifetime of happiness together.")
     const [activeModal, setActiveModal] = useState<ModalType>(null)
@@ -56,32 +59,38 @@ const page = () => {
             <div className="min-h-screen w-full bg-[#330065] max-w-382.5 flex justify-center mx-auto">
                 <div className="w-full flex flex-col gap-8 h-full  max-w-200 py-10 px-6 sm:px-8 md:px-10">
 
-                    <ProfileDescription data={coupleDetails} isLoading={isCoupleDetailsLoading} />
+                    {!isGuestReady ? (
+                        <GuestCheckoutForm isLoading={isGuestLoading} onSubmit={submitGuestDetails} />
+                    ) : (
+                        <>
+                            <ProfileDescription data={coupleDetails} isLoading={isCoupleDetailsLoading} />
 
-                    {coupleDetails?.announcement?.content && (
-                        <Announcement latestAnnouncement={coupleDetails.announcement.content} />
+                            {coupleDetails?.announcement?.content && (
+                                <Announcement latestAnnouncement={coupleDetails.announcement.content} />
+                            )}
+
+                            <WishMessage greetingText={greetingText} setGreetingText={setGreetingText} />
+
+                            <WishCard
+                                greetingCards={greetingCards}
+                                selectedCardId={selectedCardId}
+                                onSelectCard={setSelectedCardId}
+                                addonAmount={coupleDetails?.wishingCardAddonAmount ?? 0}
+                                currency={currency}
+                            />
+                            <WishVideo
+                                video={video}
+                                setVideo={setVideo}
+                                addonAmount={coupleDetails?.wishingVideoAddonAmount ?? 0}
+                                currency={currency}
+                                coupleId={coupleId}
+                                onVideoUrlChange={setVideoUrl}
+                                disabled={selectedCardId !== null}
+                            />
+                            <WishAmount amount={amount} setAmount={setAmount} currency={currency} />
+                            <WishForm openStripeModal={() => openModal('stripeCard')} />
+                        </>
                     )}
-
-                    <WishMessage greetingText={greetingText} setGreetingText={setGreetingText} />
-
-                    <WishCard
-                        greetingCards={greetingCards}
-                        selectedCardId={selectedCardId}
-                        onSelectCard={setSelectedCardId}
-                        addonAmount={coupleDetails?.wishingCardAddonAmount ?? 0}
-                        currency={currency}
-                    />
-                    <WishVideo
-                        video={video}
-                        setVideo={setVideo}
-                        addonAmount={coupleDetails?.wishingVideoAddonAmount ?? 0}
-                        currency={currency}
-                        coupleId={coupleId}
-                        onVideoUrlChange={setVideoUrl}
-                        disabled={selectedCardId !== null}
-                    />
-                    <WishAmount amount={amount} setAmount={setAmount} currency={currency} />
-                    <WishForm openStripeModal={() => openModal('stripeCard')} />
 
                     {/* Render modals based on type */}
                     {activeModal === 'stripeCard' && (
@@ -93,8 +102,10 @@ const page = () => {
                             wishingCardPath={selectedCard?.cardImagePath}
                             wishingVideoPath={videoUrl ?? undefined}
                             wishingContent={greetingText}
-                            wishingCardAmount={selectedCard ? coupleDetails?.wishingCardAddonAmount : undefined}
-                            wishingVideoAmount={videoUrl ? coupleDetails?.wishingVideoAddonAmount : undefined}
+                            wishingCardAmount={selectedCard ? selectedCard.cardPrice : undefined}
+                            wishingVideoAmount={videoUrl ? coupleDetails?.cardTemplate.videoPrice : undefined}
+                            platformServiceFeeAmount={coupleDetails?.platformServiceFeeAmount}
+                            currency={currency}
                             greetingMediaType={videoUrl ? "Video" : selectedCard ? "Image" : undefined}
                         />
                     )}

@@ -25,6 +25,7 @@ export interface CoupleDashboardData {
   eventDate: string
   receivedBalance: number
   currency: string
+  unReadNotificationCount: number
   weeklyStats: WeeklyStat[]
   recentContributors: RecentContributor[]
   invite: Invite

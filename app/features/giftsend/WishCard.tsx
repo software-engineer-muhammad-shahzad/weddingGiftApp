@@ -1,7 +1,7 @@
 import Image from "next/image"
 import { useState } from "react"
+import { Check } from "lucide-react"
 import { buildContentImageUrl } from "@/app/utils/imageUrl"
-import SelectCardModal from "./SelectCardModal"
 import { GreetingCardDTO } from "./types"
 
 const FALLBACK_CARD_IMAGE = "/images/congrates-card.svg"
@@ -31,10 +31,8 @@ const CardThumbnail = ({ path }: { path: string }) => {
 }
 
 const WishCard = ({ greetingCards, selectedCardId, onSelectCard, addonAmount, currency }: openSelectImageProps) => {
-    const [previewCard, setPreviewCard] = useState<GreetingCardDTO | null>(null)
-
     const handleThumbnailClick = (card: GreetingCardDTO) => {
-        setPreviewCard(card)
+        onSelectCard(selectedCardId === card.id ? null : card.id)
     }
 
     return (
@@ -61,9 +59,17 @@ const WishCard = ({ greetingCards, selectedCardId, onSelectCard, addonAmount, cu
                                 key={card.id}
                                 type="button"
                                 onClick={() => handleThumbnailClick(card)}
-                                className={`rounded-md overflow-hidden border-2 ${selectedCardId === card.id ? "border-[#5FDA78]" : "border-transparent"}`}
+                                className={`relative rounded-md overflow-hidden cursor-pointer `}
                             >
                                 <CardThumbnail path={card.cardImagePath} />
+
+                                {selectedCardId === card.id && (
+                                    <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                                        <div className="w-6 h-6 rounded-full bg-[#5FDA78] flex items-center justify-center">
+                                            <Check size={14} className="text-[#330065]" strokeWidth={3} />
+                                        </div>
+                                    </div>
+                                )}
                             </button>
                         ))
                     ) : (
@@ -74,19 +80,6 @@ const WishCard = ({ greetingCards, selectedCardId, onSelectCard, addonAmount, cu
 
 
             </div>
-
-            {previewCard && (
-                <SelectCardModal
-                    isModalOpen={!!previewCard}
-                    setIsModalOpen={(open) => {
-                        if (!open) setPreviewCard(null)
-                    }}
-                    isSelected={selectedCardId === previewCard.id}
-                    onSelect={() => onSelectCard(previewCard.id)}
-                    onRemove={() => onSelectCard(null)}
-                    imageUrl={buildContentImageUrl(previewCard.cardImagePath)}
-                />
-            )}
         </>
     )
 }

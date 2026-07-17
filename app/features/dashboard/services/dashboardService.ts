@@ -92,6 +92,11 @@ export const getNotifications = async (page: number = 1, search = ""): Promise<N
   }
 }
 
+// markAllNotificationsRead
+export const markAllNotificationsRead = async (): Promise<void> => {
+  await postRequest(endpoints.notifications.markAllRead)
+}
+
 // coupleBankDetails
 export const getCoupleBankDetailsData = async (): Promise<CoupleBankDetailsData | null> => {
   try {

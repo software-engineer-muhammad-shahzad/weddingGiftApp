@@ -21,7 +21,7 @@ const WishAmount = ({ amount, setAmount, currency }: WishAmountProps) => {
 
                        {/* input */}
                        <div className="relative">
-                       <Input  type="text" placeholder={`300.50 ${currency}`} value={amount} onChange={(e) => setAmount(e.target.value)} containerClassName="border-none" className="text-center   font-semibold text-[50px] py-2  outline-none w-full text-white placeholder:text-white "/>
+                       <Input  type="text" placeholder={`00.00 ${currency}`} value={amount} onChange={(e) => setAmount(e.target.value)} containerClassName="border-none" className="text-center   font-semibold text-[50px] py-2  outline-none w-full text-white placeholder:text-white "/>
 
    {/* <span className="absolute right-58 bottom-5 text-white text-sm "></span> */}
    </div>

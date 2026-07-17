@@ -4,6 +4,20 @@ import Image from 'next/image';
 import { useState, useRef, useEffect } from 'react';
 import { useCoupleContributorList } from '@/app/features/dashboard/hooks/useCoupleContributorList';
 import type { ContributorItem } from "@/app/features/dashboard/types/coupleContributorList";
+import Skeleton from "@/app/components/ui/Skeleton";
+
+const ContributorRowSkeleton = () => (
+    <div className='flex justify-between w-full'>
+        <div className='flex gap-4 items-center'>
+            <Skeleton className="w-10 h-10 rounded-full" />
+            <div className='flex flex-col gap-2'>
+                <Skeleton className="h-3 w-24" />
+                <Skeleton className="h-2.5 w-32" />
+            </div>
+        </div>
+        <Skeleton className="h-4 w-14 self-center" />
+    </div>
+)
 
 const ContributorList = () => {
     const [showAll, setShowAll] = useState(false);
@@ -79,7 +93,10 @@ const ContributorList = () => {
             {/* Content area */}
             <div ref={contributorListRef} className={`flex flex-col gap-5 mt-3 px-6 pb-24`}>
                 {isLoading && items.length === 0 ? (
-                    <p className="text-white text-center">Loading...</p>
+                    <>
+                        <ContributorRowSkeleton />
+                        <ContributorRowSkeleton />
+                    </>
                 ) : items.length === 0 ? (
                     <p className="text-white text-center">No contributors yet</p>
                 ) : (
@@ -153,9 +170,7 @@ const ContributorList = () => {
                                         <p className='font-medium text-md text-white'>{contributor.currency} {contributor.amount}</p>
                                     </div>
                                 ))}
-                                {isLoading && hasMore && (
-                                    <p className="text-white text-center">Loading more...</p>
-                                )}
+                                {isLoading && hasMore && <ContributorRowSkeleton />}
                                 <div ref={sentinelRef} className="h-1" />
                             </>
                         )}

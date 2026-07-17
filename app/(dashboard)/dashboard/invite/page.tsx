@@ -10,6 +10,7 @@ import { useQrCode } from "@/app/features/dashboard/qrCode/hooks/useGetQrCodeUrl
 import { getQrCodeImage } from "@/app/features/dashboard/qrCode/api/qrCodeApi"
 import { showSuccess } from "@/app/lib/toast"
 import QrHeaders from "@/app/features/dashboard/invite/QrHeaders"
+import Skeleton from "@/app/components/ui/Skeleton"
 
 
 
@@ -63,8 +64,40 @@ const Page = () => {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-[#330065] text-white">
-                Loading QR Code...
+            <div className="flex justify-center min-h-screen bg-[#330065] px-4">
+                <div className="max-w-[390px] w-full flex flex-col pt-10">
+                    <QrHeaders />
+
+                    <div className="mt-6">
+                        <Skeleton className="h-11 w-full rounded-full" />
+                    </div>
+
+                    <div className="relative mt-6">
+                        <div className="bg-[#2a0050] rounded-2xl border border-white/10 shadow-2xl p-4 flex flex-col items-center gap-4">
+                            <div className="flex justify-between items-center w-full">
+                                <Skeleton className="h-6 w-20" />
+                                <Skeleton className="h-6 w-14" />
+                            </div>
+
+                            <Skeleton className="h-12 w-12 rounded-full" />
+                            <Skeleton className="h-3 w-24" />
+                            <Skeleton className="h-4 w-36" />
+
+                            <Skeleton className="w-40 h-40 rounded-xl" />
+
+                            <Skeleton className="h-3 w-32 mb-4" />
+                        </div>
+
+                        <div className="flex absolute left-1/2 -translate-x-1/2 bottom-[-22px] gap-4">
+                            <Skeleton className="w-11 h-11 rounded-full" />
+                            <Skeleton className="w-11 h-11 rounded-full" />
+                        </div>
+                    </div>
+
+                    <div className="py-6 mt-8">
+                        <Skeleton className="h-13 w-full rounded-full" />
+                    </div>
+                </div>
             </div>
         )
     }

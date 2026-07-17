@@ -69,6 +69,8 @@ const VerifyOtpForm = ({ source, showPaymentSuccess, setShowPaymentSuccess }: Ve
         input?.focus()
     }
     const handleOtpChange = (index: number, value: string) => {
+        if (value !== '' && !/^\d$/.test(value)) return
+
         if (value.length <= 1) {
             const newOtp = [...otp]
             newOtp[index] = value
@@ -151,6 +153,8 @@ const VerifyOtpForm = ({ source, showPaymentSuccess, setShowPaymentSuccess }: Ve
                             key={index}
                             id={`otp-${index}`}
                             type="text"
+                            inputMode="none"
+                            pattern="[0-9]*"
                             value={digit}
                             onChange={(e) => handleOtpChange(index, e.target.value)}
                             onPaste={handlePaste}

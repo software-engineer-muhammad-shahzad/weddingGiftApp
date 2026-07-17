@@ -13,6 +13,7 @@ import Button from "@/app/components/elements/Button"
 import { showError, showSuccess } from "@/app/lib/toast"
 import { getData } from "@/app/utils/storage/storageHelper"
 import { attachPaymentMethod, createCard, makePayment } from "./api/paymentApi"
+import ConfirmPaymentModal from "./ConfirmPaymentModal"
 import {
   GUEST_EMAIL_KEY,
   GUEST_FULL_NAME_KEY,
@@ -29,7 +30,15 @@ interface StripeCardFormProps {
   wishingContent?: string
   wishingCardAmount?: number
   wishingVideoAmount?: number
+  platformServiceFeeAmount?: number
+  currency?: string
   greetingMediaType?: "Image" | "Video"
+}
+
+interface PendingCharge {
+  guestUserId: number
+  stripeCustomerId: string
+  paymentMethodId: string
 }
 
 const elementStyle: StripeElementStyle = {
@@ -51,19 +60,25 @@ const StripeCardForm = ({
   wishingContent,
   wishingCardAmount,
   wishingVideoAmount,
+  platformServiceFeeAmount,
+  currency = "",
   greetingMediaType,
 }: StripeCardFormProps) => {
   const stripe = useStripe()
   const elements = useElements()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false)
+  const [isCharging, setIsCharging] = useState(false)
+  const [pendingCharge, setPendingCharge] = useState<PendingCharge | null>(null)
+
+  const parsedAmount = Number(amount)
 
   const handleSubmit = async () => {
     if (!stripe || !elements) return
 
     setError(null)
 
-    const parsedAmount = Number(amount)
     if (!amount || Number.isNaN(parsedAmount) || parsedAmount <= 0) {
       setError("Please enter a wishing amount before adding a card.")
       return
@@ -128,23 +143,14 @@ const StripeCardForm = ({
         paymentMethodId: paymentMethod.id,
       })
 
-      await makePayment({
-        recipientUserId,
-        guestUserId: guestUserId,
-        amount: parsedAmount,
-        paymentMethodId: paymentMethod.id,
-        customerId: stripeCustomerId,
+      // Card is saved and attached — hold off on the actual charge until the
+      // guest confirms the amount breakdown in ConfirmPaymentModal.
+      setPendingCharge({
+        guestUserId,
         stripeCustomerId,
-        wishingCardPath,
-        wishingVideoPath,
-        wishingContent,
-        wishingCardAmount,
-        wishingVideoAmount,
-        greetingMediaType,
+        paymentMethodId: paymentMethod.id,
       })
-
-      showSuccess("Payment successful")
-      onClose()
+      setIsConfirmOpen(true)
     } catch (err: any) {
       const apiMessage =
         err?.response?.data?.message ||
@@ -158,6 +164,53 @@ const StripeCardForm = ({
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  const handleConfirmPayment = async () => {
+    if (!pendingCharge || !recipientUserId) return
+
+    setIsCharging(true)
+    setError(null)
+
+    try {
+      await makePayment({
+        recipientUserId,
+        guestUserId: pendingCharge.guestUserId,
+        amount: parsedAmount,
+        paymentMethodId: pendingCharge.paymentMethodId,
+        customerId: pendingCharge.stripeCustomerId,
+        stripeCustomerId: pendingCharge.stripeCustomerId,
+        wishingCardPath,
+        wishingVideoPath,
+        wishingContent,
+        wishingCardAmount,
+        wishingVideoAmount,
+        greetingMediaType,
+      })
+
+      showSuccess("Payment successful")
+      setIsConfirmOpen(false)
+      onClose()
+    } catch (err: any) {
+      const apiMessage =
+        err?.response?.data?.message ||
+        err?.response?.data?.statusMessage ||
+        err?.response?.data?.error ||
+        err?.message ||
+        "Payment failed. Please try again."
+
+      setError(apiMessage)
+      showError(apiMessage)
+    } finally {
+      setIsCharging(false)
+    }
+  }
+
+  const handleCancelPayment = () => {
+    // Card is already saved — just back out of the charge so the guest can
+    // review/change the amount or retry without re-entering card details.
+    setIsConfirmOpen(false)
+    setPendingCharge(null)
   }
 
   return (
@@ -196,6 +249,18 @@ const StripeCardForm = ({
       >
         {isSubmitting ? "Processing..." : "Save Card"}
       </Button>
+
+      <ConfirmPaymentModal
+        isModalOpen={isConfirmOpen}
+        onCancel={handleCancelPayment}
+        onConfirm={handleConfirmPayment}
+        isSubmitting={isCharging}
+        currency={currency}
+        giftAmount={parsedAmount}
+        wishingCardAmount={wishingCardAmount}
+        wishingVideoAmount={wishingVideoAmount}
+        platformServiceFeeAmount={platformServiceFeeAmount}
+      />
     </div>
   )
 }

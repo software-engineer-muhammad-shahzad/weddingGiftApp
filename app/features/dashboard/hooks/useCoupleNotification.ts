@@ -14,14 +14,19 @@ export const useCoupleNotification = () => {
   const hasMoreRef = useRef(true)
   const searchRef = useRef("")
   const isFirstRun = useRef(true)
+  // Set synchronously (not derived from state) so it also dedupes React
+  // Strict Mode's synchronous effect-cleanup-effect remount in dev.
+  const inFlightRef = useRef(false)
 
   isLoadingRef.current = isLoading
   hasMoreRef.current = hasMore
   searchRef.current = search
 
   const fetchPage = useCallback(async (page: number, options?: { reset?: boolean }) => {
-    if (!options?.reset && (isLoadingRef.current || !hasMoreRef.current)) return
+    if (inFlightRef.current) return
+    if (!options?.reset && !hasMoreRef.current) return
 
+    inFlightRef.current = true
     setIsLoading(true)
     try {
       const data = await getNotifications(page, searchRef.current)
@@ -33,6 +38,7 @@ export const useCoupleNotification = () => {
     } catch (err) {
       console.error("Failed to fetch notifications:", err)
     } finally {
+      inFlightRef.current = false
       setIsLoading(false)
     }
   }, [])
@@ -60,7 +66,9 @@ export const useCoupleNotification = () => {
     if (isFirstRun.current) {
       isFirstRun.current = false
       fetchPage(1, { reset: true })
-      return
+      return () => {
+        isFirstRun.current = true
+      }
     }
 
     const timeoutId = setTimeout(() => {
