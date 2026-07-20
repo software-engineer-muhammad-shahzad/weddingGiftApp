@@ -14,6 +14,8 @@ const useResetPassword = () => {
             setError(null)
             await resetPassword(payload)
             setIsSuccess(true)
+
+            return true;
         } catch (err) {
             setError("Something went wrong")
             return false
