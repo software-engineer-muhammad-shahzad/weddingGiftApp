@@ -13,12 +13,18 @@ type Props = {
 const UpdateBankInfo = ({ data, onCancel ,onSuccess}: Props) => {
   const [form, setForm] = useState<UpdateBankDetailsData>({
     accountHolderName: data?.accountHolderName || "",
-    bsb: data?.bsb || "",
+    iban: data?.iban || "",
     accountNumber: data?.accountNumber || "",
-    bankName: data?.bankName || "",
+    address: data?.address || "",
+    currency: data?.currency || "",
   })
 
   const { updateBankData, isLoading } = useUpdateBankInfo()
+  const [currency, setCurrency] = useState(form.currency);
+
+  const handleCurrencyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  setCurrency(e.target.value);
+};
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -32,6 +38,7 @@ const UpdateBankInfo = ({ data, onCancel ,onSuccess}: Props) => {
   // ✅ PASS INTERFACE TYPE DIRECTLY
   const handleSubmit = async () => {
     try {
+      form.currency = currency;
       await updateBankData(form)  
        onSuccess?.()  // 👈 UpdateBankDetailsData used here
       onCancel()
@@ -66,14 +73,6 @@ const UpdateBankInfo = ({ data, onCancel ,onSuccess}: Props) => {
         />
 
         <input
-          name="bsb"
-          value={form.bsb}
-          onChange={handleChange}
-          placeholder="BSB"
-          className="p-2 rounded bg-[#1f003d] text-white border border-gray-600"
-        />
-
-        <input
           name="accountNumber"
           value={form.accountNumber}
           onChange={handleChange}
@@ -82,12 +81,30 @@ const UpdateBankInfo = ({ data, onCancel ,onSuccess}: Props) => {
         />
 
         <input
-          name="bankName"
-          value={form.bankName}
+          name="iban"
+          value={form.iban}
           onChange={handleChange}
-          placeholder="Bank Name"
+          placeholder="IBAN"
           className="p-2 rounded bg-[#1f003d] text-white border border-gray-600"
         />
+
+        <input
+          name="address"
+          value={form.address}
+          onChange={handleChange}
+          placeholder="Bank Address"
+          className="p-2 rounded bg-[#1f003d] text-white border border-gray-600"
+        />
+
+        <select
+  name="currency"
+  className="p-2 rounded bg-[#1f003d] text-white border border-gray-600"
+  value={currency}
+  onChange={handleCurrencyChange}
+>
+  <option value="">Select</option>
+  <option value="GBP">GBP (£) - British Pound</option>
+</select>
 
         <button
           onClick={handleSubmit}

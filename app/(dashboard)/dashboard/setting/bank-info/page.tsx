@@ -7,6 +7,7 @@ import { useState } from "react"
 import { useCoupleBankDetails } from "@/app/features/dashboard/hooks/useCoupleBankDetails"
 import UpdateBankInfo from "@/app/features/dashboard/bankinformation/UpdateBankInfo"
 import Skeleton from "@/app/components/ui/Skeleton"
+import { UpdateBankDetailsData } from "@/app/features/dashboard/types/UpdateBankDetails"
 
 
 const Page = () => {
@@ -84,14 +85,7 @@ const Page = () => {
               <p className="font-medium text-[#EEEEEE]">
                 {data?.accountHolderName || "N/A"}
               </p>
-            </div>
-
-            <div className="flex flex-col border-b border-[#F1F1F11A] py-3 px-5">
-              <p className="text-sm text-[#EEEEEE]">BSB</p>
-              <p className="font-medium text-[#EEEEEE]">
-                {data?.bsb || "N/A"}
-              </p>
-            </div>
+            </div>            
 
             <div className="flex flex-col border-b border-[#F1F1F11A] py-3 px-5">
               <p className="text-sm text-[#EEEEEE]">Account Number</p>
@@ -100,10 +94,24 @@ const Page = () => {
               </p>
             </div>
 
-            <div className="flex flex-col py-3 px-5">
-              <p className="text-sm text-[#EEEEEE]">Bank Name</p>
+            <div className="flex flex-col border-b border-[#F1F1F11A] py-3 px-5">
+              <p className="text-sm text-[#EEEEEE]">IBAN</p>
               <p className="font-medium text-[#EEEEEE]">
-                {data?.bankName || "N/A"}
+                {data?.iban || "N/A"}
+              </p>
+            </div>
+
+            <div className="flex flex-col py-3 px-5">
+              <p className="text-sm text-[#EEEEEE]">Address</p>
+              <p className="font-medium text-[#EEEEEE]">
+                {data?.address || "N/A"}
+              </p>
+            </div>
+
+            <div className="flex flex-col py-3 px-5">
+              <p className="text-sm text-[#EEEEEE]">Currency</p>
+              <p className="font-medium text-[#EEEEEE]">
+                {data?.currency || "N/A"}
               </p>
             </div>
 
@@ -111,7 +119,7 @@ const Page = () => {
         ) : (
           /* EDIT MODE */
           <UpdateBankInfo
-            data={data ?? undefined}
+            data={data as unknown as UpdateBankDetailsData | undefined}
             onCancel={() => setIsEditMode(false)}
             onSuccess={() => {
               setIsEditMode(false)

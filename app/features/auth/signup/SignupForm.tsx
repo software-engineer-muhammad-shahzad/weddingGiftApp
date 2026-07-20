@@ -11,10 +11,18 @@ import { useSignup } from "@/app/features/auth/hooks/useSignup"
 import type { SignupPayload } from "@/app/features/auth/types/signup"
 import { signupSchema, type SignupFormValues } from "@/app/features/auth/validations/signupSchema"
 
+const getTodayDateString = () => {
+  const today = new Date()
+  const month = String(today.getMonth() + 1).padStart(2, "0")
+  const day = String(today.getDate()).padStart(2, "0")
+  return `${today.getFullYear()}-${month}-${day}`
+}
+
 const SignupForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const minEventDate = getTodayDateString()
 
   const {
     register,
@@ -65,6 +73,8 @@ const SignupForm = () => {
           type="text"
           id="fullName"
           placeholder="Enter your name"
+          autoComplete="name"
+          maxLength={100}
           error={errors.fullName?.message}
           {...register("fullName")}
         />
@@ -74,6 +84,8 @@ const SignupForm = () => {
           label="Partner Name"
           type="text"
           placeholder="Enter your partner name"
+          autoComplete="name"
+          maxLength={100}
           error={errors.partnerName?.message}
           {...register("partnerName")}
         />
@@ -83,6 +95,7 @@ const SignupForm = () => {
           label="Event Date"
           type="date"
           placeholder="Select event date"
+          min={minEventDate}
           error={errors.eventDate?.message}
           {...register("eventDate")}
         />
@@ -100,7 +113,10 @@ const SignupForm = () => {
         <Input
           label="Phone Number"
           type="tel"
-          placeholder="Enter your phone number"
+          inputMode="tel"
+          autoComplete="tel"
+          placeholder="e.g. 07123456789"
+          maxLength={32}
           error={errors.phoneNumber?.message}
           {...register("phoneNumber")}
         />

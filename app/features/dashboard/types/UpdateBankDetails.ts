@@ -1,8 +1,9 @@
 export interface UpdateBankDetailsData {
   accountHolderName: string
-  bsb: string
+  iban: string
   accountNumber: string
-  bankName: string
+  address: string
+  currency: string
 }
 
 export interface UpdateBankDetailsResponse {

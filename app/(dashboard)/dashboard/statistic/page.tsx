@@ -66,10 +66,11 @@ const Page = () => {
         {/* table */}
         <StatisticTable items={items} loading={loading} />
 
-        {/* download */}
+        { items.length > 0 && (
         <Button onClick={handleDownload} className="w-full mt-8 py-3.5">
           Download
         </Button>
+        )}
       </div>
     </div>
   )

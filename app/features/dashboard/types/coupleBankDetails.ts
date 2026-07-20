@@ -1,8 +1,9 @@
 export interface CoupleBankDetailsData {
   accountHolderName: string
-  bsb: string
+  iban: string
+  address: string
+  currency: string
   accountNumber: string
-  bankName: string
 }
 
 export interface CoupleBankDetailsResponse {

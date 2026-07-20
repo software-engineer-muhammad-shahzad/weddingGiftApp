@@ -21,6 +21,8 @@ const StatisticChart: React.FC<StatisticChartProps> = ({ data, isLoading }) => {
 
   const activeIndex = chartData.findIndex(item => item.day === today)
 
+  const hasData = chartData.some(item => item.value > 0)
+
   return (
     <div className='mt-10'>
       <p className='font-medium text-white text-md pb-3'>Statistic</p>
@@ -36,6 +38,10 @@ const StatisticChart: React.FC<StatisticChartProps> = ({ data, isLoading }) => {
             {[40, 65, 30, 80, 45, 55, 35].map((h, i) => (
               <Skeleton key={i} className="flex-1 rounded-t-md" style={{ height: `${h}%` }} />
             ))}
+          </div>
+        ) : !hasData ? (
+          <div className="w-full h-full flex items-center justify-center">
+            <p className="text-white/70 text-sm">No statistics found</p>
           </div>
         ) : (
         <ResponsiveContainer width="100%" height="100%">

@@ -27,36 +27,37 @@ const Banner = ({ inviteData, coupleName = "OUR WEDDING", eventDate = "" }: Bann
 
     return (
         <>
-            <div className="flex overflow-hidden justify-between items-center gap-0 mt-10 md:mt-16">
+            <div className="flex w-full max-w-full items-center justify-start gap-2 xs:gap-3 xs2:gap-4 sm:gap-5 mt-2 sm:mt-6 md:mt-10 lg:mt-16">
 
-                {/* LEFT IMAGE */}
-                <div className="h-43 xs:h-52 xs2:h-63  p-0 sm:h-55 md:h-55 shrink-0 ">
-
-                    <button onClick={() => setIsQrModalOpen(true)} className="cursor-pointer h-full">
-
+                {/* LEFT - QR Download */}
+                <div className="h-36 xs:h-44 xs2:h-52 sm:h-55 md:h-55 shrink-0 -mr-2 xs:-mr-3 xs2:-mr-4 sm:-mr-5">
+                    <button
+                        onClick={() => setIsQrModalOpen(true)}
+                        className="cursor-pointer h-full block leading-none"
+                        aria-label="Open QR download"
+                    >
                         <Image
                             src="/images/qr-code.png"
                             alt="QR Download"
                             width={584}
                             height={1152}
-                            className="h-full w-auto object-contain"
+                            className="h-full w-auto object-contain object-right"
+                            sizes="(max-width: 370px) 72px, (max-width: 400px) 80px, (max-width: 640px) 88px, 96px"
+                            priority
                         />
                     </button>
-
                 </div>
 
-                {/* RIGHT BANNER */}
-                <div className="relative h-34 xs:h-37 xs2:h-43  sm:h-20 md:h-36 shrink-0">
+                {/* RIGHT - Invite Guest */}
+                <div className="relative flex-1 min-w-0 h-28 xs:h-32 xs2:h-36 sm:h-40 md:h-44 -ml-2 xs:-ml-4 xs2:-ml-6 sm:-ml-8 md:-ml-10">
                     <Image
                         src="/images/send-card.png"
                         alt="Invite Guest"
                         width={1320}
                         height={820}
-                        className="h-full w-auto object-contain block"
+                        className="h-full w-full object-contain object-left block"
+                        sizes="(max-width: 370px) 220px, (max-width: 400px) 260px, (max-width: 640px) 300px, 340px"
                     />
-
-                    {/* Icon kept above the card image so it stays a real, styleable element */}
-
 
                     {/* Invisible hit-area over the "Send" pill baked into the card image */}
                     <a
