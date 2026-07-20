@@ -16,7 +16,7 @@ export const useResendOtp = (): UseResendOtpResult => {
   const resendOtp = useCallback(async () => {
     setIsLoading(true)
 
-    const email = getData<string>("email", "session")
+    const email = getData<string>("email", "local")
     if (!email) {
       showError("Email not found in session. Please restart the signup flow.")
       setIsLoading(false)

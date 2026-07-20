@@ -37,7 +37,7 @@ const VerifyOtpForm = ({ source, showPaymentSuccess, setShowPaymentSuccess }: Ve
         } else if (source === "forgot-password") {
             router.push("/set-password")
         } else {
-            router.push("/dashboard")
+            router.push("/login")
         }
     }
 

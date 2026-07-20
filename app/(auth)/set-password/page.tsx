@@ -15,7 +15,7 @@ const Page = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
 
     // ✅ Get email from session storage
-    const email = getData<string>("email", "session")
+    const email = getData<string>("email", "local")
 
     return (
 

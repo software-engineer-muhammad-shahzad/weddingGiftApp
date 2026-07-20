@@ -65,9 +65,9 @@ const page = () => {
                         <>
                             <ProfileDescription data={coupleDetails} isLoading={isCoupleDetailsLoading} />
 
-                            {coupleDetails?.announcement?.content && (
+                            {/* {coupleDetails?.announcement?.content && (
                                 <Announcement latestAnnouncement={coupleDetails.announcement.content} />
-                            )}
+                            )} */}
 
                             <WishMessage greetingText={greetingText} setGreetingText={setGreetingText} />
 
@@ -87,7 +87,13 @@ const page = () => {
                                 onVideoUrlChange={setVideoUrl}
                                 disabled={selectedCardId !== null}
                             />
-                            <WishAmount amount={amount} setAmount={setAmount} currency={currency} />
+                            <WishAmount
+                                amount={amount}
+                                setAmount={setAmount}
+                                currency={currency}
+                                wishingCardAmount={ selectedCardId !== null ? (coupleDetails?.wishingCardAddonAmount ?? 0) : 0}
+                                wishingVideoAmount={videoUrl ? coupleDetails?.cardTemplate.videoPrice : undefined}
+                            />
                             <WishForm openStripeModal={() => openModal('stripeCard')} />
                         </>
                     )}

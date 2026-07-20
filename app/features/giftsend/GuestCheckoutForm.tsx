@@ -33,23 +33,32 @@ const GuestCheckoutForm = ({ isLoading, onSubmit }: GuestCheckoutFormProps) => {
       <Input
         type="text"
         placeholder="Enter your name"
-        label="FullName"
+        label="Full Name"
+        autoComplete="name"
+        maxLength={100}
+        error={errors.fullName?.message}
         {...register("fullName")}
       />
       {errors.fullName && <p className="text-sm text-red-400">{errors.fullName.message}</p>}
 
       <Input
-        type="number "
-        placeholder="Contact Number"
-        label="Enter your contact number"
+        type="tel"
+        inputMode="tel"
+        autoComplete="tel"
+        placeholder="e.g. 07123456789"
+        label="Contact Number"
+        maxLength={32}
+        error={errors.contactNumber?.message}
         {...register("contactNumber")}
       />
       {errors.contactNumber && <p className="text-sm text-red-400">{errors.contactNumber.message}</p>}
 
       <Input
-        type="email "
+        type="email"
         placeholder="Enter your email"
-        label="Enter your email"
+        label="Email"
+        autoComplete="email"
+        error={errors.email?.message}
         {...register("email")}
       />
       {errors.email && <p className="text-sm text-red-400">{errors.email.message}</p>}

@@ -1,12 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { X, Download } from "lucide-react"
 import Image from "next/image"
 import { QRCodeCanvas } from "qrcode.react"
+import html2canvas from "html2canvas-pro"
 import type { Invite } from "@/app/features/dashboard/types/coupleDashboard"
-import { ShagunLogo, ShareIcon, WelcomeLogo } from "@/app/components/icons/Icons"
-import { downloadQRCode } from "@/app/utils/handleDownloadQr"
+import { ShagunLogo, WelcomeLogo } from "@/app/components/icons/Icons"
+import { handleShare } from "@/app/utils/handleShareQr"
 import ModalLayer from "@/app/components/ui/ModalLayer"
 import Button from "@/app/components/elements/Button"
 
@@ -20,9 +21,33 @@ interface BannerProps {
 
 const Banner = ({ inviteData, coupleName = "OUR WEDDING", eventDate = "" }: BannerProps) => {
     const [isQrModalOpen, setIsQrModalOpen] = useState(false)
+    const [isDownloading, setIsDownloading] = useState(false)
+    const inviteCardRef = useRef<HTMLDivElement>(null)
 
-    const handleDownload = () => {
-        downloadQRCode(QR_CANVAS_ID, coupleName)
+    const handleDownload = async () => {
+        if (!inviteCardRef.current || isDownloading) return
+
+        try {
+            setIsDownloading(true)
+
+            const canvas = await html2canvas(inviteCardRef.current, {
+                backgroundColor: "#2a0050",
+                scale: 2,
+                useCORS: true,
+                allowTaint: true,
+            })
+
+            const link = document.createElement("a")
+            link.href = canvas.toDataURL("image/png")
+            link.download = `${coupleName}-invite-card.png`
+            document.body.appendChild(link)
+            link.click()
+            document.body.removeChild(link)
+        } catch (err) {
+            console.error("Failed to download invite card:", err)
+        } finally {
+            setIsDownloading(false)
+        }
     }
 
     return (
@@ -60,12 +85,14 @@ const Banner = ({ inviteData, coupleName = "OUR WEDDING", eventDate = "" }: Bann
                     />
 
                     {/* Invisible hit-area over the "Send" pill baked into the card image */}
-                    <a
-                        href={inviteData?.inviteUrl || "#"}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="Send invite"
-                        className="absolute right-[5%] bottom-[9%] w-[28%] h-[15%] z-10 cursor-pointer"
+                    <button
+                        type="button"
+                        onClick={() => {
+                            if (!inviteData?.inviteUrl) return
+                            handleShare(coupleName, inviteData.inviteUrl)
+                        }}
+                        aria-label="Share invite"
+                        className="absolute right-[5%] bottom-[9%] w-[28%] h-[15%] z-10 cursor-pointer bg-transparent border-0 p-0"
                     />
                 </div>
             </div>
@@ -92,37 +119,40 @@ const Banner = ({ inviteData, coupleName = "OUR WEDDING", eventDate = "" }: Bann
 
                         {/* QR CARD */}
                         <div className="bg-[#2a0050] rounded-2xl border border-white/10 shadow-2xl">
-                            <div className="flex justify-between items-center p-4">
-                                <ShagunLogo />
-                                <span className="text-white font-bold">stripe</span>
-                            </div>
-
-                            <div className="text-center">
-                                <WelcomeLogo />
-                                <p className="text-white/60 text-xs mt-1 uppercase">To Our Wedding</p>
-                                <p className="text-white font-bold mt-1">{coupleName}</p>
-                            </div>
-
-                            <div className="flex justify-center my-5">
-                                <div className="bg-white p-3 rounded-xl">
-                                    <QRCodeCanvas
-                                        id={QR_CANVAS_ID}
-                                        value={inviteData?.inviteUrl || " "}
-                                        size={160}
-                                        bgColor="#ffffff"
-                                        fgColor="#330065"
-                                        level="H"
-                                    />
+                            <div ref={inviteCardRef} className="bg-[#2a0050] rounded-2xl">
+                                <div className="flex justify-between items-center p-4">
+                                    <ShagunLogo />
+                                    <span className="text-white font-bold">stripe</span>
                                 </div>
-                            </div>
 
-                            <p className="text-center text-white/70 text-sm pb-4">{eventDate}</p>
+                                <div className="text-center">
+                                    <WelcomeLogo />
+                                    <p className="text-white/60 text-xs mt-1 uppercase">To Our Wedding</p>
+                                    <p className="text-white font-bold mt-1">{coupleName}</p>
+                                </div>
+
+                                <div className="flex justify-center my-5">
+                                    <div className="bg-white p-3 rounded-xl">
+                                        <QRCodeCanvas
+                                            id={QR_CANVAS_ID}
+                                            value={inviteData?.inviteUrl || " "}
+                                            size={160}
+                                            bgColor="#ffffff"
+                                            fgColor="#330065"
+                                            level="H"
+                                        />
+                                    </div>
+                                </div>
+
+                                <p className="text-center text-white/70 text-sm pb-4">{eventDate}</p>
+                            </div>
 
                             {/* Download button */}
                             <div className="flex justify-center pb-6">
                                 <Button
                                     onClick={handleDownload}
-                                    className="w-12 h-12 sm:w-10 sm:h-10 p-2 rounded-full! bg-[#2a0050]! text-white! border-[#5FDA78]!"
+                                    disabled={isDownloading}
+                                    className="w-12 h-12 sm:w-10 sm:h-10 p-2 rounded-full! bg-[#2a0050]! text-white! border-[#5FDA78]! disabled:opacity-50"
                                 >
                                     <Download size={22} className="sm:hidden" />
                                     <Download size={18} className="hidden sm:block" />

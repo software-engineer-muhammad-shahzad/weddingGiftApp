@@ -26,7 +26,7 @@ export const useSignup = (): UseSignupResult => {
       const email = result.data?.data?.email
 
       if (email) {
-        saveData("email", email, "session")
+        saveData("email", email, "local")
       }
 
       showSuccess(successMessage)

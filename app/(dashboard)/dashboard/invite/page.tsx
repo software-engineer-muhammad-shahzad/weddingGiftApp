@@ -1,16 +1,17 @@
 "use client"
 
-import { Bell, ChevronLeft, Copy, Settings, Share2, Download } from "lucide-react"
+import { Copy, Share2, Download } from "lucide-react"
 import Link from "next/link"
 import { ShagunLogo, WelcomeLogo } from "@/app/components/icons/Icons"
 import { handleShare } from "@/app/utils/handleShareQr"
 import { formatDateWithWeekday } from "@/app/utils/formatDate"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { useQrCode } from "@/app/features/dashboard/qrCode/hooks/useGetQrCodeUrl"
 import { getQrCodeImage } from "@/app/features/dashboard/qrCode/api/qrCodeApi"
 import { showSuccess } from "@/app/lib/toast"
 import QrHeaders from "@/app/features/dashboard/invite/QrHeaders"
 import Skeleton from "@/app/components/ui/Skeleton"
+import html2canvas from "html2canvas-pro"
 
 
 
@@ -18,6 +19,8 @@ const Page = () => {
 
     const { data, isLoading, error } = useQrCode()
     const [qrImageUrl, setQrImageUrl] = useState<string | null>(null)
+    const [isDownloading, setIsDownloading] = useState(false)
+    const inviteCardRef = useRef<HTMLDivElement>(null)
     const userData = useMemo(() => {
         if (!data) return null
 
@@ -46,14 +49,30 @@ const Page = () => {
         }
     }, [userData?.qrDownloadUrl])
 
-    const handleDownload = () => {
-        if (!userData || !qrImageUrl) return
-        const link = document.createElement("a")
-        link.href = qrImageUrl
-        link.download = `${userData.name}-qr-code.png`
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
+    const handleDownload = async () => {
+        if (!userData || !inviteCardRef.current || isDownloading) return
+
+        try {
+            setIsDownloading(true)
+
+            const canvas = await html2canvas(inviteCardRef.current, {
+                backgroundColor: "#2a0050",
+                scale: 2,
+                useCORS: true,
+                allowTaint: true,
+            })
+
+            const link = document.createElement("a")
+            link.href = canvas.toDataURL("image/png")
+            link.download = `${userData.name}-invite-card.png`
+            document.body.appendChild(link)
+            link.click()
+            document.body.removeChild(link)
+        } catch (err) {
+            console.error("Failed to download invite card:", err)
+        } finally {
+            setIsDownloading(false)
+        }
     }
 
     const handleCopy = () => {
@@ -140,7 +159,10 @@ const Page = () => {
                 {/* QR CARD */}
                 <div className="relative mt-6">
 
-                    <div className="bg-[#2a0050] rounded-2xl border border-white/10 shadow-2xl">
+                    <div
+                        ref={inviteCardRef}
+                        className="bg-[#2a0050] rounded-2xl border border-white/10 shadow-2xl"
+                    >
 
                         {/* Header */}
                         <div className="flex justify-between items-center p-4">
@@ -191,7 +213,8 @@ const Page = () => {
 
                         <button
                             onClick={handleDownload}
-                            className="w-11 h-11 rounded-full cursor-pointer border border-[#5FDA78] bg-[#2a0050] flex items-center justify-center"
+                            disabled={isDownloading}
+                            className="w-11 h-11 rounded-full cursor-pointer border border-[#5FDA78] bg-[#2a0050] flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             <Download className="text-white" size={18} />
                         </button>

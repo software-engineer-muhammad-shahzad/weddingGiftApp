@@ -1,8 +1,11 @@
+"use client"
+
 import Image from "next/image"
 import { useState } from "react"
 import { Check } from "lucide-react"
 import { buildContentImageUrl } from "@/app/utils/imageUrl"
 import { GreetingCardDTO } from "./types"
+import SelectCardModal from "./SelectCardModal"
 
 const FALLBACK_CARD_IMAGE = "/images/congrates-card.svg"
 
@@ -31,8 +34,25 @@ const CardThumbnail = ({ path }: { path: string }) => {
 }
 
 const WishCard = ({ greetingCards, selectedCardId, onSelectCard, addonAmount, currency }: openSelectImageProps) => {
+    const [previewCard, setPreviewCard] = useState<GreetingCardDTO | null>(null)
+
     const handleThumbnailClick = (card: GreetingCardDTO) => {
-        onSelectCard(selectedCardId === card.id ? null : card.id)
+        setPreviewCard(card)
+    }
+
+    const handleCloseModal = () => {
+        setPreviewCard(null)
+    }
+
+    const handleSelectCard = () => {
+        if (!previewCard) return
+        onSelectCard(previewCard.id)
+        setPreviewCard(null)
+    }
+
+    const handleRemoveCard = () => {
+        onSelectCard(null)
+        setPreviewCard(null)
     }
 
     return (
@@ -80,6 +100,17 @@ const WishCard = ({ greetingCards, selectedCardId, onSelectCard, addonAmount, cu
 
 
             </div>
+
+            <SelectCardModal
+                isModalOpen={!!previewCard}
+                setIsModalOpen={(open) => {
+                    if (!open) handleCloseModal()
+                }}
+                isSelected={previewCard?.id === selectedCardId}
+                onSelect={handleSelectCard}
+                onRemove={handleRemoveCard}
+                imageUrl={previewCard ? buildContentImageUrl(previewCard.cardImagePath) : undefined}
+            />
         </>
     )
 }

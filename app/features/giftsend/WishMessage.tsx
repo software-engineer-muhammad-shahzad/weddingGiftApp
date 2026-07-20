@@ -23,6 +23,7 @@ const WishMessage = ({ greetingText, setGreetingText }: WishMessageProps) => {
                   <textarea
                     value={greetingText}
                     onChange={(e) => setGreetingText(e.target.value)}
+                    maxLength={100}
                     className="w-full h-24 px-4 py-3 bg-[#330065] text-white text-lg rounded-[20px] border border-[#5FDA78] resize-none focus:outline-none focus:border-[#5FDA78] placeholder:text-gray-400"
                     placeholder="Write your greeting message here..."
                     rows={3}

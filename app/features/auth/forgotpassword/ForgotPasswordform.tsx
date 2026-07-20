@@ -14,16 +14,16 @@ const ForgotPasswordform = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-
         if (!email) {
             return
         }
 
-        const result = await handleForgotPassword({ email })
+        saveData<string>("email", email, "local");
 
+        const result = await handleForgotPassword({ email })
         if (result.success) {
             // ✅ SAVE EMAIL IN LOCAL STORAGE
-            saveData("email", email, "session")
+            
             router.push(`/verify-otp?source=${source}`)
         }
     }

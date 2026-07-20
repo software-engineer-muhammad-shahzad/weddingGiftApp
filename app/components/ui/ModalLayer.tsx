@@ -56,7 +56,7 @@ const ModalLayer = ({
 
           : position === "bottom"
 
-            ? "flex items-end justify-end"
+            ? "flex items-end justify-center"
 
             : "flex items-start justify-center"
 
