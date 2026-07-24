@@ -24,7 +24,8 @@ export interface CoupleDashboardData {
   partnerName: string
   eventDate: string
   receivedBalance: number
-  currency: string
+  currency: string | null
+  defaultCurrencySymbol: string | null
   unReadNotificationCount: number
   weeklyStats: WeeklyStat[]
   recentContributors: RecentContributor[]
