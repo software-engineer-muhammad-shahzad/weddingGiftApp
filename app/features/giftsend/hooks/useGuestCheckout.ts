@@ -11,7 +11,7 @@ import {
   GUEST_USER_ID_KEY,
   STRIPE_CUSTOMER_ID_KEY,
 } from "../constants"
-import type { GuestCheckoutPayload, GuestPaymentMethod } from "../types"
+import type { GuestCheckoutPayload, GuestPaymentMethod, SendGiftUserData } from "../types"
 import {
   extractPaymentMethodsFromGuestData,
   hasPaymentMethodData,
@@ -139,17 +139,14 @@ export const useGuestCheckout = () => {
       setError(null)
 
       const guestRes = await createGuestUser(payload)
-      const guestData = (guestRes as { data?: Record<string, unknown> }).data as
-        | (Record<string, unknown> & {
-            userId?: number | string
-            UserId?: number | string
-            fullName?: string
-            email?: string
-            contactNumber?: string
-            StripeCustomerId?: string | null
-            stripeCustomerId?: string | null
-          })
-        | undefined
+      const guestData = guestRes.data as SendGiftUserData & {
+        UserId?: number | string
+        StripeCustomerId?: string | null
+        fullName?: string
+        email?: string
+        contactNumber?: string
+        stripeCustomerId?: string | null
+      }
 
       if (!guestData) {
         throw new Error("Guest account could not be created. Please try again.")
