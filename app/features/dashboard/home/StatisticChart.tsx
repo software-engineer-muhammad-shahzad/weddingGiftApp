@@ -24,14 +24,10 @@ const StatisticChart: React.FC<StatisticChartProps> = ({ data, isLoading }) => {
   const hasData = chartData.some(item => item.value > 0)
 
   return (
-    <div className='mt-10'>
+    <div className='mt-10' style={{ marginTop: "15px !important" }}>
       <p className='font-medium text-white text-md pb-3'>Statistic</p>
 
-      <div className="w-full glass-card max-w-full h-43.5 lg:h-53.75 p-2 sm:p-6 rounded-2xl border border-[#5FDA78] backdrop-blur-[15px]"
-        style={{
-
-        }}
-      >
+      <div className="w-full glass-card max-w-full h-43.5 lg:h-53.75 p-2 sm:p-6 rounded-2xl border border-[#5FDA78] backdrop-blur-[15px]">
 
         {isLoading ? (
           <div className="w-full h-full flex items-end gap-3 px-2 pb-2">

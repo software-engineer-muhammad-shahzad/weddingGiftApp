@@ -2,7 +2,6 @@
 
 import { useRef, useState } from "react"
 import { X, Download } from "lucide-react"
-import Image from "next/image"
 import { QRCodeCanvas } from "qrcode.react"
 import html2canvas from "html2canvas-pro"
 import type { Invite } from "@/app/features/dashboard/types/coupleDashboard"
@@ -52,48 +51,56 @@ const Banner = ({ inviteData, coupleName = "OUR WEDDING", eventDate = "" }: Bann
 
     return (
         <>
-            <div className="flex w-full max-w-full items-center justify-start gap-2 xs:gap-3 xs2:gap-4 sm:gap-5 mt-2 sm:mt-6 md:mt-10 lg:mt-16">
-
-                {/* LEFT - QR Download */}
-                <div className="h-36 xs:h-44 xs2:h-52 sm:h-55 md:h-55 shrink-0 -mr-2 xs:-mr-3 xs2:-mr-4 sm:-mr-5">
-                    <button
+            <div className="mt-[clamp(0.5rem,2.5vw,4rem)] w-full max-w-full overflow-x-clip">
+                {/* Shared fluid height — both images fill it exactly */}
+                <div
+                    className="mx-auto flex w-full items-stretch justify-center overflow-hidden"
+                    style={{ height: "clamp(8.5rem, 46vw, 15.5rem)" }}
+                >
+                    {/* LEFT - QR */}
+                    <div
+                        role="button"
+                        tabIndex={0}
                         onClick={() => setIsQrModalOpen(true)}
-                        className="cursor-pointer h-full block leading-none"
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                                e.preventDefault()
+                                setIsQrModalOpen(true)
+                            }
+                        }}
+                        className="relative z-10 mt-2.5 flex h-full shrink-0 cursor-pointer items-stretch -mr-[clamp(0.75rem,4vw,2.5rem)]"
                         aria-label="Open QR download"
                     >
-                        <Image
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
                             src="/images/qr-code.png"
                             alt="QR Download"
-                            width={584}
-                            height={1152}
-                            className="h-full w-auto object-contain object-right"
-                            sizes="(max-width: 370px) 72px, (max-width: 400px) 80px, (max-width: 640px) 88px, 96px"
-                            priority
+                            className="pointer-events-none h-full w-auto max-h-full select-none"
+                            draggable={false}
                         />
-                    </button>
-                </div>
+                    </div>
 
-                {/* RIGHT - Invite Guest */}
-                <div className="relative flex-1 min-w-0 h-28 xs:h-32 xs2:h-36 sm:h-40 md:h-44 -ml-2 xs:-ml-4 xs2:-ml-6 sm:-ml-8 md:-ml-10">
-                    <Image
-                        src="/images/send-card.png"
-                        alt="Invite Guest"
-                        width={1320}
-                        height={820}
-                        className="h-full w-full object-contain object-left block"
-                        sizes="(max-width: 370px) 220px, (max-width: 400px) 260px, (max-width: 640px) 300px, 340px"
-                    />
+                    {/* RIGHT - Invite card */}
+                    <div className="relative z-0 ml-[30px] flex h-full min-w-0 flex-1 items-stretch">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                            src="/images/send-card.png"
+                            alt="Invite Guest"
+                            className="h-full w-auto max-h-full max-w-full object-contain object-left select-none"
+                            draggable={false}
+                        />
 
-                    {/* Invisible hit-area over the "Send" pill baked into the card image */}
-                    <button
-                        type="button"
-                        onClick={() => {
-                            if (!inviteData?.inviteUrl) return
-                            handleShare(coupleName, inviteData.inviteUrl)
-                        }}
-                        aria-label="Share invite"
-                        className="absolute right-[5%] bottom-[9%] w-[28%] h-[15%] z-10 cursor-pointer bg-transparent border-0 p-0"
-                    />
+                        {/* Invisible hit-area over the "Send" pill baked into the card image */}
+                        <button
+                            type="button"
+                            onClick={() => {
+                                if (!inviteData?.inviteUrl) return
+                                handleShare(coupleName, inviteData.inviteUrl)
+                            }}
+                            aria-label="Share invite"
+                            className="absolute right-[4%] bottom-[8%] z-10 h-[18%] min-h-10 w-[30%] min-w-10 cursor-pointer border-0 bg-transparent p-0 sm:right-[5%] sm:bottom-[9%] sm:h-[16%] sm:w-[28%]"
+                        />
+                    </div>
                 </div>
             </div>
 

@@ -32,8 +32,7 @@ const ContributorList = () => {
     };
 
     return (
-        <div className={`w-full glass-card mt-6 rounded-t-[40px] transition-all duration-300`}
-        >
+        <div className={`w-full glass-card mt-6 rounded-t-[40px] transition-all duration-300`} style={{ marginTop: "15px !important" }}>
             <div className='flex justify-center w-full'>
                 <Minus className='text-white mt-1 text-center text-3xl ' />
             </div>
@@ -85,7 +84,7 @@ const ContributorList = () => {
                                     </div>
                                 </div>
                                 {/* price */}
-                                <p className='font-medium text-md text-white'>{contributor.currency} {contributor.amount}</p>
+                                <p className='font-medium text-md text-white'>{contributor.defaultCurrencySymbol} {contributor.amount}</p>
                             </div>
                         ))}
                     </>

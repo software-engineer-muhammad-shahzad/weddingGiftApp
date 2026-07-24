@@ -16,8 +16,13 @@ const Balance = ({ data, isLoading }: BalanceProps) => {
             {isLoading ? (
                 <Skeleton className="h-12 sm:h-14 w-48" />
             ) : (
-                <h2 className="text-white  font-medium text-[45px] sm:text-[56px]">
-                    {data ? `${data.receivedBalance.toFixed(2)} ${data.currency}` : "0.00"}
+                <h2 className="text-white font-medium text-[45px] sm:text-[56px] inline-flex items-baseline gap-1.5">
+                    <span>{data ? data.receivedBalance.toFixed(2) : "0.00"}</span>
+                    {data?.defaultCurrencySymbol ? (
+                        <span className="text-lg sm:text-xl font-semibold leading-none">
+                            {data.defaultCurrencySymbol}
+                        </span>
+                    ) : null}
                 </h2>
             )}
         </div>

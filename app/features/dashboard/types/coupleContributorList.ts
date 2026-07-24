@@ -5,7 +5,7 @@ export interface ContributorItem {
   guestName: string | null
   guestProfilePic: string | null
   amount: number
-  currency: string
+  defaultCurrencySymbol: string | null
   messagePreview: string
   isRead: boolean
   resourceMetadata: ResourceMetadata
