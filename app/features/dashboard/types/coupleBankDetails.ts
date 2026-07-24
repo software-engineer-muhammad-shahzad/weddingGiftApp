@@ -4,6 +4,7 @@ export interface CoupleBankDetailsData {
   address: string
   currency: string
   accountNumber: string
+  dob?: string | null
 }
 
 export interface CoupleBankDetailsResponse {

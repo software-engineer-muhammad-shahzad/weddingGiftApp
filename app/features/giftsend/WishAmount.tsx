@@ -1,5 +1,3 @@
-import Input from "../../components/elements/Input"
-
 interface WishAmountProps {
   amount: string
   setAmount: (value: string) => void
@@ -8,6 +6,7 @@ interface WishAmountProps {
   wishingVideoAmount?: number
 }
 
+/** Allow left-to-right decimal entry, max 2 digits after the point. */
 const sanitizeAmountInput = (value: string) => {
   if (!value) return ""
 
@@ -62,22 +61,31 @@ const WishAmount = ({
             Enter Amount
           </p>
 
-          <Input
-            type="text"
-            inputMode="decimal"
-            placeholder={`00.00 ${currency}`}
-            value={amount}
-            onChange={(e) => handleAmountChange(e.target.value)}
-            onBlur={handleAmountBlur}
-            containerClassName="border-none"
-            className="text-center font-semibold text-[50px] py-2 outline-none w-full text-white placeholder:text-gray-600"
-          />
+          <div className="flex justify-center">
+            <div className="inline-flex items-baseline justify-center gap-1">
+              <input
+                type="text"
+                inputMode="decimal"
+                placeholder="00.00"
+                value={amount}
+                onChange={(e) => handleAmountChange(e.target.value)}
+                onBlur={handleAmountBlur}
+                size={Math.max((amount || "00.00").length, 5)}
+                className="bg-transparent border-none outline-none text-right font-semibold text-[50px] py-2 text-white placeholder:text-gray-600 min-w-0"
+              />
+              {currency ? (
+                <span className="shrink-0 font-semibold text-lg md:text-xl text-white leading-none">
+                  {currency}
+                </span>
+              ) : null}
+            </div>
+          </div>
         </div>
 
-        <div className="w-full h-px my-6 bg-linear-to-r from-[#30114E] via-white to-[#30114E]" />
+        <div className="w-full h-px my-6 bg-linear-to-r from-[#00114E] via-white to-[#00114E]" />
 
         <p className="text-white text-center text-lg md:text-xl font-normal px-4 pb-2">
-          Your Total is {total.toFixed(2)}
+          Your Total is {currency} {total.toFixed(2)}
         </p>
       </div>
     </div>

@@ -58,10 +58,7 @@ const WishCard = ({ greetingCards, selectedCardId, onSelectCard, addonAmount, cu
     return (
         <>
             {/* add wishing card */}
-            <div className="px-4 md:px-8 flex glass-card gap-4 flex-col py-8 border border-[#5FDA78] rounded-[20px]"
-                >
-
-
+            <div className="px-4 md:px-8 flex glass-card gap-4 flex-col py-8 border border-[#5FDA78] rounded-[20px]">
 
                 <div className="relative">
                     <p className="text-white text-start text-[16px] pb-6">
@@ -71,15 +68,18 @@ const WishCard = ({ greetingCards, selectedCardId, onSelectCard, addonAmount, cu
                     <div className="absolute bottom-0 left-0 w-full h-px
     bg-linear-to-r from-[#30114E] via-white to-[#30114E]" />
                 </div>
-                {/*wish card div  */}
-                <div className="grid grid-cols-4 gap-2 pt-4">
+                {/*wish card div — show 4 at a time, scroll horizontally for more */}
+                <div
+                    className="flex gap-2 pt-4 overflow-x-auto overscroll-x-contain snap-x snap-mandatory scroll-smooth pb-1"
+                    style={{ scrollbarWidth: "thin" }}
+                >
                     {greetingCards.length > 0 ? (
                         greetingCards.map((card) => (
                             <button
                                 key={card.id}
                                 type="button"
                                 onClick={() => handleThumbnailClick(card)}
-                                className={`relative rounded-md overflow-hidden cursor-pointer `}
+                                className="relative shrink-0 w-[calc((100%-1.5rem)/4)] snap-start rounded-md overflow-hidden cursor-pointer"
                             >
                                 <CardThumbnail path={card.cardImagePath} />
 
@@ -93,12 +93,9 @@ const WishCard = ({ greetingCards, selectedCardId, onSelectCard, addonAmount, cu
                             </button>
                         ))
                     ) : (
-                        <p className="col-span-4 text-white/70 text-sm">No wishing cards available</p>
+                        <p className="text-white/70 text-sm">No wishing cards available</p>
                     )}
                 </div>
-
-
-
             </div>
 
             <SelectCardModal

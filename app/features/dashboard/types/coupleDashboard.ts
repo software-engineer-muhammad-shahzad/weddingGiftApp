@@ -30,6 +30,8 @@ export interface CoupleDashboardData {
   recentContributors: RecentContributor[]
   invite: Invite
   latestAnnouncement?: string
+  hasBankAccount: boolean
+  profileImageUrl: string | null
 }
 
 export interface CoupleDashboardResponse {

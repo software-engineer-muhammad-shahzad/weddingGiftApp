@@ -4,6 +4,7 @@ export interface UpdateBankDetailsData {
   accountNumber: string
   address: string
   currency: string
+  dob: string
 }
 
 export interface UpdateBankDetailsResponse {

@@ -4,6 +4,7 @@ import { loadStripe, type StripeElementsOptions } from "@stripe/stripe-js"
 import { Elements } from "@stripe/react-stripe-js"
 import ModalLayer from "@/app/components/ui/ModalLayer"
 import StripeCardForm from "./StripeCardForm"
+import type { GuestPaymentMethod } from "./types"
 
 const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 const stripePromise = publishableKey ? loadStripe(publishableKey) : null
@@ -23,6 +24,7 @@ interface StripeCardModalProps {
   platformServiceFeeAmount?: number
   currency?: string
   greetingMediaType?: "Image" | "Video"
+  savedPaymentMethods?: GuestPaymentMethod[]
 }
 
 const StripeCardModal = ({
@@ -38,6 +40,7 @@ const StripeCardModal = ({
   platformServiceFeeAmount,
   currency,
   greetingMediaType,
+  savedPaymentMethods = [],
 }: StripeCardModalProps) => {
   if (!isModalOpen) return null
 
@@ -47,11 +50,11 @@ const StripeCardModal = ({
     <ModalLayer
       onClose={handleClose}
       modalHeight="auto"
-      modalWidth="w-[90%] max-w-[320px] sm:max-w-[420px] md:max-w-[440px]"
+      modalWidth="w-[92%] max-w-[420px] sm:max-w-[560px] md:max-w-[640px]"
       overlayColor="bg-[#171515EB]"
       position="center"
     >
-      <div className="bg-[#5FDA78] w-full max-h-[80vh] overflow-y-auto p-4 md:p-6 flex flex-col items-center justify-start">
+      <div className="bg-[#5FDA78] w-full max-h-[85vh] overflow-y-auto p-4 md:p-6 flex flex-col items-stretch justify-start">
         {stripePromise ? (
           <Elements stripe={stripePromise} options={elementsOptions}>
             <StripeCardForm
@@ -66,6 +69,7 @@ const StripeCardModal = ({
               platformServiceFeeAmount={platformServiceFeeAmount}
               currency={currency}
               greetingMediaType={greetingMediaType}
+              savedPaymentMethods={savedPaymentMethods}
             />
           </Elements>
         ) : (

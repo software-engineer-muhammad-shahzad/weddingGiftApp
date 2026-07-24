@@ -3,7 +3,9 @@
 import Image from "next/image";
 import { useState } from "react";
 import ModalLayer from "../../../components/ui/ModalLayer";
-import { ChevronLeft, Download, Share2, X } from "lucide-react";
+import { Download, Share2, X } from "lucide-react";
+import { showError, showSuccess } from "@/app/lib/toast";
+import { buildContentImageUrl } from "@/app/utils/imageUrl";
 import { MessageItemDTO } from "../types/coupleGreetings";
 
 interface AllTabProps {
@@ -34,11 +36,19 @@ const AllTab = ({ receivedGiftData, activeTab = "all" }: AllTabProps) => {
     if (!selectedData) return null;
 
     if (getMediaType(selectedData) === "video" && selectedData.wishingVideoPath) {
-      return { url: selectedData.wishingVideoPath, type: "video/mp4", extension: "mp4" };
+      return {
+        url: buildContentImageUrl(selectedData.wishingVideoPath) || selectedData.wishingVideoPath,
+        type: "video/mp4",
+        extension: "mp4",
+      };
     }
 
     if (selectedData.wishingCardPath) {
-      return { url: selectedData.wishingCardPath, type: "image/jpeg", extension: "jpg" };
+      return {
+        url: buildContentImageUrl(selectedData.wishingCardPath) || selectedData.wishingCardPath,
+        type: "image/jpeg",
+        extension: "jpg",
+      };
     }
 
     return null;
@@ -67,35 +77,58 @@ const AllTab = ({ receivedGiftData, activeTab = "all" }: AllTabProps) => {
 
   const handleShare = async () => {
     const media = getSelectedMedia();
-    if (!media) return;
+    if (!media?.url) {
+      showError("Nothing to share");
+      return;
+    }
+
+    const title = selectedData?.guestName ?? "Gift";
+    const text = selectedData?.wishingContent?.trim() || `Gift from ${title}`;
+    const shareUrl = media.url;
 
     try {
-      const response = await fetch(media.url);
-      const blob = await response.blob();
-      const file = new File([blob], `gift.${media.extension}`, { type: media.type });
+      // Mobile: try sharing the actual file when supported.
+      if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
+        try {
+          const response = await fetch(shareUrl, { mode: "cors" });
+          if (response.ok) {
+            const blob = await response.blob();
+            const mimeType = blob.type || media.type;
+            const file = new File([blob], `gift.${media.extension}`, { type: mimeType });
 
-      if (navigator.canShare?.({ files: [file] })) {
+            if (navigator.canShare?.({ files: [file] })) {
+              await navigator.share({
+                files: [file],
+                title,
+                text,
+              });
+              return;
+            }
+          }
+        } catch {
+          // Fall through to URL / clipboard share.
+        }
+
         await navigator.share({
-          files: [file],
-          title: selectedData?.guestName ?? "Gift",
-          text: selectedData?.wishingContent ?? "",
+          title,
+          text,
+          url: shareUrl,
         });
         return;
       }
 
-      if (navigator.share) {
-        await navigator.share({
-          title: selectedData?.guestName ?? "Gift",
-          text: selectedData?.wishingContent ?? "",
-          url: media.url,
-        });
-        return;
-      }
+      await navigator.clipboard.writeText(shareUrl);
+      showSuccess("Link copied to clipboard!");
+    } catch (error: unknown) {
+      const name = error instanceof Error ? error.name : "";
+      if (name === "AbortError") return;
 
-      await navigator.clipboard.writeText(media.url);
-      alert("Link copied to clipboard!");
-    } catch (error) {
-      console.error("Share failed:", error);
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        showSuccess("Link copied to clipboard!");
+      } catch {
+        showError("Share failed. Please try again.");
+      }
     }
   };
 
@@ -179,6 +212,7 @@ const AllTab = ({ receivedGiftData, activeTab = "all" }: AllTabProps) => {
 
 
               <button
+                type="button"
                 onClick={() => setIsModalOpen(false)}
                 className="cursor-pointer w-9 h-9 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors duration-200"
               >
@@ -228,12 +262,14 @@ const AllTab = ({ receivedGiftData, activeTab = "all" }: AllTabProps) => {
             {/* bottom actions */}
             <div className="flex justify-center gap-4 py-6">
               <button
+                type="button"
                 onClick={handleShare}
                 className="cursor-pointer border border-[#5FDA78] glass-card w-12 h-12 rounded-full flex items-center justify-center"
               >
                 <Share2 className="w-5 h-5" />
               </button>
               <button
+                type="button"
                 onClick={handleDownload}
                 className="cursor-pointer border border-[#5FDA78] glass-card w-12 h-12 rounded-full flex items-center justify-center"
               >

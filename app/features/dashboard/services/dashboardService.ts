@@ -30,7 +30,12 @@ export const getDashboardData = async (): Promise<CoupleDashboardData> => {
     throw new Error(response.statusMessage || "Failed to fetch dashboard")
   }
 
-  return response.data
+  const raw = response.data as CoupleDashboardData & { ProfileImageUrl?: string | null }
+
+  return {
+    ...response.data,
+    profileImageUrl: raw.profileImageUrl ?? raw.ProfileImageUrl ?? null,
+  }
 }
 
 // getContributorList
@@ -108,7 +113,16 @@ export const getCoupleBankDetailsData = async (): Promise<CoupleBankDetailsData 
       throw new Error(response.statusMessage || "Failed to fetch bank details")
     }
 
-    return response.data
+    const raw = response.data as CoupleBankDetailsData & {
+      Dob?: string | null
+      dateOfBirth?: string | null
+      DateOfBirth?: string | null
+    }
+
+    return {
+      ...raw,
+      dob: raw.dob ?? raw.Dob ?? raw.dateOfBirth ?? raw.DateOfBirth ?? null,
+    }
   } catch (err: any) {
     // Not set up yet — treat as an empty state, not an error.
     if (err?.response?.status === 404) {

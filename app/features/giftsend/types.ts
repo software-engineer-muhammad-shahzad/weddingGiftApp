@@ -25,16 +25,16 @@ export interface AnnouncementDTO {
 }
 
 export interface GuestInviteData {
-  // Not yet returned by /guest/invite/{publicSlug} — needs a backend change.
-  // Once added, this is the couple's numeric userId (used as `coupleId` for
-  // the wishing-video upload and as `recipientUserId` for the payment charge).
-  coupleUserId?: number
+  /** Couple's user id — used as recipientUserId for payment and coupleId for video upload. */
+  coupleUserId: number
   publicSlug: string
   fullName: string
   partnerName: string
   eventDate: string
   profileImageUrl: string | null
   currency: string
+  /** Display symbol from BE (e.g. £, $). Prefer this over currency code in UI. */
+  defaultCurrencySymbol?: string | null
   wishingCardAddonAmount: number
   wishingVideoAddonAmount: number
   platformServiceFeeAmount: number
@@ -49,6 +49,18 @@ export interface GuestInviteResponse {
   data: GuestInviteData
 }
 
+export interface GuestPaymentMethod {
+  id: number;
+  paymentMethodId: string;
+  cardLast4: string;
+  expMonth: number;
+  expYear: number;
+  cardBrand?: string | null;
+  isPrimary: boolean;
+  cardHolderName?: string | null;
+  email?: string | null;
+}
+
 export interface SendGiftUserData {
   displayId: string
   userId: number
@@ -56,6 +68,10 @@ export interface SendGiftUserData {
   partnerName: string
   contactNumber: string
   email: string
+  /** Present when returning guest already has a Stripe customer. */
+  stripeCustomerId?: string | null
+  /** Present when returning guest already has saved card(s). */
+  paymentMethod?: GuestPaymentMethod | GuestPaymentMethod[] | null
 }
 
 export interface SendGiftUserResponse {

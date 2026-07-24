@@ -82,9 +82,12 @@ apiClient.interceptors.response.use(
     const shouldLog = !(skipAuth && status === 401) && status !== 404
 
     if (shouldLog) {
+      const isNetworkError = !error?.response && error?.message === "Network Error"
       console.error(
         "API Error:",
-        error?.response?.data || error.message
+        isNetworkError
+          ? `Network Error — cannot reach ${baseURL || "(missing NEXT_PUBLIC_API_URL)"}. Check that the API is running, the local HTTPS certificate is trusted, and CORS allows this origin.`
+          : error?.response?.data || error.message
       );
     }
 

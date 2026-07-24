@@ -25,17 +25,22 @@ export const useVerifyOtp = (): UseVerifyOtpResult => {
 
         const payload: VerifyOtpPayload = { email, otp }
         const result = await asyncHandler(() => verifyOtpApi(payload))
-     
-        if (result.success) {
-            const successMessage =
-                result.data?.data?.message || result.data?.statusMessage || "OTP verified successfully."
+
+        if (!result.success) {
+            showError("OTP verification failed.")
+            setIsLoading(false)
+            return false
+        }
+
+        if (result.data?.data?.message === "OK") {
+            const successMessage = "OTP verified successfully."
             showSuccess(successMessage)
             removeData("email", "session")
             setIsLoading(false)
             return true
         }
 
-        showError(result.error)
+        showError("OTP verification failed.")
         setIsLoading(false)
         return false
     }, [])

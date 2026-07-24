@@ -28,8 +28,12 @@ const ConfirmPaymentModal = ({
 }: ConfirmPaymentModalProps) => {
   if (!isModalOpen) return null
 
-  const total =
-    giftAmount + (wishingCardAmount ?? 0) + (wishingVideoAmount ?? 0) + (platformServiceFeeAmount ?? 0)
+  const subtotal =
+    giftAmount + (wishingCardAmount ?? 0) + (wishingVideoAmount ?? 0)
+  const serviceFeePercent = platformServiceFeeAmount ?? 0
+  const serviceFeeAmount =
+    serviceFeePercent > 0 ? (subtotal * serviceFeePercent) / 100 : 0
+  const total = subtotal + serviceFeeAmount
 
   return (
     <ModalLayer
@@ -62,10 +66,12 @@ const ConfirmPaymentModal = ({
             </div>
           )}
 
-          {!!platformServiceFeeAmount && (
+          {serviceFeeAmount > 0 && (
             <div className="flex justify-between">
-              <span className="text-white/70">Service Fee</span>
-              <span>{currency} {platformServiceFeeAmount.toFixed(2)}</span>
+              <span className="text-white/70">
+                Service Fee ({serviceFeePercent.toFixed(2)}%)
+              </span>
+              <span>{currency} {serviceFeeAmount.toFixed(2)}</span>
             </div>
           )}
 

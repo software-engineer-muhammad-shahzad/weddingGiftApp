@@ -2,8 +2,13 @@ import endpoints from "@/app/services/endpoint"
 import { getRequest, postRequest } from "@/app/services/http"
 import { GuestCheckoutPayload, GuestInviteResponse, SendGiftUserResponse, StripeCustomerResponse } from "../types"
 
-export const getSendGiftUser = async (userId: number): Promise<SendGiftUserResponse> => {
-  return getRequest(endpoints.sendGift.sendGift.replace("{userid}", String(userId)))
+export const getSendGiftUser = async (
+  userId: number,
+  options?: { skipAuth?: boolean },
+): Promise<SendGiftUserResponse> => {
+  return getRequest(endpoints.sendGift.sendGift.replace("{userid}", String(userId)), {
+    skipAuth: options?.skipAuth,
+  })
 }
 
 export const getGuestInviteDetails = async (publicSlug: string): Promise<GuestInviteResponse> => {
@@ -11,9 +16,13 @@ export const getGuestInviteDetails = async (publicSlug: string): Promise<GuestIn
 }
 
 export const createGuestUser = async (payload: GuestCheckoutPayload): Promise<SendGiftUserResponse> => {
-  return postRequest(endpoints.sendGift.createUserServer, payload)
+  return postRequest(endpoints.sendGift.createUserServer, payload, { skipAuth: true })
 }
 
 export const createStripeCustomer = async (guestId: number): Promise<StripeCustomerResponse> => {
-  return postRequest(endpoints.sendGift.createUserStripe.replace("{guestid}", String(guestId)))
+  return postRequest(
+    endpoints.sendGift.createUserStripe.replace("{guestid}", String(guestId)),
+    {},
+    { skipAuth: true },
+  )
 }

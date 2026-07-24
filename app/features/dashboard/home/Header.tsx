@@ -6,9 +6,10 @@ import Link from "next/link"
 import { useEffect, useState } from "react"
 import type { CoupleDashboardData } from "@/app/features/dashboard/types/coupleDashboard"
 import type { LoginData } from "@/app/features/auth/types/login"
-import { getData } from "@/app/utils/storage/storageHelper"
 import { markAllNotificationsRead } from "@/app/features/dashboard/services/dashboardService"
 import Skeleton from "@/app/components/ui/Skeleton"
+import { buildContentImageUrl } from "@/app/utils/imageUrl"
+import { getData } from "@/app/utils/storage/storageHelper"
 
 interface HeaderProps {
     data: CoupleDashboardData | null
@@ -17,15 +18,17 @@ interface HeaderProps {
 
 const Header = ({ data, isLoading }: HeaderProps) => {
     const unreadCount = data?.unReadNotificationCount ?? 0
-
-    // localStorage isn't available during SSR, so read it after mount to
-    // avoid a hydration mismatch between the server and client markup.
     const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null)
-    useEffect(() => {
-        setProfileImageUrl(getData<LoginData>("authData", "local")?.profileImageUrl ?? null)
-    }, [])
-
     const firstLetter = data?.fullName?.trim().charAt(0).toUpperCase() || "?"
+
+    useEffect(() => {
+        if (data?.profileImageUrl) {
+            setProfileImageUrl(data?.profileImageUrl)
+            return;
+        }
+
+        setProfileImageUrl(getData<LoginData>("authData", "local")?.profileImageUrl ?? null);
+    }, [data?.profileImageUrl])
 
     return (
         <div className="flex justify-between items-center">
@@ -39,6 +42,7 @@ const Header = ({ data, isLoading }: HeaderProps) => {
                             width={84}
                             height={84}
                             className="w-full h-full object-cover"
+                            unoptimized
                         />
                     ) : (
                         <div className="w-full h-full flex items-center justify-center bg-[#5FDA7833] text-white font-medium">

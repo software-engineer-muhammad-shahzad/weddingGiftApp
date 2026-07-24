@@ -9,6 +9,30 @@ import UpdateBankInfo from "@/app/features/dashboard/bankinformation/UpdateBankI
 import Skeleton from "@/app/components/ui/Skeleton"
 import { UpdateBankDetailsData } from "@/app/features/dashboard/types/UpdateBankDetails"
 
+const toDateInputValue = (value?: string | null) => {
+  if (!value) return ""
+  const trimmed = String(value).trim()
+  if (/^\d{4}-\d{2}-\d{2}/.test(trimmed)) return trimmed.slice(0, 10)
+
+  const parsed = new Date(trimmed)
+  if (Number.isNaN(parsed.getTime())) return ""
+
+  const year = parsed.getFullYear()
+  const month = String(parsed.getMonth() + 1).padStart(2, "0")
+  const day = String(parsed.getDate()).padStart(2, "0")
+  return `${year}-${month}-${day}`
+}
+
+const getTodayDateInputValue = () => {
+  const now = new Date()
+  const year = now.getFullYear()
+  const month = String(now.getMonth() + 1).padStart(2, "0")
+  const day = String(now.getDate()).padStart(2, "0")
+  return `${year}-${month}-${day}`
+}
+
+const dobDateInputClassName =
+  "mt-1 w-full max-w-xs rounded-lg bg-transparent border-0 px-0 py-1 font-medium text-white [color-scheme:dark] cursor-default [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-100 [&::-webkit-calendar-picker-indicator]:invert"
 
 const Page = () => {
   const { data, isLoading, error, refetch } = useCoupleBankDetails()
@@ -101,11 +125,22 @@ const Page = () => {
               </p>
             </div>
 
-            <div className="flex flex-col py-3 px-5">
+            <div className="flex flex-col border-b border-[#F1F1F11A] py-3 px-5">
               <p className="text-sm text-[#EEEEEE]">Address</p>
               <p className="font-medium text-[#EEEEEE]">
                 {data?.address || "N/A"}
               </p>
+            </div>
+
+            <div className="flex flex-col border-b border-[#F1F1F11A] py-3 px-5">
+              <p className="text-sm text-[#EEEEEE]">DOB</p>
+              <input
+                type="date"
+                value={toDateInputValue(data?.dob)}
+                max={getTodayDateInputValue()}
+                readOnly
+                className={dobDateInputClassName}
+              />
             </div>
 
             <div className="flex flex-col py-3 px-5">
