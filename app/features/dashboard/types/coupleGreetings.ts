@@ -18,6 +18,7 @@ export interface MessageItemDTO {
   guestName: string | null;
   guestProfilePic: string | null;
   amount: number;
+  defaultCurrencySymbol: string | null;
   wishingContent: string;
   wishingCardPath: string;
   wishingVideoPath: string;

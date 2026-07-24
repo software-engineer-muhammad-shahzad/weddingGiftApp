@@ -1,7 +1,8 @@
 import { useState } from "react"
 import { ResetPasswordPayload } from "../types/setPassword"
 import { resetPassword } from "../api/authApi"
-
+import { showError } from "@/app/lib/toast"
+import { handleError } from "@/app/utils/errorHandler"
 
 const useResetPassword = () => {
     const [isLoading, setIsLoading] = useState(false)
@@ -14,10 +15,11 @@ const useResetPassword = () => {
             setError(null)
             await resetPassword(payload)
             setIsSuccess(true)
-
-            return true;
+            return true
         } catch (err) {
-            setError("Something went wrong")
+            const { error: errorMessage } = handleError(err)
+            setError(errorMessage)
+            showError(errorMessage || "Something went wrong")
             return false
         } finally {
             setIsLoading(false)

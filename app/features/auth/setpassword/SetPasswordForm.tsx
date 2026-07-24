@@ -12,7 +12,8 @@ import {
   type SetPasswordFormValues,
 } from "../validations/setPasswordSchema"
 
-import { getData } from "@/app/utils/storage/storageHelper"
+import { showError } from "@/app/lib/toast"
+import { getData, removeData } from "@/app/utils/storage/storageHelper"
 
 interface SetPasswordFormProps {
   setIsModalOpen: (value: boolean) => void
@@ -20,7 +21,7 @@ interface SetPasswordFormProps {
   email: string | null
 }
 
-const SetPasswordForm = ({ setIsModalOpen }: SetPasswordFormProps) => {
+const SetPasswordForm = ({ setIsModalOpen, email: emailProp }: SetPasswordFormProps) => {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const { handleResetPassword, isLoading } = useResetPassword()
@@ -39,11 +40,13 @@ const SetPasswordForm = ({ setIsModalOpen }: SetPasswordFormProps) => {
     },
   })
 
-
   const onSubmit = async (values: SetPasswordFormValues) => {
-    const email = getData<string>("email", "local")
+    const email = emailProp || getData<string>("email", "local")
 
-    if (!email) return
+    if (!email) {
+      showError("Email not found. Please restart the forgot password flow.")
+      return
+    }
 
     const success = await handleResetPassword({
       email,
@@ -52,6 +55,7 @@ const SetPasswordForm = ({ setIsModalOpen }: SetPasswordFormProps) => {
     })
 
     if (success) {
+      removeData("email", "local")
       setIsModalOpen(true)
     }
   }

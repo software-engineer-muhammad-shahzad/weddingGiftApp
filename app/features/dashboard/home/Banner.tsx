@@ -9,6 +9,7 @@ import { ShagunLogo, WelcomeLogo } from "@/app/components/icons/Icons"
 import { handleShare } from "@/app/utils/handleShareQr"
 import ModalLayer from "@/app/components/ui/ModalLayer"
 import Button from "@/app/components/elements/Button"
+import { formatDateWithWeekday } from "@/app/utils/formatDate"
 
 const QR_CANVAS_ID = "banner-qr-code-canvas"
 
@@ -151,7 +152,7 @@ const Banner = ({ inviteData, coupleName = "OUR WEDDING", eventDate = "" }: Bann
                                     </div>
                                 </div>
 
-                                <p className="text-center text-white/70 text-sm pb-4">{eventDate}</p>
+                                <p className="text-center text-white/70 text-sm pb-4">{formatDateWithWeekday(eventDate)}</p>
                             </div>
 
                             {/* Download button */}

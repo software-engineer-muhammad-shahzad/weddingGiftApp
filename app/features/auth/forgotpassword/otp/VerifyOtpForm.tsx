@@ -29,7 +29,9 @@ const VerifyOtpForm = ({ source, showPaymentSuccess, setShowPaymentSuccess }: Ve
             return
         }
 
-        const isSuccess = await verifyOtp(code)
+        const isSuccess = await verifyOtp(code, {
+            keepEmail: source === "forgot-password",
+        })
         if (!isSuccess) return
 
         if (source === "payment") {

@@ -19,7 +19,7 @@ const Page = () => {
 
     return (
 
-        <div className="bg-[#350366] min-h-screen w-full py-10 lg:py-15.5 px-6 lg:px-20 overflow-auto">
+        <div className="relative bg-[#350366] min-h-screen w-full py-10 lg:py-15.5 px-6 lg:px-20 overflow-auto">
 
             {/* SUCCESS MODAL */}
             {isModalOpen && (
@@ -81,7 +81,7 @@ const Page = () => {
             )}
 
             {/* CONTENT */}
-            <div className="flex md:flex-row md:mt-14 flex-col w-full h-full md:items-center relative">
+            <div className="relative z-10 flex md:flex-row md:mt-14 flex-col w-full h-full md:items-center">
 
                 {/* LEFT */}
                 <div className="flex-1">
@@ -102,11 +102,11 @@ const Page = () => {
             </div>
 
             {/* BG IMAGE */}
-            <div className="fixed -top-22.5 right-0 md:top-10 md:left-0 md:right-auto">
+            <div className="pointer-events-none fixed -top-22.5 right-0 z-0 md:top-10 md:left-0 md:right-auto" aria-hidden>
 
                 <Image
                     src="/images/bg-images/left-rainbow.png"
-                    alt="Rainbow"
+                    alt=""
                     width={700}
                     height={700}
                     loading="eager"

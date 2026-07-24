@@ -197,7 +197,7 @@ const Page = () => {
 
                         {/* DATE — add pb-8 to make space for buttons */}
                         <p className="text-center text-white/70 text-sm pb-8">
-                            {userData.date}
+                            {formatDateWithWeekday(userData.date)}
                         </p>
 
                     </div>

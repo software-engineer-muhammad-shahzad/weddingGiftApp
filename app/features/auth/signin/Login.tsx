@@ -41,8 +41,8 @@ const Login = () => {
   }
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-[#350366] text-white">
-      <div className="w-full max-w-7xl p-4 sm:p-6 lg:p-8">
+    <div className="relative min-h-screen w-full flex items-center justify-center bg-[#350366] text-white">
+      <div className="relative z-10 w-full max-w-7xl p-4 sm:p-6 lg:p-8">
         <div className="bg-[#350366] px-1 py-18   sm:p-6 lg:p-8 flex flex-col sm:flex-row  sm:gap-6 lg:gap-8 rounded-lg">
 
           {/* Left */}
@@ -110,10 +110,10 @@ const Login = () => {
           </form>
         </div>
       </div>
-      <div className="fixed -top-22.5 right-0 md:top-10 md:left-0 md:right-auto">
+      <div className="pointer-events-none fixed -top-22.5 right-0 z-0 md:top-10 md:left-0 md:right-auto" aria-hidden>
         <Image
           src="/images/bg-images/left-rainbow.png"
-          alt="Rainbow"
+          alt=""
           width={700}
           height={700}
           loading="eager"

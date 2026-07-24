@@ -156,7 +156,7 @@ const AllTab = ({ receivedGiftData, activeTab = "all" }: AllTabProps) => {
               <div className="flex flex-col gap-2">
                 <p className="text-white text-xs font-semibold">
                   {item.guestName}
-                  <span className="ms-2">{item.amount}</span>
+                  <span className="ms-2">{item.defaultCurrencySymbol} {item.amount}</span>
                 </p>
 
                 <p className="text-white text-[11px] font-normal">
