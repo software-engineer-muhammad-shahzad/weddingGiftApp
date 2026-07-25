@@ -10,11 +10,12 @@ import {
 } from "@stripe/react-stripe-js"
 import type { StripeElementStyle } from "@stripe/stripe-js"
 import Button from "@/app/components/elements/Button"
-import { showError, showSuccess } from "@/app/lib/toast"
+import { showError } from "@/app/lib/toast"
 import { getData, saveData } from "@/app/utils/storage/storageHelper"
 import { getSendGiftUser } from "./api/sendGiftApi"
 import { attachPaymentMethod, createCard, makePayment } from "./api/paymentApi"
 import ConfirmPaymentModal from "./ConfirmPaymentModal"
+import PaymentSucessfulModal from "./paymentflow/PaymentSucessfulModal"
 import {
   GUEST_EMAIL_KEY,
   GUEST_FULL_NAME_KEY,
@@ -22,7 +23,7 @@ import {
   GUEST_USER_ID_KEY,
   STRIPE_CUSTOMER_ID_KEY,
 } from "./constants"
-import type { GuestPaymentMethod } from "./types"
+import type { ChargePaymentData, GuestPaymentMethod } from "./types"
 import {
   extractPaymentMethodsFromGuestData,
   formatCardExpiry,
@@ -32,6 +33,7 @@ import {
   hasPaymentMethodData,
   normalizePaymentMethods,
 } from "./utils/paymentMethod"
+import { normalizeChargePaymentData } from "./utils/paymentReceipt"
 
 const ADD_NEW_CARD_VALUE = "__add_new_card__"
 
@@ -109,6 +111,8 @@ const StripeCardForm = ({
   const [isCharging, setIsCharging] = useState(false)
   const [pendingCharge, setPendingCharge] = useState<PendingCharge | null>(null)
   const [showNewCardFields, setShowNewCardFields] = useState(false)
+  const [showPaymentSuccess, setShowPaymentSuccess] = useState(false)
+  const [paymentReceipt, setPaymentReceipt] = useState<ChargePaymentData | null>(null)
 
   const initialCards = useMemo(
     () => mergeCardLists(normalizePaymentMethods(savedPaymentMethods), readStoredPaymentMethods()),
@@ -366,7 +370,7 @@ const StripeCardForm = ({
     setError(null)
 
     try {
-      await makePayment({
+      const response = await makePayment({
         recipientUserId,
         guestUserId: pendingCharge.guestUserId,
         amount: parsedAmount,
@@ -381,9 +385,18 @@ const StripeCardForm = ({
         greetingMediaType,
       })
 
-      showSuccess("Payment successful")
+      const receipt =
+        normalizeChargePaymentData(response?.data) ??
+        normalizeChargePaymentData(response)
+
+      if (!receipt) {
+        throw new Error("Payment succeeded but receipt data is missing.")
+      }
+
+      setPaymentReceipt(receipt)
       setIsConfirmOpen(false)
-      onClose()
+      setPendingCharge(null)
+      setShowPaymentSuccess(true)
     } catch (err: any) {
       const apiMessage =
         err?.response?.data?.message ||
@@ -397,6 +410,12 @@ const StripeCardForm = ({
     } finally {
       setIsCharging(false)
     }
+  }
+
+  const handleReceiptDone = () => {
+    setShowPaymentSuccess(false)
+    setPaymentReceipt(null)
+    onClose()
   }
 
   const handleCancelPayment = () => {
@@ -542,6 +561,13 @@ const StripeCardForm = ({
         wishingCardAmount={wishingCardAmount}
         wishingVideoAmount={wishingVideoAmount}
         platformServiceFeeAmount={platformServiceFeeAmount}
+      />
+
+      <PaymentSucessfulModal
+        showPaymentSuccess={showPaymentSuccess}
+        setShowPaymentSuccess={setShowPaymentSuccess}
+        receipt={paymentReceipt}
+        onDone={handleReceiptDone}
       />
     </div>
   )

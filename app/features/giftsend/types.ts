@@ -143,10 +143,25 @@ export interface MakePaymentPayload {
   wishingContent?: string
 }
 
+export interface ChargePaymentData {
+  transactionNumber: string
+  paymentDate: string
+  senderName: string
+  senderAccountNo: string | null
+  receiverName: string
+  receiverAccountNo: string | null
+  giftAmount: number
+  platformFee: number
+  stripeFee: number
+  netToRecipient: number,
+  defaultCurrencySymbol: string,
+  defaultCurrency: string,
+}
+
 export interface MakePaymentResponse {
   statusCode: number
   statusMessage: string
-  data: any
+  data: ChargePaymentData | null
 }
 
 export interface UploadWishingVideoData {

@@ -1,57 +1,154 @@
+"use client"
+
+import { useRef, useState } from "react"
 import Image from "next/image"
+import { Check, Copy } from "lucide-react"
+import html2canvas from "html2canvas-pro"
+import { showError, showSuccess } from "@/app/lib/toast"
+import type { ChargePaymentData } from "../types"
+import {
+  formatReceiptAmount,
+  formatReceiptDateTime,
+  getReceiptFeeTotal,
+} from "../utils/paymentReceipt"
 import PaymentMakerDetail from "./PaymentMakerDetail"
 
-const PaymentSucessfull = () => {
-  
+interface PaymentSucessfullProps {
+  receipt: ChargePaymentData
+  onDone: () => void
+}
+
+const PaymentSucessfull = ({
+  receipt,
+  onDone,
+}: PaymentSucessfullProps) => {
+  const receiptRef = useRef<HTMLDivElement>(null)
+  const [isDownloading, setIsDownloading] = useState(false)
+  const feeTotal = getReceiptFeeTotal(receipt)
+  const txnId = receipt.transactionNumber?.trim() || ""
+
+  const handleCopyTxnId = async () => {
+    if (!txnId) return
+
+    try {
+      await navigator.clipboard.writeText(txnId)
+      showSuccess("Transaction ID copied")
+    } catch {
+      showError("Failed to copy transaction ID")
+    }
+  }
+
+  const handleDownloadPng = async () => {
+    if (!receiptRef.current || isDownloading) return
+
+    try {
+      setIsDownloading(true)
+
+      const canvas = await html2canvas(receiptRef.current, {
+        backgroundColor: "#330065",
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        ignoreElements: (el) =>
+          el instanceof HTMLElement &&
+          el.hasAttribute("data-receipt-actions"),
+      })
+
+      const link = document.createElement("a")
+      link.href = canvas.toDataURL("image/png")
+      link.download = `payment-receipt-${receipt.transactionNumber || "shagun"}.png`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    } catch (err) {
+      console.error("Failed to download receipt:", err)
+      showError("Failed to download receipt. Please try again.")
+    } finally {
+      setIsDownloading(false)
+    }
+  }
 
   return (
-    <div >
-
-      <div className="flex  gap-4  ">
-        <div className="w-14 h-14">
-          <Image src="/images/shagun-logo.svg" alt="shagun-logo" width={100} height={100} />
+    <div ref={receiptRef} className="w-full flex flex-col bg-[#330065] p-1">
+      <div className="flex items-center gap-3">
+        <div className="w-12 h-12 shrink-0">
+          <Image
+            src="/images/shagun-logo.svg"
+            alt="Shagun Direct"
+            width={48}
+            height={48}
+          />
         </div>
-
-        <div className="flex flex-col gap-2 text-white">
-          <p className="font-semibold text-xl">Shagun Direct</p>
-          <p className="font-normal text-sm">Skip the Envelope, Send the Love.</p>
-        </div>
-      </div>
-      {/* payment successfull logo */}
-
-      <div className="flex  justify-center py-8">
-        <Image src="/images/paymentSuccessful.png" alt="" width={100} height={100} />
-      </div>
-      {/* payment successfull */}
-      <div className="flex flex-col gap-2  items-center mb-8">
-        <p className="text-white font-semibold text-[26px]">Payment Successful!</p>
-        <p className="text-[#5FDA78] font-medium text-sm">2 Feb, 2026 | 10:30 PM | Trx ID: 019282011</p>
-      </div>
-      {/*  amount*/}
-
-      <div className="flex flex-col  glass-card  gap-6  px-4  py-4 border border-[#5FDA78] rounded-[20px]"
-
-
-      >
-
-        {/* amount input */}
-        <div className="relative px-8">
-
-
-          {/* input */}
-          <input type="text" placeholder="300.50 £" className="text-center  py-2 border-none  outline-none w-full text-white placeholder:text-white " />
-
-          <div className="absolute bottom-0 left-0 w-full h-px 
-       bg-linear-to-r from-[#30114E] via-white to-[#30114E]" />
-        </div>
-
-        <div className="flex justify-between">
-          <p className="text-white text-[18px]">Fee</p>
-          <p className="text-white text-[18px]">1.00</p>
+        <div className="flex flex-col text-white">
+          <p className="font-semibold text-lg sm:text-xl leading-tight">
+            Shagun Direct
+          </p>
+          <p className="font-normal text-xs sm:text-sm text-white/80">
+            Skip the Envelope, Send the Love.
+          </p>
         </div>
       </div>
-      {/* payment maker details */}
-      <PaymentMakerDetail />
+
+      <div className="flex justify-center pt-8 pb-4">
+        <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-[#5FDA78] flex items-center justify-center">
+          <Check className="w-10 h-10 sm:w-12 sm:h-12 text-white stroke-[3]" />
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-2 items-center mb-6 sm:mb-8">
+        <p className="text-white font-semibold text-2xl sm:text-[26px] text-center">
+          Payment Successful!
+        </p>
+        <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[#B8C4B0] font-medium text-xs sm:text-sm px-2">
+          <span>{formatReceiptDateTime(receipt.paymentDate)}</span>
+          {txnId ? (
+            <>
+              <span aria-hidden>|</span>
+              <span className="inline-flex items-center gap-1.5 max-w-full">
+                <span className="truncate">{txnId}</span>
+                <button
+                  type="button"
+                  data-receipt-actions
+                  onClick={handleCopyTxnId}
+                  className="shrink-0 text-[#5FDA78] hover:text-white transition-colors cursor-pointer"
+                  aria-label="Copy transaction ID"
+                  title="Copy transaction ID"
+                >
+                  <Copy className="w-3.5 h-3.5" />
+                </button>
+              </span>
+            </>
+          ) : null}
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-4 px-4 py-4 border border-white/25 rounded-[20px] bg-white/5">
+        <div className="relative px-2 pb-3">
+          <p className="text-center text-white font-semibold text-2xl sm:text-3xl tracking-wide">
+            {formatReceiptAmount(receipt.netToRecipient)}
+            {receipt.defaultCurrencySymbol ? (
+              <span className="ms-1 text-base sm:text-lg font-medium align-top">
+                {receipt.defaultCurrencySymbol}
+              </span>
+            ) : null}
+          </p>
+          <div className="absolute bottom-0 left-0 w-full h-px bg-linear-to-r from-[#30114E] via-white to-[#30114E]" />
+        </div>
+
+        <div className="flex justify-between items-center">
+          <p className="text-white text-base sm:text-lg">Fee</p>
+          <p className="text-white text-base sm:text-lg">
+            {formatReceiptAmount(feeTotal)}
+          </p>
+        </div>
+      </div>
+
+      <PaymentMakerDetail
+        receipt={receipt}
+        onDone={onDone}
+        onDownload={handleDownloadPng}
+        isDownloading={isDownloading}
+      />
     </div>
   )
 }
