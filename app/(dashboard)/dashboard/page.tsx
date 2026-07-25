@@ -38,7 +38,7 @@ const page = () => {
       </div>
       <div className="fixed inset-x-0 bottom-20 md:bottom-18 z-110 flex justify-center pointer-events-none">
         <div className="relative w-full max-w-200">
-          <div className="absolute right-6 cursor-pointer pointer-events-auto" style={{ marginBottom: "0px !important;bottom: 0px !important;" }} onClick={() => setIsSupportOpen(true)}>
+          <div className="absolute right-6 bottom-0 cursor-pointer pointer-events-auto" onClick={() => setIsSupportOpen(true)}>
             <Image src="/images/support-icon.svg" alt="" width={46} height={46} />
           </div>
         </div>
