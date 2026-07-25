@@ -16,7 +16,7 @@ import { loginSchema, type LoginFormValues } from "@/app/features/auth/validatio
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false)
   const router = useRouter()
-  const { handleLogin, isLoading, error } = useLogin()
+  const { handleLogin, isLoading } = useLogin()
 
   const {
     register,
@@ -94,12 +94,6 @@ const Login = () => {
                 {isLoading ? "Signing in..." : "Sign In"}
               </Button>
             </div>
-
-            {error && (
-              <div className="mt-4 text-red-400 text-sm text-center">
-                {error}
-              </div>
-            )}
 
             <p className="text-sm text-center  text-[#C5C5C5] mt-6">
               Don’t have an account?

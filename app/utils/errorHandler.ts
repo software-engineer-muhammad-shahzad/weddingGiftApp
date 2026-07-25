@@ -6,19 +6,45 @@ export const getErrorMessage = (error: any): string => {
     return error
   }
 
-  if (error?.response?.data?.message) {
-    return error.response.data.message
+  const data = error?.response?.data
+
+  // Prefer nested payload message (common API shape: { statusMessage: "BadRequest", data: "..." })
+  if (typeof data?.data === "string" && data.data.trim()) {
+    return data.data
   }
 
-  if (error?.response?.data?.statusMessage) {
-    return error.response.data.statusMessage
+  
+  if (typeof data?.error === "string" && data.error.trim()) {
+    return data.error
   }
 
-  if (error?.message) {
+  const statusMessage =
+    typeof data?.statusMessage === "string" ? data.statusMessage.trim() : ""
+  if (statusMessage && !isGenericStatusLabel(statusMessage)) {
+    return statusMessage
+  }
+
+  if (typeof data?.title === "string" && data.title.trim() && !isGenericStatusLabel(data.title)) {
+    return data.title
+  }
+
+  if (error?.message && !/^Request failed with status code \d+$/i.test(error.message)) {
     return error.message
   }
 
-  return "An error occurred. Please try again."
+  return statusMessage || "An error occurred. Please try again."
+}
+
+const isGenericStatusLabel = (value: string): boolean => {
+  const normalized = value.replace(/\s+/g, "").toLowerCase()
+  return [
+    "badrequest",
+    "unauthorized",
+    "forbidden",
+    "notfound",
+    "internalservererror",
+    "error",
+  ].includes(normalized)
 }
 
 /**
