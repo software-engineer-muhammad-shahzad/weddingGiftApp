@@ -84,7 +84,7 @@ const ContributorList = () => {
                                     </div>
                                 </div>
                                 {/* price */}
-                                <p className='font-medium text-md text-white'>{contributor.defaultCurrencySymbol} {contributor.amount}</p>
+                                <p className='font-medium text-md text-white'>{contributor.defaultCurrencySymbol} {contributor.amount.toFixed(2)}</p>
                             </div>
                         ))}
                     </>

@@ -12,12 +12,15 @@ import { showSuccess } from "@/app/lib/toast"
 import QrHeaders from "@/app/features/dashboard/invite/QrHeaders"
 import Skeleton from "@/app/components/ui/Skeleton"
 import html2canvas from "html2canvas-pro"
+import { useDashboard } from "@/app/features/dashboard/hooks/useDashboard"
 
 
 
 const Page = () => {
 
     const { data, isLoading, error } = useQrCode()
+    const { data: dashboardData } = useDashboard()
+    const unReadNotificationCount = dashboardData?.unReadNotificationCount ?? 0
     const [qrImageUrl, setQrImageUrl] = useState<string | null>(null)
     const [isDownloading, setIsDownloading] = useState(false)
     const inviteCardRef = useRef<HTMLDivElement>(null)
@@ -28,10 +31,9 @@ const Page = () => {
 
         return {
             name: data.coupleName.toUpperCase(),
-            date: formatDateWithWeekday(data.coupleEventDate),
+            date: data.coupleEventDate,
             inviteUrl: inviteUrl,
             qrDownloadUrl: data.qrDownloadUrl,
-            notificationCount: 1,
         }
     }, [data])
 
@@ -85,7 +87,7 @@ const Page = () => {
         return (
             <div className="flex justify-center min-h-screen bg-[#330065] px-4">
                 <div className="max-w-[390px] w-full flex flex-col pt-10">
-                    <QrHeaders />
+                    <QrHeaders unReadNotificationCount={unReadNotificationCount} />
 
                     <div className="mt-6">
                         <Skeleton className="h-11 w-full rounded-full" />
@@ -136,7 +138,7 @@ const Page = () => {
 
                 {/* Header */}
 
-                <QrHeaders />
+                <QrHeaders unReadNotificationCount={unReadNotificationCount} />
                 {/* Invite URL */}
                 <div className="mt-6">
                     <div className="flex items-center justify-between bg-white/10 border border-white/20 rounded-full px-4 py-2">

@@ -1,6 +1,6 @@
 export interface WeeklyStat {
   dayLabel: string
-  amount: number
+  amount: any
 }
 
 export interface RecentContributor {
@@ -31,6 +31,7 @@ export interface CoupleDashboardData {
   recentContributors: RecentContributor[]
   invite: Invite
   latestAnnouncement?: string
+  latestAnnouncementId : number
   hasBankAccount: boolean
   profileImageUrl: string | null
 }

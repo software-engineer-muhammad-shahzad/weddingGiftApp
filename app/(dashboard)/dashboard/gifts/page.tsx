@@ -6,9 +6,8 @@ import Tabs from "@/app/features/dashboard/gifts/Tabs";
 import FooterAppShare from "@/app/features/dashboard/home/FooterAppShare";
 import AllTab from "@/app/features/dashboard/gifts/AllTab";
 import { useCoupleGreetings } from "@/app/features/dashboard/hooks/useGetCoupleGreetings";
+import { useDashboard } from "@/app/features/dashboard/hooks/useDashboard";
 import Skeleton from "@/app/components/ui/Skeleton";
-
-// import { useCoupleGreetings } from "@/app/hooks/useCoupleGreetings";
 
 const Page = () => {
   const {
@@ -19,11 +18,12 @@ const Page = () => {
     setSearch,
     loading,
   } = useCoupleGreetings();
+  const { data: dashboardData } = useDashboard();
 
   return (
     <div className="flex justify-center bg-[#330065] min-h-screen overflow-auto w-full mx-auto pt-10 px-6 md:px-10 max-w-382.5">
       <div className="max-w-150 w-full">
-        <Header />
+        <Header unReadNotificationCount={dashboardData?.unReadNotificationCount ?? 0} />
 
         <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
 

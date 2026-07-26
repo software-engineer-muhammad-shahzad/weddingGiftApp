@@ -152,7 +152,7 @@ const WishVideo = ({
         <div
           role="button"
           tabIndex={disabled ? -1 : 0}
-          className={`flex flex-col items-center justify-center gap-6 px-4 glass-card py-8 border border-[#5FDA78] rounded-[20px] ${
+          className={`flex flex-col items-center justify-center gap-6 px-4 glass-card py-8 rounded-[20px] ${
             disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"
           }`}
           onClick={openFilePicker}

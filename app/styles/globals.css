@@ -40,6 +40,18 @@ body {
   border: none !important;
 }
 
+.recharts-wrapper,
+.recharts-wrapper:focus,
+.recharts-wrapper:focus-visible,
+.recharts-surface,
+.recharts-surface:focus,
+.recharts-surface:focus-visible,
+.recharts-tooltip-wrapper,
+.recharts-tooltip-wrapper:focus,
+.recharts-tooltip-wrapper:focus-visible {
+  outline: none !important;
+}
+
 /* Hide scrollbar for ContributorList */
 .scrollbar-hide {
   -ms-overflow-style: none;  /* IE and Edge */

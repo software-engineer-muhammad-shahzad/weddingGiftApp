@@ -15,6 +15,10 @@ import type {
   CoupleBankDetailsData,
   CoupleBankDetailsResponse,
 } from "../types/coupleBankDetails"
+import type {
+  AnnouncementDismissalData,
+  AnnouncementDismissalResponse,
+} from "../types/announcementDismissal"
 import { getRequest, postRequest } from "@/app/services/http"
 import { CoupleProfileDetailsData, CoupleProfileDetailsResponse } from "../types/coupleProfileDetails"
 import { deleteCoupleProfile, getCoupleProfileDetails, submitCoupleSupportTicket, updateCoupleBankDetails, updateCoupleProfile, updateCoupleProfileDetails } from "../api/dashboardApi"
@@ -100,6 +104,24 @@ export const getNotifications = async (page: number = 1, search = ""): Promise<N
 // markAllNotificationsRead
 export const markAllNotificationsRead = async (): Promise<void> => {
   await postRequest(endpoints.notifications.markAllRead)
+}
+
+// dismissAnnouncement
+export const dismissAnnouncement = async (
+  announcementId: number
+): Promise<AnnouncementDismissalData> => {
+  const url = endpoints.notifications.dismissAnnouncement.replace(
+    "{announcementId}",
+    String(announcementId)
+  )
+
+  const response = await postRequest<AnnouncementDismissalResponse>(url)
+
+  if (response.statusCode !== 200 || !response.data) {
+    throw new Error(response.statusMessage || "Failed to dismiss announcement")
+  }
+
+  return response.data
 }
 
 // coupleBankDetails

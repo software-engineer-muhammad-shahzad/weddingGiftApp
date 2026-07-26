@@ -75,13 +75,13 @@ const page = () => {
                 {isLogoutOpen && (
                     <ModalLayer
                         onClose={() => setIsLogoutOpen(false)}
-                        modalWidth="w-full max-w-[280px] sm:max-w-[300px] md:max-w-[500px]"
+                        modalWidth="w-full"
                         modalHeight="300px"
-                        position="center"
-                        className="bg-clip-padding "
+                        position="bottom"
+                        className="bg-clip-padding"
                         overlayColor="bg-[#171515EB]"
                     >
-                        <div className="bg-[#5FDA78] w-full rounded-t-md  md:rounded-md h-full flex flex-col items-center justify-center py-3 md:py-6 px-4 overflow-hidden">
+                        <div className="bg-[#5FDA78] w-full rounded-t-2xl h-full flex flex-col items-center justify-center py-3 md:py-6 px-4 overflow-hidden">
                             <div className="w-16 h-16" >
                                 <Image
                                     src="/images/logout-modal-alert.png"

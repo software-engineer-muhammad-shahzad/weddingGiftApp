@@ -20,17 +20,20 @@ const AllTab = ({ receivedGiftData, activeTab = "all" }: AllTabProps) => {
   );
 
   const handleItemClick = (data: MessageItemDTO) => {
-    setSelectedData(data);
-    setIsModalOpen(true);
-  };
+    setSelectedData(data)
+    setIsModalOpen(true)
+  }
 
   // ✅ on the Video tab prefer the video even when a card image is also present
   const getMediaType = (item: MessageItemDTO): "image" | "video" | null => {
-    if (activeTab === "video" && item.wishingVideoPath) return "video";
-    if (item.wishingCardPath) return "image";
-    if (item.wishingVideoPath) return "video";
-    return null;
-  };
+    if (activeTab === "video" && item.wishingVideoPath) return "video"
+    if (item.wishingCardPath) return "image"
+    if (item.wishingVideoPath) return "video"
+    return null
+  }
+
+  const selectedMediaType = selectedData ? getMediaType(selectedData) : null
+  const hasMedia = selectedMediaType !== null
 
   const getSelectedMedia = () => {
     if (!selectedData) return null;
@@ -145,11 +148,13 @@ const AllTab = ({ receivedGiftData, activeTab = "all" }: AllTabProps) => {
             onClick={() => handleItemClick(item)}
           >
             <div className="flex gap-3.5 md:gap-5 items-center">
-              <div className="border border-[#5FDA78] rounded-full w-12.5 h-12.5">
+              <div className="border border-[#5FDA78] rounded-full w-12.5 h-12.5 flex items-center justify-center shrink-0 overflow-hidden">
                 {item.guestProfilePic ? (
                   <img src={item.guestProfilePic} alt={item.guestName ?? 'Guest'} className="w-full h-full object-cover rounded-full" />
                 ) : (
-                  item.guestName?.charAt(0)
+                  <span className="text-white text-lg uppercase leading-none">
+                    {item.guestName?.charAt(0) || "?"}
+                  </span>
                 )}
               </div>
 
@@ -200,17 +205,27 @@ const AllTab = ({ receivedGiftData, activeTab = "all" }: AllTabProps) => {
       {isModalOpen && selectedData && (
         <ModalLayer
           onClose={() => setIsModalOpen(false)}
-          modalHeight=""
-          modalWidth=""
-          className="w-full h-full md:h-auto md:max-h-[85vh] max-w-[80vw] sm:max-w-[90vw] md:max-w-105"
+          modalHeight="auto"
+          modalWidth={
+            hasMedia
+              ? "w-full max-w-[80vw] sm:max-w-[90vw] md:max-w-105"
+              : "w-[90%] max-w-[360px]"
+          }
+          className={
+            hasMedia
+              ? "h-full md:h-auto md:max-h-[85vh]"
+              : "h-auto"
+          }
           overlayColor="bg-[#171515EB]"
           position="center"
         >
-          <div className="bg-[#330065]  pb-2 h-full w-full flex flex-col text-white overflow-y-auto">
+          <div
+            className={`bg-[#330065] pb-2 w-full flex flex-col text-white overflow-y-auto ${
+              hasMedia ? "h-full" : "h-auto rounded-2xl"
+            }`}
+          >
             {/* header */}
-            <div className="flex items-center justify-end px-4  py-2">
-
-
+            <div className="flex items-center justify-end px-4 py-2">
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
@@ -220,29 +235,37 @@ const AllTab = ({ receivedGiftData, activeTab = "all" }: AllTabProps) => {
               </button>
             </div>
 
-            {/* image / video */}
-            <div className="flex-1 flex items-center justify-center px-6 min-h-0 overflow-hidden">
-              {getMediaType(selectedData) === "video" ? (
-                <video controls className="max-h-[30vh] sm:max-h-[40vh] max-w-full rounded-2xl">
-                  <source src={selectedData.wishingVideoPath} type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
-              ) : getMediaType(selectedData) === "image" ? (
-                <Image
-                  src={selectedData.wishingCardPath}
-                  alt="card-image"
-                  width={500}
-                  height={500}
-                  className="max-h-[40vh] sm:max-h-[42vh] max-w-full w-auto h-auto object-contain rounded-2xl"
-                />
-              ) : null}
-            </div>
+            {/* image / video — portrait frame (only when media exists) */}
+            {hasMedia && (
+              <div className="flex-1 flex items-center justify-center px-8 sm:px-12 min-h-0 overflow-hidden">
+                {selectedMediaType === "video" ? (
+                  <div className="relative mx-auto h-[min(55vh,520px)] aspect-[9/16] max-w-full rounded-2xl overflow-hidden border border-white/20 bg-black/30">
+                    <video
+                      controls
+                      className="absolute inset-0 h-full w-full object-cover"
+                    >
+                      <source src={selectedData.wishingVideoPath} type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                ) : (
+                  <div className="relative mx-auto h-[min(55vh,520px)] aspect-[9/16] max-w-full rounded-2xl overflow-hidden border border-white/20 bg-black/30">
+                    <Image
+                      src={selectedData.wishingCardPath}
+                      alt="card-image"
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 640px) 70vw, 320px"
+                    />
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* guest info */}
-            <div className="text-center px-6 pt-4">
-              <h3 className="text-white  text-lg font-semibold">
+            <div className={`text-center px-6 ${hasMedia ? "pt-4" : "pt-1 pb-2"}`}>
+              <h3 className="text-white text-lg font-semibold">
                 {selectedData.guestName}
-
               </h3>
 
               <p className="text-white text-lg font-normal mt-1">
@@ -259,23 +282,25 @@ const AllTab = ({ receivedGiftData, activeTab = "all" }: AllTabProps) => {
               </p>
             </div>
 
-            {/* bottom actions */}
-            <div className="flex justify-center gap-4 py-6">
-              <button
-                type="button"
-                onClick={handleShare}
-                className="cursor-pointer border border-[#5FDA78] glass-card w-12 h-12 rounded-full flex items-center justify-center"
-              >
-                <Share2 className="w-5 h-5" />
-              </button>
-              <button
-                type="button"
-                onClick={handleDownload}
-                className="cursor-pointer border border-[#5FDA78] glass-card w-12 h-12 rounded-full flex items-center justify-center"
-              >
-                <Download className="w-5 h-5" />
-              </button>
-            </div>
+            {/* bottom actions — only for media attachments */}
+            {hasMedia && (
+              <div className="flex justify-center gap-4 py-6">
+                <button
+                  type="button"
+                  onClick={handleShare}
+                  className="cursor-pointer border border-[#5FDA78] glass-card w-12 h-12 rounded-full flex items-center justify-center"
+                >
+                  <Share2 className="w-5 h-5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDownload}
+                  className="cursor-pointer border border-[#5FDA78] glass-card w-12 h-12 rounded-full flex items-center justify-center"
+                >
+                  <Download className="w-5 h-5" />
+                </button>
+              </div>
+            )}
           </div>
         </ModalLayer>
       )}

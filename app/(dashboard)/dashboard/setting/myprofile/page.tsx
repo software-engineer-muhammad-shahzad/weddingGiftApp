@@ -184,21 +184,10 @@ const Page = () => {
             <div className="flex justify-end">
               <button
                 onClick={() => setIsFormOpen(false)}
-                className="
-       
-        text-white
-        hover:text-red-500
-        transition-all duration-200
-        cursor-pointer
-        z-10
-        bg-red-500
-        rounded-full
-      
-       
-        flex justify-end
-      "
+                className="w-6 h-6 text-white bg-red-500 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer z-10"
+                aria-label="Close"
               >
-                <X className="w-2 h-2" />
+                <X className="w-3.5 h-3.5" />
               </button>
             </div>
 

@@ -25,44 +25,18 @@ const Page = () => {
             {isModalOpen && (
                 <ModalLayer
                     onClose={() => setIsModalOpen(false)}
-                    className="z-9999 rounded-4xl border border-[#5FDA78]"
+                    className="rounded-[28px] border border-white/30 overflow-hidden"
                     modalHeight="auto"
+                    modalWidth="w-[90%] max-w-[400px]"
+                    position="center"
+                    overlayColor="bg-[#330065]/70 backdrop-blur-[8px]"
                 >
-                    <div
-                        className="p-4 rounded-4xl"
-                        style={{
-                            background: `
-                              radial-gradient(38.46% 38.46% at 11.54% 19.23%, 
-                                rgba(255, 235, 255, 0) 0%, 
-                                rgba(230, 255, 240, 0) 70%, 
-                                rgba(240, 240, 255, 0) 100%
-                              ),
-                              linear-gradient(316.97deg, 
-                                rgba(255, 255, 255, 0.044) 17.24%, 
-                                rgba(255, 255, 255, 0) 58.62%, 
-                                rgba(217, 235, 255, 0) 86.21%
-                              ),
-                              linear-gradient(0deg, 
-                                rgba(0, 0, 0, 0.066) 0%, 
-                                rgba(0, 0, 0, 0.022) 30%, 
-                                rgba(0, 0, 0, 0) 70%, 
-                                rgba(0, 0, 0, 0) 100%
-                              ),
-                              linear-gradient(0deg, 
-                                rgba(255, 255, 255, 0.01), 
-                                rgba(255, 255, 255, 0.01)
-                              )
-                            `,
-                            backdropFilter: "blur(25px)",
-                            WebkitBackdropFilter: "blur(25px)",
-                        }}
-                    >
-
-                        <p className="font-semibold text-3xl text-white mb-2">
+                    <div className="glass-card p-5 sm:p-6 rounded-[28px] bg-[#2a0050]/55">
+                        <p className="font-semibold text-2xl sm:text-3xl text-white mb-2">
                             Successful
                         </p>
 
-                        <p className="font-light text-white text-lg">
+                        <p className="font-light text-white/90 text-base sm:text-lg">
                             Your password has been successfully updated.
                         </p>
 
@@ -70,12 +44,11 @@ const Page = () => {
                             <Link
                                 href="/login"
                                 onClick={() => setIsModalOpen(false)}
-                                className="px-5 py-2 text-xl text-[#330065] hover:bg-[#4ecb68] bg-[#5FDA78] rounded-[38px]"
+                                className="px-6 py-2.5 text-lg text-[#330065] hover:bg-[#4ecb68] bg-[#5FDA78] rounded-full font-medium transition-colors"
                             >
                                 Close
                             </Link>
                         </div>
-
                     </div>
                 </ModalLayer>
             )}

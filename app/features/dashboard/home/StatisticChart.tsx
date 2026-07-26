@@ -16,7 +16,7 @@ const StatisticChart: React.FC<StatisticChartProps> = ({ data, isLoading }) => {
 
   const chartData = data?.map(stat => ({
     day: stat.dayLabel,
-    value: stat.amount
+    value: stat.amount.toFixed(2)
   })) || []
 
   const activeIndex = chartData.findIndex(item => item.day === today)
@@ -40,7 +40,7 @@ const StatisticChart: React.FC<StatisticChartProps> = ({ data, isLoading }) => {
             <p className="text-white/70 text-sm">No statistics found</p>
           </div>
         ) : (
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height="100%" className="outline-none [&_*]:outline-none">
           <BarChart data={chartData} margin={{ top: 0, right: 0, bottom: 0, left: 10 }}>
 
             <XAxis dataKey="day" tick={{ fill: '#fff', fontSize: 14 }} axisLine={false} tickLine={false} />
@@ -55,17 +55,17 @@ const StatisticChart: React.FC<StatisticChartProps> = ({ data, isLoading }) => {
             />
 
             <Tooltip
-              cursor={{ fill: "#5FDA78" }}
+              cursor={{ fill: "transparent" }}
               contentStyle={{
                 backgroundColor: '#330065',
                 border: '1px solid #5FDA78',
                 borderRadius: '8px',
               }}
               labelStyle={{
-                color: '#fff',   // label text
+                color: '#fff',
               }}
               itemStyle={{
-                color: '#5FDA78',    // VALUE text (your requirement)
+                color: '#5FDA78',
               }}
               formatter={(value: any) => value ? `£${value}` : ''}
             />
@@ -76,6 +76,7 @@ const StatisticChart: React.FC<StatisticChartProps> = ({ data, isLoading }) => {
                   key={`cell-${index}`}
                   fill={index === activeIndex ? "#5FDA78" : "#384552"}
                   radius={30}
+                  stroke="none"
                 />
               ))}
             </Bar>

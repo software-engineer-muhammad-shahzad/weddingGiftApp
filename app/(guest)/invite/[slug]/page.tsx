@@ -1,4 +1,6 @@
 "use client"
+import Image from "next/image"
+import Link from "next/link"
 import GuestCheckoutForm from "@/app/features/giftsend/GuestCheckoutForm"
 import ProfileDescription from "@/app/features/giftsend/ProfileDescription"
 import StripeCardModal from "@/app/features/giftsend/StripeCardModal"
@@ -88,23 +90,38 @@ const page = () => {
 
               <WishMessage greetingText={greetingText} setGreetingText={setGreetingText} />
 
-              <WishCard
-                greetingCards={greetingCards}
-                selectedCardId={selectedCardId}
-                onSelectCard={setSelectedCardId}
-                addonAmount={coupleDetails?.wishingCardAddonAmount ?? 0}
-                currency={currency}
-              />
-              <WishVideo
-                video={video}
-                setVideo={setVideo}
-                addonAmount={coupleDetails?.wishingVideoAddonAmount ?? 0}
-                currency={currency}
-                coupleId={recipientUserId}
-                videoUrl={videoUrl}
-                onVideoUrlChange={setVideoUrl}
-                disabled={selectedCardId !== null}
-              />
+              <div className="flex flex-col gap-4 p-4 sm:p-5 border border-[#5FDA78] rounded-[20px] glass-card">
+                <div className="flex items-center gap-3">
+                  <Image
+                    src="/images/shagun-logo.svg"
+                    alt="Shagun Direct"
+                    width={28}
+                    height={28}
+                    className="shrink-0"
+                  />
+                  <p className="text-white text-base sm:text-lg font-medium text-center flex-1 pe-7">
+                    Choose a Card or Add a Video
+                  </p>
+                </div>
+
+                <WishCard
+                  greetingCards={greetingCards}
+                  selectedCardId={selectedCardId}
+                  onSelectCard={setSelectedCardId}
+                  addonAmount={coupleDetails?.wishingCardAddonAmount ?? 0}
+                  currency={currency}
+                />
+                <WishVideo
+                  video={video}
+                  setVideo={setVideo}
+                  addonAmount={coupleDetails?.wishingVideoAddonAmount ?? 0}
+                  currency={currency}
+                  coupleId={recipientUserId}
+                  videoUrl={videoUrl}
+                  onVideoUrlChange={setVideoUrl}
+                  disabled={selectedCardId !== null}
+                />
+              </div>
               <WishAmount
                 amount={amount}
                 setAmount={setAmount}
@@ -112,6 +129,17 @@ const page = () => {
                 wishingCardAmount={wishingCardAmount ?? 0}
                 wishingVideoAmount={wishingVideoAmount}
               />
+              <p className="px-2 text-[11px] text-white md:text-sm">
+                By continuing, you agree to the Shagun Direct Payments{" "}
+                <Link href="/" className="border-b">
+                  Terms of Service.
+                </Link>{" "}
+                The{" "}
+                <Link href="/" className="border-b">
+                  Privacy Notice
+                </Link>{" "}
+                describes how your data is handled.
+              </p>
               <WishForm
                 hasSavedCards={savedPaymentMethods.length > 0}
                 disabled={hasPendingVideoUpload}

@@ -51,7 +51,7 @@ export const normalizeChargePaymentData = (
 }
 
 export const getReceiptFeeTotal = (receipt: ChargePaymentData): number =>
-  receipt.platformFee + receipt.stripeFee
+  receipt.platformFee;
 
 export const formatReceiptAmount = (amount: number): string =>
   amount.toLocaleString(undefined, {

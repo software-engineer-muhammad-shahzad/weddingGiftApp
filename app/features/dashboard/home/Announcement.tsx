@@ -1,40 +1,52 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { X } from "lucide-react"
-import { getData, saveData } from "@/app/utils/storage/storageHelper"
-
-const DUMMY_ANNOUNCEMENT = "New features on the way — stay tuned!"
-const ANNOUNCEMENT_DISMISSED_KEY = "dashboard-announcement-dismissed"
+import { showError } from "@/app/lib/toast"
+import { dismissAnnouncement } from "@/app/features/dashboard/services/dashboardService"
 
 interface AnnouncementProps {
   latestAnnouncement?: string
+  latestAnnouncementId?: number
 }
 
-const Announcement = ({ latestAnnouncement }: AnnouncementProps) => {
-  const announcementText = latestAnnouncement || DUMMY_ANNOUNCEMENT
-  const [isVisible, setIsVisible] = useState(false)
+const Announcement = ({ latestAnnouncement, latestAnnouncementId }: AnnouncementProps) => {
+  const [isVisible, setIsVisible] = useState(true)
+  const [isDismissing, setIsDismissing] = useState(false)
 
-  useEffect(() => {
-    const isDismissed = getData<boolean>(ANNOUNCEMENT_DISMISSED_KEY, "session") === true
-    setIsVisible(!isDismissed)
-  }, [])
+  const handleDismiss = async () => {
+    if (isDismissing) return
 
-  const handleDismiss = () => {
-    saveData(ANNOUNCEMENT_DISMISSED_KEY, true, "session")
-    setIsVisible(false)
+    setIsDismissing(true)
+
+    try {
+      if (latestAnnouncementId != null) {
+        await dismissAnnouncement(latestAnnouncementId)
+      }
+      setIsVisible(false)
+    } catch (err: any) {
+      const message =
+        err?.response?.data?.data ||
+        err?.response?.data?.statusMessage ||
+        err?.message ||
+        "Failed to dismiss announcement"
+      showError(typeof message === "string" ? message : "Failed to dismiss announcement")
+    } finally {
+      setIsDismissing(false)
+    }
   }
 
-  if (!isVisible) return null
+  if (!isVisible || !latestAnnouncement?.trim()) return null
 
   return (
     <div className="glass-card border border-[#5FDA78] text-white rounded-full pl-4 pr-3 py-2.5 mt-4 text-sm font-medium w-full flex items-center justify-between gap-2">
-      <span className="truncate">Announcements: {announcementText}</span>
+      <span className="truncate">Announcements: {latestAnnouncement}</span>
       <button
         type="button"
         onClick={handleDismiss}
+        disabled={isDismissing}
         aria-label="Dismiss announcement"
-        className="shrink-0 cursor-pointer text-[#5FDA78] hover:text-white transition-colors"
+        className="shrink-0 cursor-pointer text-[#5FDA78] hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <X size={18} />
       </button>

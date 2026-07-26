@@ -25,7 +25,7 @@ const page = () => {
         <div className="px-4 md:px-0">
           <Header data={data} isLoading={isLoading} />
           <Balance data={data} isLoading={isLoading} />
-          <Announcement latestAnnouncement={data?.latestAnnouncement} />
+          <Announcement latestAnnouncement={data?.latestAnnouncement} latestAnnouncementId={data?.latestAnnouncementId} />
           <Banner
             inviteData={data?.invite}
             coupleName={data ? `${data.fullName} & ${data.partnerName}`.toUpperCase() : undefined}

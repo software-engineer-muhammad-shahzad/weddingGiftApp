@@ -10,7 +10,7 @@ const ForgotPasswordform = () => {
     const router = useRouter()
     const source = "forgot-password"
     const [email, setEmail] = useState("")
-    const { handleForgotPassword, isLoading, error } = useForgotPassword()
+    const { handleForgotPassword, isLoading } = useForgotPassword()
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -45,12 +45,7 @@ const ForgotPasswordform = () => {
                 >
                     {isLoading ? "Sending..." : "Next"}
                 </Button>
-            </div>
-            {error && (
-                <div className="text-red-400 text-sm text-center">
-                    {error}
-                </div>
-            )}
+            </div>           
         </form>
     )
 }

@@ -4,7 +4,7 @@ export interface ContributorItem {
   id: number
   guestName: string | null
   guestProfilePic: string | null
-  amount: number
+  amount: any
   defaultCurrencySymbol: string | null
   messagePreview: string
   isRead: boolean
