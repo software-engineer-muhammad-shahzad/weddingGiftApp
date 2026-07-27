@@ -63,7 +63,17 @@ const GuestCheckoutForm = ({ isLoading, onSubmit }: GuestCheckoutFormProps) => {
       />
       {errors.email && <p className="text-sm text-red-400">{errors.email.message}</p>}
 
-      <p className="text-white text-[11px] md:text-md px-2">By continuing, you agree to the Shagun Direct Payments <Link href="/" className="border-b">Terms of Service.</Link> The <Link href="" className="border-b"> Privacy Notice</Link> describes how your data is handled.</p>
+      <p className="text-white text-[11px] md:text-md px-2">
+        By continuing, you agree to the Shagun Direct Payments{" "}
+        <Link href="/terms-of-service" className="border-b" target="_blank" rel="noopener noreferrer">
+          Terms of Service.
+        </Link>{" "}
+        The{" "}
+        <Link href="/privacy-notice" className="border-b" target="_blank" rel="noopener noreferrer">
+          Privacy Notice
+        </Link>{" "}
+        describes how your data is handled.
+      </p>
 
       <Button
         type="submit"

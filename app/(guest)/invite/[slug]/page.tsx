@@ -131,11 +131,11 @@ const page = () => {
               />
               <p className="px-2 text-[11px] text-white md:text-sm">
                 By continuing, you agree to the Shagun Direct Payments{" "}
-                <Link href="/" className="border-b">
+                <Link href="/terms-of-service" className="border-b" target="_blank" rel="noopener noreferrer">
                   Terms of Service.
                 </Link>{" "}
                 The{" "}
-                <Link href="/" className="border-b">
+                <Link href="/privacy-notice" className="border-b" target="_blank" rel="noopener noreferrer">
                   Privacy Notice
                 </Link>{" "}
                 describes how your data is handled.
