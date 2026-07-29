@@ -7,8 +7,6 @@ import { buildContentImageUrl } from "@/app/utils/imageUrl"
 import { GreetingCardDTO } from "./types"
 import SelectCardModal from "./SelectCardModal"
 
-const FALLBACK_CARD_IMAGE = "/images/congrates-card.svg"
-
 interface openSelectImageProps {
     greetingCards: GreetingCardDTO[]
     selectedCardId: number | null
@@ -22,7 +20,7 @@ const CardThumbnail = ({ path }: { path: string }) => {
 
     return (
         <Image
-            src={hasError ? FALLBACK_CARD_IMAGE : buildContentImageUrl(path)}
+            src={buildContentImageUrl(path)}
             alt="wishing-card"
             width={100}
             height={100}
@@ -81,7 +79,7 @@ const WishCard = ({ greetingCards, selectedCardId, onSelectCard, addonAmount, cu
                                 onClick={() => handleThumbnailClick(card)}
                                 className="relative shrink-0 w-[calc((100%-1.5rem)/4)] snap-start rounded-md overflow-hidden cursor-pointer"
                             >
-                                <CardThumbnail path={card.cardImagePath} />
+                                <CardThumbnail path={card.imageUrl} />
 
                                 {selectedCardId === card.id && (
                                     <div className="absolute inset-0 flex items-center justify-center bg-black/20">
@@ -106,7 +104,7 @@ const WishCard = ({ greetingCards, selectedCardId, onSelectCard, addonAmount, cu
                 isSelected={previewCard?.id === selectedCardId}
                 onSelect={handleSelectCard}
                 onRemove={handleRemoveCard}
-                imageUrl={previewCard ? buildContentImageUrl(previewCard.cardImagePath) : undefined}
+                imageUrl={previewCard ? buildContentImageUrl(previewCard.imageUrl) : undefined}
             />
         </>
     )

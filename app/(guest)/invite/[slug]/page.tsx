@@ -159,7 +159,7 @@ const page = () => {
               }}
               amount={amount}
               recipientUserId={recipientUserId}
-              wishingCardPath={selectedCard?.cardImagePath}
+              wishingCardPath={selectedCard?.imageUrl}
               wishingVideoPath={videoUrl ?? undefined}
               wishingContent={greetingText}
               wishingCardAmount={wishingCardAmount}

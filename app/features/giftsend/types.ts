@@ -1,10 +1,10 @@
+import { ResourceMetadata } from "../dashboard/types/ResourceMetadata"
+
 export interface GreetingCardDTO {
   id: number
-  cardImagePath: string
-  cardPrice: number
-  videoPrice: number
-  platformFeePercent: number
-  greetingMediaType: string
+  orderNo: number
+  imageUrl: string
+  resourceMetadata: ResourceMetadata
 }
 
 export interface CardTemplateDTO {
@@ -12,9 +12,8 @@ export interface CardTemplateDTO {
   cardPrice: number
   videoPrice: number
   platformFeePercent: number
-  greetingMediaType: string
   greetingCards: GreetingCardDTO[]
-  cardUrl: string | null
+  resourceMetadata: ResourceMetadata
 }
 
 export interface AnnouncementDTO {
