@@ -32,7 +32,7 @@ const ConfirmPaymentModal = ({
     giftAmount + (wishingCardAmount ?? 0) + (wishingVideoAmount ?? 0)
   const serviceFeePercent = platformServiceFeeAmount ?? 0
   const serviceFeeAmount =
-    serviceFeePercent > 0 ? (subtotal * serviceFeePercent) / 100 : 0
+    serviceFeePercent > 0 ? (giftAmount * serviceFeePercent) / 100 : 0
   const total = subtotal + serviceFeeAmount
 
   return (

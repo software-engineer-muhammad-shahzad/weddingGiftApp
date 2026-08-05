@@ -149,10 +149,11 @@ export interface ChargePaymentData {
   senderAccountNo: string | null
   receiverName: string
   receiverAccountNo: string | null
-  giftAmount: number
-  platformFee: number
-  stripeFee: number
-  netToRecipient: number,
+  giftAmount: any
+  platformFee: any
+  stripeFee: any
+  netToRecipient: any,
+  attachmentCharges: any,
   defaultCurrencySymbol: string,
   defaultCurrency: string,
 }

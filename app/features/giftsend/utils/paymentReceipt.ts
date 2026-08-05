@@ -39,10 +39,11 @@ export const normalizeChargePaymentData = (
     receiverName: toText(data.receiverName ?? data.ReceiverName, "—"),
     receiverAccountNo:
       toText(data.receiverAccountNo ?? data.ReceiverAccountNo) || null,
-    giftAmount: toNumber(data.giftAmount ?? data.GiftAmount),
-    platformFee: toNumber(data.platformFee ?? data.PlatformFee),
-    stripeFee: toNumber(data.stripeFee ?? data.StripeFee),
-    netToRecipient: toNumber(data.netToRecipient ?? data.NetToRecipient),
+    giftAmount: data.giftAmount ?? data.GiftAmount,
+    platformFee: data.platformFee ?? data.PlatformFee,
+    stripeFee: data.stripeFee ?? data.StripeFee,
+    netToRecipient: data.netToRecipient ?? data.NetToRecipient,
+    attachmentCharges: data.attachmentCharges ?? data.AttachmentCharges,
     defaultCurrencySymbol: toText(
       data.defaultCurrencySymbol ?? data.DefaultCurrencySymbol
     ),
@@ -50,10 +51,10 @@ export const normalizeChargePaymentData = (
   }
 }
 
-export const getReceiptFeeTotal = (receipt: ChargePaymentData): number =>
+export const getReceiptFeeTotal = (receipt: ChargePaymentData): any =>
   receipt.platformFee;
 
-export const formatReceiptAmount = (amount: number): string =>
+export const formatReceiptAmount = (amount: any): string =>
   amount.toLocaleString(undefined, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
@@ -79,9 +80,16 @@ export const formatReceiptDateTime = (value: string): string => {
   return `${datePart} | ${timePart}`
 }
 
-export const formatAccountDisplay = (value: string | null | undefined): string => {
-  if (!value) return "—"
-  const digits = value.replace(/\s+/g, "")
-  if (/^\d{4}$/.test(digits)) return `•••• ${digits}`
-  return value
+export const formatAccountDisplay = (value: string | number | null | undefined): string => {
+  if (value == null) return "—"
+
+  const raw = String(value).trim()
+  if (!raw) return "—"
+
+  const digits = raw.replace(/\D/g, "")
+  if (digits.length >= 4) {
+    return `•••• ${digits.slice(-4)}`
+  }
+
+  return raw
 }

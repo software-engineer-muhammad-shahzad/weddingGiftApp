@@ -9,7 +9,6 @@ import type { ChargePaymentData } from "../types"
 import {
   formatReceiptAmount,
   formatReceiptDateTime,
-  getReceiptFeeTotal,
 } from "../utils/paymentReceipt"
 import PaymentMakerDetail from "./PaymentMakerDetail"
 
@@ -24,8 +23,9 @@ const PaymentSucessfull = ({
 }: PaymentSucessfullProps) => {
   const receiptRef = useRef<HTMLDivElement>(null)
   const [isDownloading, setIsDownloading] = useState(false)
-  const feeTotal = getReceiptFeeTotal(receipt)
+  const [isSharing, setIsSharing] = useState(false)
   const txnId = receipt.transactionNumber?.trim() || ""
+  const receiptFileName = `payment-receipt-${receipt.transactionNumber || "shagun"}.png`
 
   const handleCopyTxnId = async () => {
     if (!txnId) return
@@ -38,25 +38,39 @@ const PaymentSucessfull = ({
     }
   }
 
+  const captureReceiptCanvas = async () => {
+    if (!receiptRef.current) {
+      throw new Error("Receipt not ready")
+    }
+
+    return html2canvas(receiptRef.current, {
+      backgroundColor: "#330065",
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      ignoreElements: (el) =>
+        el instanceof HTMLElement &&
+        el.hasAttribute("data-receipt-actions"),
+    })
+  }
+
+  const canvasToFile = async (canvas: HTMLCanvasElement) => {
+    const blob = await new Promise<Blob | null>((resolve) =>
+      canvas.toBlob(resolve, "image/png")
+    )
+    if (!blob) throw new Error("Failed to create receipt image")
+    return new File([blob], receiptFileName, { type: "image/png" })
+  }
+
   const handleDownloadPng = async () => {
-    if (!receiptRef.current || isDownloading) return
+    if (!receiptRef.current || isDownloading || isSharing) return
 
     try {
       setIsDownloading(true)
-
-      const canvas = await html2canvas(receiptRef.current, {
-        backgroundColor: "#330065",
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        ignoreElements: (el) =>
-          el instanceof HTMLElement &&
-          el.hasAttribute("data-receipt-actions"),
-      })
-
+      const canvas = await captureReceiptCanvas()
       const link = document.createElement("a")
       link.href = canvas.toDataURL("image/png")
-      link.download = `payment-receipt-${receipt.transactionNumber || "shagun"}.png`
+      link.download = receiptFileName
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
@@ -65,6 +79,46 @@ const PaymentSucessfull = ({
       showError("Failed to download receipt. Please try again.")
     } finally {
       setIsDownloading(false)
+    }
+  }
+
+  const handleShareReceipt = async () => {
+    if (!receiptRef.current || isSharing || isDownloading) return
+
+    try {
+      setIsSharing(true)
+      const canvas = await captureReceiptCanvas()
+      const file = await canvasToFile(canvas)
+      const shareData: ShareData = {
+        files: [file],
+        title: "Shagun Direct - Payment Receipt",
+        text: "Payment receipt from Shagun Direct",
+      }
+
+      if (
+        typeof navigator !== "undefined" &&
+        typeof navigator.share === "function" &&
+        (!navigator.canShare || navigator.canShare(shareData))
+      ) {
+        await navigator.share(shareData)
+        return
+      }
+
+      // Fallback when Web Share with files is unavailable.
+      const link = document.createElement("a")
+      link.href = URL.createObjectURL(file)
+      link.download = receiptFileName
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(link.href)
+      showSuccess("Receipt image downloaded. You can share it from your device.")
+    } catch (err) {
+      if (err instanceof DOMException && err.name === "AbortError") return
+      console.error("Failed to share receipt:", err)
+      showError("Failed to share receipt. Please try again.")
+    } finally {
+      setIsSharing(false)
     }
   }
 
@@ -136,9 +190,36 @@ const PaymentSucessfull = ({
         </div>
 
         <div className="flex justify-between items-center">
-          <p className="text-white text-base sm:text-lg">Fee</p>
+          <p className="text-white text-base sm:text-lg">Platform fee</p>
           <p className="text-white text-base sm:text-lg">
-            {formatReceiptAmount(feeTotal)}
+            {formatReceiptAmount(receipt.platformFee)}
+            {receipt.defaultCurrencySymbol ? (
+              <span className="ms-1 text-base sm:text-lg font-medium align-top">
+                {receipt.defaultCurrencySymbol}
+              </span>
+            ) : receipt.defaultCurrency}
+          </p>
+        </div>
+        <div className="flex justify-between items-center">
+          <p className="text-white text-base sm:text-lg">Stripe fee</p>
+          <p className="text-white text-base sm:text-lg">
+            {formatReceiptAmount(receipt.stripeFee)}
+            {receipt.defaultCurrencySymbol ? (
+              <span className="ms-1 text-base sm:text-lg font-medium align-top">
+                {receipt.defaultCurrencySymbol}
+              </span>
+            ) : receipt.defaultCurrency}
+          </p>
+        </div>
+        <div className="flex justify-between items-center">
+          <p className="text-white text-base sm:text-lg">Attachment charges</p>
+          <p className="text-white text-base sm:text-lg">
+            {formatReceiptAmount(receipt.attachmentCharges)}
+            {receipt.defaultCurrencySymbol ? (
+              <span className="ms-1 text-base sm:text-lg font-medium align-top">
+                {receipt.defaultCurrencySymbol}
+              </span>
+            ) : receipt.defaultCurrency}
           </p>
         </div>
       </div>
@@ -147,7 +228,9 @@ const PaymentSucessfull = ({
         receipt={receipt}
         onDone={onDone}
         onDownload={handleDownloadPng}
+        onShare={handleShareReceipt}
         isDownloading={isDownloading}
+        isSharing={isSharing}
       />
     </div>
   )

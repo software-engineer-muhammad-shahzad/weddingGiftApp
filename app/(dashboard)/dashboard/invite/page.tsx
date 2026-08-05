@@ -3,12 +3,11 @@
 import { Copy, Share2, Download } from "lucide-react"
 import Link from "next/link"
 import { ShagunLogo, WelcomeLogo } from "@/app/components/icons/Icons"
-import { handleShare } from "@/app/utils/handleShareQr"
 import { formatDateWithWeekday } from "@/app/utils/formatDate"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useQrCode } from "@/app/features/dashboard/qrCode/hooks/useGetQrCodeUrl"
 import { getQrCodeImage } from "@/app/features/dashboard/qrCode/api/qrCodeApi"
-import { showSuccess } from "@/app/lib/toast"
+import { showError, showSuccess } from "@/app/lib/toast"
 import QrHeaders from "@/app/features/dashboard/invite/QrHeaders"
 import Skeleton from "@/app/components/ui/Skeleton"
 import html2canvas from "html2canvas-pro"
@@ -23,6 +22,7 @@ const Page = () => {
     const unReadNotificationCount = dashboardData?.unReadNotificationCount ?? 0
     const [qrImageUrl, setQrImageUrl] = useState<string | null>(null)
     const [isDownloading, setIsDownloading] = useState(false)
+    const [isSharing, setIsSharing] = useState(false)
     const inviteCardRef = useRef<HTMLDivElement>(null)
     const userData = useMemo(() => {
         if (!data) return null
@@ -51,19 +51,34 @@ const Page = () => {
         }
     }, [userData?.qrDownloadUrl])
 
+    const captureInviteCard = async () => {
+        if (!inviteCardRef.current) {
+            throw new Error("Invite card not ready")
+        }
+
+        return html2canvas(inviteCardRef.current, {
+            backgroundColor: "#2a0050",
+            scale: 2,
+            useCORS: true,
+            allowTaint: true,
+        })
+    }
+
+    const canvasToFile = async (canvas: HTMLCanvasElement, fileName: string) => {
+        const blob = await new Promise<Blob | null>((resolve) =>
+            canvas.toBlob(resolve, "image/png")
+        )
+        if (!blob) throw new Error("Failed to create invite card image")
+        return new File([blob], fileName, { type: "image/png" })
+    }
+
     const handleDownload = async () => {
-        if (!userData || !inviteCardRef.current || isDownloading) return
+        if (!userData || !inviteCardRef.current || isDownloading || isSharing) return
 
         try {
             setIsDownloading(true)
 
-            const canvas = await html2canvas(inviteCardRef.current, {
-                backgroundColor: "#2a0050",
-                scale: 2,
-                useCORS: true,
-                allowTaint: true,
-            })
-
+            const canvas = await captureInviteCard()
             const link = document.createElement("a")
             link.href = canvas.toDataURL("image/png")
             link.download = `${userData.name}-invite-card.png`
@@ -72,8 +87,52 @@ const Page = () => {
             document.body.removeChild(link)
         } catch (err) {
             console.error("Failed to download invite card:", err)
+            showError("Failed to download invite card. Please try again.")
         } finally {
             setIsDownloading(false)
+        }
+    }
+
+    const handleShareInviteCard = async () => {
+        if (!userData || !inviteCardRef.current || isSharing || isDownloading) return
+
+        const fileName = `${userData.name}-invite-card.png`
+
+        try {
+            setIsSharing(true)
+
+            const canvas = await captureInviteCard()
+            const file = await canvasToFile(canvas, fileName)
+            const shareData: ShareData = {
+                files: [file],
+                title: `${userData.name} Wedding Invite`,
+                text: `You're invited to ${userData.name}'s wedding!`,
+            }
+
+            if (
+                typeof navigator !== "undefined" &&
+                typeof navigator.share === "function" &&
+                (!navigator.canShare || navigator.canShare(shareData))
+            ) {
+                await navigator.share(shareData)
+                return
+            }
+
+            const link = document.createElement("a")
+            const objectUrl = URL.createObjectURL(file)
+            link.href = objectUrl
+            link.download = fileName
+            document.body.appendChild(link)
+            link.click()
+            document.body.removeChild(link)
+            URL.revokeObjectURL(objectUrl)
+            showSuccess("Invite card downloaded. You can share it from your device.")
+        } catch (err) {
+            if (err instanceof DOMException && err.name === "AbortError") return
+            console.error("Failed to share invite card:", err)
+            showError("Failed to share invite card. Please try again.")
+        } finally {
+            setIsSharing(false)
         }
     }
 
@@ -207,16 +266,19 @@ const Page = () => {
                     {/* ACTION BUTTONS — bottom-[-22px] = exactly half inside half outside */}
                     <div className="flex absolute left-1/2 -translate-x-1/2 bottom-[-22px] gap-4">
                         <button
-                            onClick={() => handleShare(userData.name, userData.inviteUrl)}
-                            className="w-11 h-11 cursor-pointer rounded-full border border-[#5FDA78] bg-[#2a0050] flex items-center justify-center"
+                            onClick={handleShareInviteCard}
+                            disabled={isSharing || isDownloading}
+                            className="w-11 h-11 cursor-pointer rounded-full border border-[#5FDA78] bg-[#2a0050] flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                            aria-label="Share invite card"
                         >
                             <Share2 className="text-white" size={18} />
                         </button>
 
                         <button
                             onClick={handleDownload}
-                            disabled={isDownloading}
+                            disabled={isDownloading || isSharing}
                             className="w-11 h-11 rounded-full cursor-pointer border border-[#5FDA78] bg-[#2a0050] flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                            aria-label="Download invite card"
                         >
                             <Download className="text-white" size={18} />
                         </button>
