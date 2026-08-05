@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import Button from "../../components/elements/Button"
 import Input from "../../components/elements/Input"
+import { ShagunLogo } from "../../components/icons/Icons"
 import { guestCheckoutSchema, type GuestCheckoutFormValues } from "./validations/guestCheckoutSchema"
 
 interface GuestCheckoutFormProps {
@@ -29,6 +30,15 @@ const GuestCheckoutForm = ({ isLoading, onSubmit }: GuestCheckoutFormProps) => {
       className="flex flex-col gap-6 px-4 md:px-8 py-8 glass-card border border-[#5FDA78] rounded-[20px]"
       onSubmit={handleSubmit(onSubmit)}
     >
+
+      <div className="flex flex-col gap-4">
+        <div className="flex justify-center items-center">
+          <ShagunLogo className="w-32 h-auto md:w-40" />
+        </div>
+        <p className="text-white text-center text-lg font-bold">
+          Welcome to Shagun Direct
+        </p>
+      </div>
 
       <Input
         type="text"

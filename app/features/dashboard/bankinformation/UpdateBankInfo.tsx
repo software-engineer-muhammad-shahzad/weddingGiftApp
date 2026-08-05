@@ -126,9 +126,10 @@ const UpdateBankInfo = ({ data, onCancel, onSuccess }: Props) => {
     } catch (err) {
       const error = err as {
         status?: number
+        message?: string
         response?: {
           status?: number
-          data?: { statusCode?: number }
+          data?: { statusCode?: number; message?: string; statusMessage?: string }
         }
       }
       const status =
@@ -138,6 +139,13 @@ const UpdateBankInfo = ({ data, onCancel, onSuccess }: Props) => {
 
       if (status === 500) {
         showError("Something went wrong. Please contact the administrator.")
+      } else {
+        showError(
+          error.response?.data?.message ||
+            error.response?.data?.statusMessage ||
+            error.message ||
+            "Failed to update bank details. Please try again."
+        )
       }
       console.error("Update failed:", err)
     }
