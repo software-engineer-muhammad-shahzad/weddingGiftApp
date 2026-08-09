@@ -43,7 +43,7 @@ const Login = () => {
   return (
     <div className="relative min-h-screen w-full flex items-center justify-center bg-[#350366] text-white">
       <div className="relative z-10 w-full max-w-7xl p-4 sm:p-6 lg:p-8">
-        <div className="bg-[#350366] px-1 py-18   sm:p-6 lg:p-8 flex flex-col sm:flex-row  sm:gap-6 lg:gap-8 rounded-lg">
+        <div className=" px-1 py-18   sm:p-6 lg:p-8 flex flex-col sm:flex-row  sm:gap-6 lg:gap-8 rounded-lg">
 
           {/* Left */}
           <div className="flex-1 flex flex-col justify-center">

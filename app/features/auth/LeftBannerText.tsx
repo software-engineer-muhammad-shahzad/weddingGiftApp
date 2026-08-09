@@ -15,7 +15,7 @@ const LeftBannerText = () => {
             </div>
             {/* secure access */}
              <div className="mt-5 md:mt-6">
-          <p className="text-white text-md md:text-xl font-figtree">Secure access to smarter.</p>
+          <p className="text-white text-md md:text-xl font-figtree">Your next chapter, funded with love.</p>
           <h1 className="text-[25px]  md:text-6xl font-normal text-[#D9D9D9] mt-1 leading-8.5 md:leading-normal  md:mt-3  font-manrope">Celebrate Love,<br/> Gift Digitally</h1>
         </div>
           
