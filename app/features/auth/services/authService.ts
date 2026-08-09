@@ -4,6 +4,7 @@ import {
   resendOtp as resendOtpApi,
   login as loginApi,
   forgotPassword as forgotPasswordApi,
+  resetPassword as resetPasswordApi,
 } from "@/app/features/auth/api/authApi"
 import type { SignupPayload, SignupResponse } from "@/app/features/auth/types/signup"
 import type {
@@ -47,8 +48,8 @@ export const forgotPassword = async (payload: ForgotPasswordPayload): Promise<Fo
 
 // reset-password
 
-export const resetPassword = async (payload: ResetPasswordPayload): Promise<string> => {
-  return resetPassword(payload)
+export const resetPassword = async (payload: ResetPasswordPayload): Promise<{ message: string }> => {
+  return resetPasswordApi(payload)
 }
 
 

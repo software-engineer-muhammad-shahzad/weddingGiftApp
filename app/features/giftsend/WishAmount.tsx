@@ -6,7 +6,7 @@ interface WishAmountProps {
   wishingVideoAmount?: number
 }
 
-/** Allow left-to-right decimal entry, max 2 digits after the point. */
+/** Allow left-to-right decimal entry, max 5 digits before the point and 2 after. */
 const sanitizeAmountInput = (value: string) => {
   if (!value) return ""
 
@@ -14,9 +14,11 @@ const sanitizeAmountInput = (value: string) => {
 
   const dotIndex = sanitized.indexOf(".")
   if (dotIndex !== -1) {
-    const whole = sanitized.slice(0, dotIndex)
+    const whole = sanitized.slice(0, dotIndex).slice(0, 5)
     const fraction = sanitized.slice(dotIndex + 1).replace(/\./g, "").slice(0, 2)
     sanitized = `${whole}.${fraction}`
+  } else {
+    sanitized = sanitized.slice(0, 5)
   }
 
   if (sanitized.startsWith(".")) {
@@ -63,6 +65,11 @@ const WishAmount = ({
 
           <div className="flex justify-center">
             <div className="inline-flex items-baseline justify-center gap-1">
+              {currency ? (
+                <span className="shrink-0 font-semibold text-lg md:text-xl text-white leading-none">
+                  {currency}
+                </span>
+              ) : null}
               <input
                 type="text"
                 inputMode="decimal"
@@ -73,11 +80,7 @@ const WishAmount = ({
                 size={Math.max((amount || "00.00").length, 5)}
                 className="bg-transparent border-none outline-none text-right font-semibold text-[50px] py-2 text-white placeholder:text-gray-600 min-w-0"
               />
-              {currency ? (
-                <span className="shrink-0 font-semibold text-lg md:text-xl text-white leading-none">
-                  {currency}
-                </span>
-              ) : null}
+              
             </div>
           </div>
         </div>

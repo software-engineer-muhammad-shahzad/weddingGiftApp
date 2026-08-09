@@ -2,6 +2,9 @@ import axios, { AxiosRequestConfig, InternalAxiosRequestConfig } from "axios";
 
 interface AxiosRequestConfigWithSkipAuth extends AxiosRequestConfig {
   skipAuth?: boolean;
+  // Status codes the caller expects and handles itself (e.g. a 403/404 that
+  // just means "not set up yet") — skip the noisy console.error for these.
+  silenceStatuses?: number[];
 }
 
 // Prefer the explicit app/env API_URL, then NEXT_PUBLIC_API_URL, then server API_URL
@@ -19,6 +22,26 @@ if (!baseURL && process.env.NODE_ENV !== "production") {
 }
 
 export { baseURL };
+
+/**
+ * Decodes a JWT's payload (no signature verification — client-side debugging only).
+ */
+const decodeJwtPayload = (token: string): Record<string, unknown> | null => {
+  try {
+    const payload = token.split(".")[1];
+    if (!payload) return null;
+    const base64 = payload.replace(/-/g, "+").replace(/_/g, "/");
+    const json = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map((c) => "%" + c.charCodeAt(0).toString(16).padStart(2, "0"))
+        .join(""),
+    );
+    return JSON.parse(json);
+  } catch {
+    return null;
+  }
+};
 
 /**
  * Axios instance
@@ -79,7 +102,10 @@ apiClient.interceptors.response.use(
     // (skipAuth) — backend may still return 401 for those endpoints and that's
     // expected during temporary auth removal. Only log when not skipAuth or
     // when the status is not 401.
-    const shouldLog = !(skipAuth && status === 401) && status !== 404;
+    const shouldLog =
+      !(skipAuth && status === 401) &&
+      status !== 404 &&
+      !requestConfig?.silenceStatuses?.includes(status);
 
     if (shouldLog) {
       const isNetworkError =
@@ -91,6 +117,33 @@ apiClient.interceptors.response.use(
           : `status=${status ?? "unknown"} url=${error?.config?.url ?? "unknown"}`,
         error?.response?.data ?? error.message,
       );
+
+      // Dev-only: a 401/403 is usually a token/role problem rather than a code
+      // bug — print what the current token actually claims so it's visible
+      // right next to the error instead of requiring a manual devtools dig.
+      if (
+        (status === 401 || status === 403) &&
+        process.env.NODE_ENV !== "production" &&
+        typeof window !== "undefined"
+      ) {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.error("Auth debug: no token in localStorage — request was unauthenticated.");
+        } else {
+          const claims = decodeJwtPayload(token);
+          if (!claims) {
+            console.error("Auth debug: token in localStorage isn't a decodable JWT.");
+          } else {
+            const exp = typeof claims.exp === "number" ? new Date(claims.exp * 1000) : null;
+            console.error("Auth debug: current token claims:", claims);
+            if (exp) {
+              console.error(
+                `Auth debug: token ${exp.getTime() < Date.now() ? "EXPIRED" : "valid"} — expires ${exp.toISOString()}`,
+              );
+            }
+          }
+        }
+      }
     }
 
     return Promise.reject(error);

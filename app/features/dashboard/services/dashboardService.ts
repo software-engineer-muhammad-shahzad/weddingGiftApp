@@ -26,19 +26,31 @@ import { CoupleSupportTicketPayload, CoupleSupportTicketResponse } from "../type
 
 // getDashboardData
 export const getDashboardData = async (): Promise<CoupleDashboardData> => {
-  const response = await getRequest<CoupleDashboardResponse>(
-    endpoints.dashboard.coupleDashboard
-  )
+  try {
+    const response = await getRequest<CoupleDashboardResponse>(
+      endpoints.dashboard.coupleDashboard,
+      // backend returns 403 for this endpoint before a couple has bank
+      // details set up — handled below as BANK_ACCOUNT_REQUIRED, not a real error.
+      { silenceStatuses: [403] }
+    )
 
-  if (response.statusCode !== 200 || !response.data) {
-    throw new Error(response.statusMessage || "Failed to fetch dashboard")
-  }
+    if (response.statusCode !== 200 || !response.data) {
+      throw new Error(response.statusMessage || "Failed to fetch dashboard")
+    }
 
-  const raw = response.data as CoupleDashboardData & { ProfileImageUrl?: string | null }
+    const raw = response.data as CoupleDashboardData & { ProfileImageUrl?: string | null }
 
-  return {
-    ...response.data,
-    profileImageUrl: raw.profileImageUrl ?? raw.ProfileImageUrl ?? null,
+    return {
+      ...response.data,
+      profileImageUrl: raw.profileImageUrl ?? raw.ProfileImageUrl ?? null,
+    }
+  } catch (err: any) {
+    if (err?.response?.status === 403) {
+      throw Object.assign(new Error("Bank account required"), {
+        code: "BANK_ACCOUNT_REQUIRED",
+      })
+    }
+    throw err
   }
 }
 
@@ -46,30 +58,35 @@ export const getDashboardData = async (): Promise<CoupleDashboardData> => {
 export const getContributorList = async (page: number = 1): Promise<ContributorListData> => {
   const pageSize = 10
   const offset = (page - 1) * pageSize
+  const emptyList: ContributorListData = { items: [], page, pageSize, totalCount: 0 }
 
-  const response = await postRequest<ContributorListResponse>(
-    endpoints.dashboard.coupleContributionList,
-    {
-      isIncludeGuests: true,
-      isIncludeCouples: true,
-    },
-    { params: { offset, length: pageSize } }
-  )
+  try {
+    const response = await postRequest<ContributorListResponse>(
+      endpoints.dashboard.coupleContributionList,
+      {
+        isIncludeGuests: true,
+        isIncludeCouples: true,
+      },
+      // backend returns 403 for this endpoint before a couple has bank
+      // details set up — an expected empty state, not a real error.
+      { params: { offset, length: pageSize }, silenceStatuses: [403] }
+    )
 
-  if (response.statusCode !== 200 || !response.data) {
-    return {
-      items: [],
-      page,
-      pageSize,
-      totalCount: 0,
+    if (response.statusCode !== 200 || !response.data) {
+      return emptyList
     }
-  }
 
-  return {
-    items: response.data.items ?? [],
-    page: response.data.page ?? page,
-    pageSize: response.data.pageSize ?? pageSize,
-    totalCount: response.data.totalCount ?? 0,
+    return {
+      items: response.data.items ?? [],
+      page: response.data.page ?? page,
+      pageSize: response.data.pageSize ?? pageSize,
+      totalCount: response.data.totalCount ?? 0,
+    }
+  } catch (err: any) {
+    if (err?.response?.status === 403) {
+      return emptyList
+    }
+    throw err
   }
 }
 
@@ -128,7 +145,10 @@ export const dismissAnnouncement = async (
 export const getCoupleBankDetailsData = async (): Promise<CoupleBankDetailsData | null> => {
   try {
     const response = await getRequest<CoupleBankDetailsResponse>(
-      endpoints.bankdetails.coupleBankDetails
+      endpoints.bankdetails.coupleBankDetails,
+      // backend returns 403 (not 404) when no bank details exist yet — that's
+      // an expected empty state here, so don't spam the console for it.
+      { silenceStatuses: [403] }
     )
 
     if (response.statusCode !== 200 || !response.data) {
@@ -147,7 +167,10 @@ export const getCoupleBankDetailsData = async (): Promise<CoupleBankDetailsData 
     }
   } catch (err: any) {
     // Not set up yet — treat as an empty state, not an error.
-    if (err?.response?.status === 404) {
+    // (backend returns 403 for this endpoint when no bank details exist yet,
+    // in addition to the more conventional 404)
+    const status = err?.response?.status
+    if (status === 404 || status === 403) {
       return null
     }
     throw err
@@ -167,17 +190,27 @@ export const updateBankDetails = async (data: any): Promise<void> => {
 // coupleProfileDetails
 export const getCoupleProfileDetailsData =
   async (): Promise<CoupleProfileDetailsData> => {
+    try {
+      // backend returns 403 for this endpoint before a couple has bank
+      // details set up — handled below as BANK_ACCOUNT_REQUIRED, not a real error.
+      const response = await getCoupleProfileDetails({ silenceStatuses: [403] })
 
-    const response = await getCoupleProfileDetails()
+      if (response.statusCode !== 200 || !response.data) {
+        throw new Error(
+          response.statusMessage ||
+          "Failed to fetch couple profile details"
+        )
+      }
 
-    if (response.statusCode !== 200 || !response.data) {
-      throw new Error(
-        response.statusMessage ||
-        "Failed to fetch couple profile details"
-      )
+      return response.data
+    } catch (err: any) {
+      if (err?.response?.status === 403) {
+        throw Object.assign(new Error("Bank account required"), {
+          code: "BANK_ACCOUNT_REQUIRED",
+        })
+      }
+      throw err
     }
-
-    return response.data
   }
 
 // coupleUpdateProfile

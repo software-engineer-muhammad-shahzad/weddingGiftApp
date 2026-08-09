@@ -50,16 +50,19 @@ const validateBankDetails = (form: UpdateBankDetailsData) => {
     errors.accountHolderName = "Enter a valid account holder name"
   }
 
-  if (!accountNumber) {
-    errors.accountNumber = "Account number is required"
-  } else if (!/^\d{6,20}$/.test(accountNumber)) {
-    errors.accountNumber = "Account number must contain 6 to 20 digits"
-  }
+  // Account number and IBAN each satisfy the other — only one is required,
+  // but whichever one is entered still has to be valid.
+  if (!accountNumber && !iban) {
+    errors.accountNumber = "Enter an account number or an IBAN"
+    errors.iban = "Enter an account number or an IBAN"
+  } else {
+    if (accountNumber && !/^\d{6,20}$/.test(accountNumber)) {
+      errors.accountNumber = "Account number must contain 6 to 20 digits"
+    }
 
-  if (!iban) {
-    errors.iban = "IBAN is required"
-  } else if (!/^[A-Za-z]{2}\d{2}[A-Za-z0-9]{6,30}$/.test(iban)) {
-    errors.iban = "Enter a valid IBAN"
+    if (iban && !/^[A-Za-z]{2}\d{2}[A-Za-z0-9]{6,30}$/.test(iban)) {
+      errors.iban = "Enter a valid IBAN"
+    }
   }
 
   if (!form.address.trim()) {
@@ -139,6 +142,12 @@ const UpdateBankInfo = ({ data, onCancel, onSuccess }: Props) => {
 
       if (status === 500) {
         showError("Something went wrong. Please contact the administrator.")
+      } else if (status === 403) {
+        showError(
+          error.response?.data?.message ||
+            error.response?.data?.statusMessage ||
+            "You don't have permission to update bank details. Please contact support."
+        )
       } else {
         showError(
           error.response?.data?.message ||
@@ -184,7 +193,7 @@ const UpdateBankInfo = ({ data, onCancel, onSuccess }: Props) => {
             inputMode="numeric"
             value={form.accountNumber}
             onChange={handleChange}
-            placeholder="Account Number"
+            placeholder="Account Number (or IBAN)"
             maxLength={20}
             className={`p-2 rounded bg-[#1f003d] text-white border ${errors.accountNumber ? "border-red-500" : "border-gray-600"}`}
           />
@@ -196,7 +205,7 @@ const UpdateBankInfo = ({ data, onCancel, onSuccess }: Props) => {
             name="iban"
             value={form.iban}
             onChange={handleChange}
-            placeholder="IBAN"
+            placeholder="IBAN (or Account Number)"
             maxLength={34}
             className={`p-2 rounded bg-[#1f003d] text-white border uppercase ${errors.iban ? "border-red-500" : "border-gray-600"}`}
           />

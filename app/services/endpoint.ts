@@ -17,7 +17,8 @@ const endpoints = {
   notifications: {
     coupleNotification: "/notifications/getusernotifications",
     markAllRead: "/notifications/markallread",
-    dismissAnnouncement: "/notifications/announcements/{announcementId}/dismiss",
+    dismissAnnouncement:
+      "/notifications/announcements/{announcementId}/dismiss",
   },
   // bank-details
   bankdetails: {

@@ -17,23 +17,30 @@ export const useCoupleProfileDetails = () => {
   const [error, setError] =
     useState<string | null>(null)
 
+  const [needsBankAccount, setNeedsBankAccount] = useState(false)
+
   const fetchProfileDetails = async () => {
     try {
       setIsLoading(true)
       setError(null)
+      setNeedsBankAccount(false)
 
       const profileData =
         await getCoupleProfileDetailsData()
 
       setData(profileData)
 
-    } catch (err) {
+    } catch (err: any) {
 
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Something went wrong"
-      )
+      if (err?.code === "BANK_ACCOUNT_REQUIRED") {
+        setNeedsBankAccount(true)
+      } else {
+        setError(
+          err instanceof Error
+            ? err.message
+            : "Something went wrong"
+        )
+      }
 
     } finally {
       setIsLoading(false)
@@ -48,6 +55,7 @@ export const useCoupleProfileDetails = () => {
     data,
     isLoading,
     error,
+    needsBankAccount,
     refetch: fetchProfileDetails,
   }
 }

@@ -4,6 +4,7 @@ import ProfileInfoEditForm from "@/app/features/dashboard/myprofile/ProfileInfoE
 import { ProfileEditIcon } from "@/app/components/icons/Icons"
 import { Trash2, X } from "lucide-react"
 import Image from "next/image"
+import Link from "next/link"
 import { useEffect, useRef, useState } from "react"
 
 import { useCoupleProfileDetails } from "@/app/features/dashboard/hooks/useCoupleProfile"
@@ -25,7 +26,7 @@ const Page = () => {
   const galleryInputRef = useRef<HTMLInputElement | null>(null)
   const cameraInputRef = useRef<HTMLInputElement | null>(null)
 
-  const { data, isLoading, refetch } = useCoupleProfileDetails()
+  const { data, isLoading, needsBankAccount, refetch } = useCoupleProfileDetails()
   const { updateProfilePhoto } = useUpdateCouplePhoto()
   const { deleteProfilePhoto } = useDeleteCouplePhoto()
   console.log("data is herE:", data);
@@ -175,8 +176,18 @@ const Page = () => {
         />
 
         {/* CONTENT */}
-        {/* CONTENT */}
-        {isFormOpen ? (
+        {!isLoading && needsBankAccount ? (
+          <div className="border glass-card border-[#5FDA78] rounded-[30px] mt-10 p-6 flex flex-col items-center gap-3 text-center">
+            <p className="text-white font-semibold text-lg">Bank Account Required</p>
+            <p className="text-white/80 text-sm">Please add bank account details first.</p>
+            <Link
+              href="/dashboard/setting/bank-info"
+              className="mt-2 w-full max-w-60 bg-[#5FDA78] text-[#330065] text-center py-3 rounded-full font-semibold hover:bg-[#4ecb68] transition-colors"
+            >
+              Add Bank Details
+            </Link>
+          </div>
+        ) : isFormOpen ? (
 
           <div className="  ">
 
