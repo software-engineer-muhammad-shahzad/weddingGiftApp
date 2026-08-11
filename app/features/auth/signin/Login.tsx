@@ -97,7 +97,7 @@ const Login = () => {
 
             <p className="text-sm text-center  text-[#C5C5C5] mt-6">
               Don’t have an account?
-              <Link href="/signup" className=" ps-1 cursor-pointer border-b border-transparent transition-all duration-300 hover:border-white">
+              <Link href="/signup" className=" underline ps-1 cursor-pointer border-b border-transparent transition-all duration-300 hover:border-white">
                 Sign up
               </Link>
             </p>
