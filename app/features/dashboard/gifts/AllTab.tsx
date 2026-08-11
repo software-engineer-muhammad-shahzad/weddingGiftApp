@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import ModalLayer from "../../../components/ui/ModalLayer";
 import { Download, Share2, X } from "lucide-react";
 import { showError, showSuccess } from "@/app/lib/toast";
@@ -13,11 +13,31 @@ interface AllTabProps {
   activeTab?: string;
 }
 
+const getExtensionFromPath = (path: string, fallback: string) => {
+  const cleanPath = path.split("?")[0] ?? "";
+  const extension = cleanPath.split(".").pop()?.toLowerCase();
+  return extension && /^[a-z0-9]+$/.test(extension) ? extension : fallback;
+};
+
+const isSameOriginUrl = (url: string) => {
+  if (url.startsWith("/")) return true;
+  try {
+    return new URL(url, window.location.origin).origin === window.location.origin;
+  } catch {
+    return false;
+  }
+};
+
+const toSameOriginMediaUrl = (url: string) =>
+  isSameOriginUrl(url) ? url : `/api/share-media?url=${encodeURIComponent(url)}`;
+
 const AllTab = ({ receivedGiftData, activeTab = "all" }: AllTabProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSharing, setIsSharing] = useState(false);
   const [selectedData, setSelectedData] = useState<MessageItemDTO | null>(
     null
   );
+  const mediaRef = useRef<HTMLImageElement | HTMLVideoElement | null>(null);
 
   const handleItemClick = (data: MessageItemDTO) => {
     setSelectedData(data)
@@ -39,22 +59,78 @@ const AllTab = ({ receivedGiftData, activeTab = "all" }: AllTabProps) => {
     if (!selectedData) return null;
 
     if (getMediaType(selectedData) === "video" && selectedData.wishingVideoPath) {
+      const path = selectedData.wishingVideoPath;
       return {
-        url: buildContentImageUrl(selectedData.wishingVideoPath) || selectedData.wishingVideoPath,
+        url: buildContentImageUrl(path) || path,
         type: "video/mp4",
-        extension: "mp4",
+        extension: getExtensionFromPath(path, "mp4"),
       };
     }
 
     if (selectedData.wishingCardPath) {
+      const path = selectedData.wishingCardPath;
       return {
-        url: buildContentImageUrl(selectedData.wishingCardPath) || selectedData.wishingCardPath,
+        url: buildContentImageUrl(path) || path,
         type: "image/jpeg",
-        extension: "jpg",
+        extension: getExtensionFromPath(path, "jpg"),
       };
     }
 
     return null;
+  };
+
+  const blobFromUrl = async (url: string) => {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error("Failed to fetch media");
+    const blob = await response.blob();
+    if (!blob.size) throw new Error("Empty media");
+    return blob;
+  };
+
+  const fetchMediaFile = async (
+    media: NonNullable<ReturnType<typeof getSelectedMedia>>
+  ) => {
+    const displayedSrc = mediaRef.current?.currentSrc || "";
+    const candidates = [
+      displayedSrc && isSameOriginUrl(displayedSrc) ? displayedSrc : "",
+      toSameOriginMediaUrl(media.url),
+    ].filter((url, index, list) => url && list.indexOf(url) === index);
+
+    let blob: Blob | null = null;
+    for (const url of candidates) {
+      try {
+        blob = await blobFromUrl(url);
+        break;
+      } catch {
+        // Try the next same-origin candidate.
+      }
+    }
+
+    if (!blob) {
+      throw new Error("Failed to fetch media");
+    }
+
+    const mimeType =
+      blob.type && blob.type !== "application/octet-stream"
+        ? blob.type
+        : media.type;
+    const extension = mimeType.includes("/")
+      ? mimeType.split("/")[1].split("+")[0] || media.extension
+      : media.extension;
+    const guestName = (selectedData?.guestName ?? "gift").replace(/[^\w-]+/g, "-");
+
+    return new File([blob], `${guestName}.${extension}`, { type: mimeType });
+  };
+
+  const downloadFile = (file: File) => {
+    const objectUrl = URL.createObjectURL(file);
+    const link = document.createElement("a");
+    link.href = objectUrl;
+    link.download = file.name;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(objectUrl);
   };
 
   const handleDownload = async () => {
@@ -62,76 +138,49 @@ const AllTab = ({ receivedGiftData, activeTab = "all" }: AllTabProps) => {
     if (!media) return;
 
     try {
-      const response = await fetch(media.url);
-      const blob = await response.blob();
-      const blobUrl = URL.createObjectURL(blob);
-
-      const link = document.createElement("a");
-      link.href = blobUrl;
-      link.download = `${selectedData?.guestName ?? "gift"}.${media.extension}`;
-      link.click();
-
-      URL.revokeObjectURL(blobUrl);
+      const file = await fetchMediaFile(media);
+      downloadFile(file);
     } catch (error) {
       console.error("Download failed:", error);
-      window.open(media.url, "_blank");
+      showError("Failed to download media. Please try again.");
     }
   };
 
   const handleShare = async () => {
     const media = getSelectedMedia();
-    if (!media?.url) {
-      showError("Nothing to share");
+    if (!media?.url || isSharing) {
+      if (!media?.url) showError("Nothing to share");
       return;
     }
 
-    const title = selectedData?.guestName ?? "Gift";
-    const text = selectedData?.wishingContent?.trim() || `Gift from ${title}`;
-    const shareUrl = media.url;
-
     try {
-      // Mobile: try sharing the actual file when supported.
-      if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
+      setIsSharing(true);
+      const file = await fetchMediaFile(media);
+      const shareData: ShareData = { files: [file] };
+
+      if (
+        typeof navigator !== "undefined" &&
+        typeof navigator.share === "function" &&
+        (!navigator.canShare || navigator.canShare(shareData))
+      ) {
         try {
-          const response = await fetch(shareUrl, { mode: "cors" });
-          if (response.ok) {
-            const blob = await response.blob();
-            const mimeType = blob.type || media.type;
-            const file = new File([blob], `gift.${media.extension}`, { type: mimeType });
-
-            if (navigator.canShare?.({ files: [file] })) {
-              await navigator.share({
-                files: [file],
-                title,
-                text,
-              });
-              return;
-            }
-          }
-        } catch {
-          // Fall through to URL / clipboard share.
+          await navigator.share(shareData);
+          return;
+        } catch (error: unknown) {
+          const name = error instanceof Error ? error.name : "";
+          if (name === "AbortError") return;
         }
-
-        await navigator.share({
-          title,
-          text,
-          url: shareUrl,
-        });
-        return;
       }
 
-      await navigator.clipboard.writeText(shareUrl);
-      showSuccess("Link copied to clipboard!");
+      downloadFile(file);
+      showSuccess("Media downloaded. You can share it from your device.");
     } catch (error: unknown) {
       const name = error instanceof Error ? error.name : "";
       if (name === "AbortError") return;
-
-      try {
-        await navigator.clipboard.writeText(shareUrl);
-        showSuccess("Link copied to clipboard!");
-      } catch {
-        showError("Share failed. Please try again.");
-      }
+      console.error("Share failed:", error);
+      showError("Failed to share media. Please try again.");
+    } finally {
+      setIsSharing(false);
     }
   };
 
@@ -241,7 +290,11 @@ const AllTab = ({ receivedGiftData, activeTab = "all" }: AllTabProps) => {
                 {selectedMediaType === "video" ? (
                   <div className="relative mx-auto h-[min(55vh,520px)] aspect-[9/16] max-w-full rounded-2xl overflow-hidden border border-white/20 bg-black/30">
                     <video
+                      ref={(el) => {
+                        mediaRef.current = el;
+                      }}
                       controls
+                      playsInline
                       className="absolute inset-0 h-full w-full object-cover"
                     >
                       <source src={selectedData.wishingVideoPath} type="video/mp4" />
@@ -251,6 +304,9 @@ const AllTab = ({ receivedGiftData, activeTab = "all" }: AllTabProps) => {
                 ) : (
                   <div className="relative mx-auto h-[min(55vh,520px)] aspect-[9/16] max-w-full rounded-2xl overflow-hidden border border-white/20 bg-black/30">
                     <Image
+                      ref={(el) => {
+                        mediaRef.current = el;
+                      }}
                       src={selectedData.wishingCardPath}
                       alt="card-image"
                       fill
@@ -288,7 +344,9 @@ const AllTab = ({ receivedGiftData, activeTab = "all" }: AllTabProps) => {
                 <button
                   type="button"
                   onClick={handleShare}
-                  className="cursor-pointer border border-[#5FDA78] glass-card w-12 h-12 rounded-full flex items-center justify-center"
+                  disabled={isSharing}
+                  className="cursor-pointer border border-[#5FDA78] glass-card w-12 h-12 rounded-full flex items-center justify-center disabled:opacity-50"
+                  aria-label="Share media"
                 >
                   <Share2 className="w-5 h-5" />
                 </button>

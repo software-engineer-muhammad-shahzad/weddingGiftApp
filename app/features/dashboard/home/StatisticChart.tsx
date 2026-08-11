@@ -37,7 +37,7 @@ const StatisticChart: React.FC<StatisticChartProps> = ({ data, isLoading }) => {
           </div>
         ) : !hasData ? (
           <div className="w-full h-full flex items-center justify-center">
-            <p className="text-white/70 text-sm">No statistics found</p>
+            <p className="text-white/70 text-sm">No statistics found this week</p>
           </div>
         ) : (
         <ResponsiveContainer width="100%" height="100%" className="outline-none [&_*]:outline-none">

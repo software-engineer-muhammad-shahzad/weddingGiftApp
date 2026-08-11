@@ -227,9 +227,8 @@ export const updateCouplePhotoData = async (data: any): Promise<any> => {
 }
 
 // delete-couple-profile
-export const deleteCoupleProfileData = async (): Promise<void> => {
-  await deleteCoupleProfile()
-
+export const deleteCoupleProfileData = async (userId: number): Promise<void> => {
+  await deleteCoupleProfile(userId)
 }
 
 // submit-support-ticket

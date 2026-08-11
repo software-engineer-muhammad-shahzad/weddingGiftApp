@@ -1,12 +1,4 @@
-export interface ContributionResourceMetadata {
-  createdOn: string
-  createdBy: number | null
-  updatedOn: string | null
-  updatedBy: number | null
-  deletedOn: string | null
-  deletedBy: number | null
-  recordStatus: string
-}
+import { ResourceMetadata } from "./ResourceMetadata"
 
 export interface ContributionItem {
   id: number
@@ -15,10 +7,11 @@ export interface ContributionItem {
   coupleUserId: number
   guestUserId: number
   paymentId: number
+  defaultCurrencySymbol: string | null
   wishingCardPath: string | null
   wishingVideoPath: string | null
   isAttachment?: boolean
-  resourceMetadata: ContributionResourceMetadata
+  resourceMetadata: ResourceMetadata
 }
 
 export interface ContributionsListData {

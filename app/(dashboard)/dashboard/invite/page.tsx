@@ -27,12 +27,10 @@ const Page = () => {
     const userData = useMemo(() => {
         if (!data) return null
 
-        const inviteUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/invite/${data.publicSlug}`
-
         return {
             name: data.coupleName.toUpperCase(),
             date: data.coupleEventDate,
-            inviteUrl: inviteUrl,
+            inviteUrl: data.inviteUrl,
             qrDownloadUrl: data.qrDownloadUrl,
         }
     }, [data])

@@ -7,14 +7,13 @@ export const useDeleteCouplePhoto = () => {
   const [error, setError] = useState<string | null>(null)
   const [isSuccess, setIsSuccess] = useState(false)
 
-  const deleteProfilePhoto = async () => {
+  const deleteProfilePhoto = async (userId: number) => {
     try {
       setIsLoading(true)
       setError(null)
       setIsSuccess(false)
 
-      // 👇 DELETE API call (no body needed)
-      await deleteCoupleProfileData()
+      await deleteCoupleProfileData(userId)
       showSuccess("image deleted successfully")
       setIsSuccess(true)
 

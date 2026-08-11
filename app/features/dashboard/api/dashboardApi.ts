@@ -39,8 +39,10 @@ export const updateCoupleProfile = (formData: FormData): Promise<any> => {
 
 
 // delete-couple-Photo
-export const deleteCoupleProfile = (): Promise<any> => {
-  return deleteRequest(endpoints.coupleProfile.deleteCoupleProfile)
+export const deleteCoupleProfile = (userId: number): Promise<any> => {
+  return deleteRequest(
+    endpoints.coupleProfile.deleteCoupleProfile.replace("{userId}", String(userId))
+  )
 }
 
 // submit-support-ticket

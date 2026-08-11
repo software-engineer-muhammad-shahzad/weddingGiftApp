@@ -28,7 +28,7 @@ const endpoints = {
   coupleProfile: {
     coupleProfileDetails: "/couple/profile",
     updateCoupleProfile: "/usermanagement/users/profile/photo",
-    deleteCoupleProfile: "/usermanagement/users/profile/photo",
+    deleteCoupleProfile: "/usermanagement/users/{userId}/profile/photo",
   },
 
   // support-ticket

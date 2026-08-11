@@ -64,9 +64,9 @@ const WishAmount = ({
           </p>
 
           <div className="flex justify-center">
-            <div className="inline-flex items-baseline justify-center gap-1">
+            <div className="inline-flex items-center justify-center gap-0.5">
               {currency ? (
-                <span className="shrink-0 font-semibold text-lg md:text-xl text-white leading-none">
+                <span className="shrink-0 self-center font-semibold text-[28px] md:text-[32px] text-white leading-none translate-y-[2px]">
                   {currency}
                 </span>
               ) : null}
@@ -78,9 +78,8 @@ const WishAmount = ({
                 onChange={(e) => handleAmountChange(e.target.value)}
                 onBlur={handleAmountBlur}
                 size={Math.max((amount || "00.00").length, 5)}
-                className="bg-transparent border-none outline-none text-right font-semibold text-[50px] py-2 text-white placeholder:text-gray-600 min-w-0"
+                className="bg-transparent border-none outline-none text-left font-semibold text-[50px] py-2 text-white placeholder:text-gray-600 min-w-0 w-auto"
               />
-              
             </div>
           </div>
         </div>

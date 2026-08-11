@@ -193,7 +193,7 @@ const UpdateBankInfo = ({ data, onCancel, onSuccess }: Props) => {
             inputMode="numeric"
             value={form.accountNumber}
             onChange={handleChange}
-            placeholder="Account Number (or IBAN)"
+            placeholder="Account Number"
             maxLength={20}
             className={`p-2 rounded bg-[#1f003d] text-white border ${errors.accountNumber ? "border-red-500" : "border-gray-600"}`}
           />
@@ -205,7 +205,7 @@ const UpdateBankInfo = ({ data, onCancel, onSuccess }: Props) => {
             name="iban"
             value={form.iban}
             onChange={handleChange}
-            placeholder="IBAN (or Account Number)"
+            placeholder="IBAN"
             maxLength={34}
             className={`p-2 rounded bg-[#1f003d] text-white border uppercase ${errors.iban ? "border-red-500" : "border-gray-600"}`}
           />

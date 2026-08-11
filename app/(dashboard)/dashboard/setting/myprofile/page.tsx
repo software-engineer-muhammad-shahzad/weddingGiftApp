@@ -10,6 +10,8 @@ import { useEffect, useRef, useState } from "react"
 import { useCoupleProfileDetails } from "@/app/features/dashboard/hooks/useCoupleProfile"
 import { useUpdateCouplePhoto } from "@/app/features/dashboard/hooks/useUpdateCouplePhoto"
 import { useDeleteCouplePhoto } from "@/app/features/dashboard/hooks/useDeleteCoupleProfile"
+import { getData } from "@/app/utils/storage/storageHelper"
+import type { LoginData } from "@/app/features/auth/types/login"
 
 import ShowProfileInfo from "@/app/features/dashboard/myprofile/ShowProfileInfo"
 import ProfileInfoNavigation from "@/app/features/dashboard/myprofile/ProfileInfoNavigation"
@@ -59,8 +61,14 @@ const Page = () => {
 
   // DELETE REAL PROFILE IMAGE (API)
   const handleDeleteImage = async () => {
+    const userId = getData<LoginData>("authData", "local")?.userId
+    if (!userId) {
+      console.error("Delete failed: current user id is missing")
+      return
+    }
+
     try {
-      await deleteProfilePhoto()   // 🔥 API CALL
+      await deleteProfilePhoto(userId)
 
       setPreviewImage(null)
       setSelectedFile(null)
