@@ -20,15 +20,29 @@ interface BannerProps {
     eventDate?: string
 }
 
+const isIosDevice = () => {
+    if (typeof navigator === "undefined") return false
+    return (
+        /iP(ad|hone|od)/.test(navigator.userAgent) ||
+        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)
+    )
+}
+
 const Banner = ({ inviteData, coupleName = "OUR WEDDING", eventDate = "" }: BannerProps) => {
     const [isQrModalOpen, setIsQrModalOpen] = useState(false)
     const [isDownloading, setIsDownloading] = useState(false)
+    const [iosGalleryUrl, setIosGalleryUrl] = useState<string | null>(null)
     const inviteCardRef = useRef<HTMLDivElement>(null)
+
+    const closeIosGalleryPreview = () => {
+        if (iosGalleryUrl) URL.revokeObjectURL(iosGalleryUrl)
+        setIosGalleryUrl(null)
+    }
 
     const handleDownload = async () => {
         if (!inviteCardRef.current || isDownloading) return
 
-        const fileName = `${coupleName}-invite-card.png`
+        const fileName = `${coupleName}-invite-card.jpg`
 
         try {
             setIsDownloading(true)
@@ -44,23 +58,15 @@ const Banner = ({ inviteData, coupleName = "OUR WEDDING", eventDate = "" }: Bann
             })
 
             const blob = await new Promise<Blob | null>((resolve) =>
-                canvas.toBlob(resolve, "image/png")
+                canvas.toBlob(resolve, "image/jpeg", 0.95)
             )
             if (!blob) throw new Error("Failed to create invite card image")
 
-            const file = new File([blob], fileName, { type: "image/png" })
-            const shareData: ShareData = {
-                files: [file],
-                title: fileName,
-            }
-
-            // iPhone Safari ignores <a download>. The share sheet is the working save path.
-            if (
-                typeof navigator !== "undefined" &&
-                typeof navigator.share === "function" &&
-                (!navigator.canShare || navigator.canShare(shareData))
-            ) {
-                await navigator.share(shareData)
+            // iPhone cannot auto-write to Photos. Show a real <img> so the native
+            // long-press menu can "Save to Photos" / "Add to Photos".
+            if (isIosDevice()) {
+                if (iosGalleryUrl) URL.revokeObjectURL(iosGalleryUrl)
+                setIosGalleryUrl(URL.createObjectURL(blob))
                 return
             }
 
@@ -68,20 +74,11 @@ const Banner = ({ inviteData, coupleName = "OUR WEDDING", eventDate = "" }: Bann
             const link = document.createElement("a")
             link.href = objectUrl
             link.download = fileName
-            link.rel = "noopener"
             document.body.appendChild(link)
             link.click()
             document.body.removeChild(link)
-
-            // If the download attribute was ignored, open the image so it can be saved.
-            setTimeout(() => {
-                if (/iP(ad|hone|od)/.test(navigator.userAgent)) {
-                    window.open(objectUrl, "_blank")
-                }
-                URL.revokeObjectURL(objectUrl)
-            }, 1000)
+            URL.revokeObjectURL(objectUrl)
         } catch (err) {
-            if (err instanceof DOMException && err.name === "AbortError") return
             console.error("Failed to download invite card:", err)
             showError("Failed to download invite card. Please try again.")
         } finally {
@@ -208,6 +205,28 @@ const Banner = ({ inviteData, coupleName = "OUR WEDDING", eventDate = "" }: Bann
                         </div>
                     </div>
                 </ModalLayer>
+            )}
+
+            {iosGalleryUrl && (
+                <div className="fixed inset-0 z-[10000] bg-black/80 flex flex-col items-center justify-center px-5">
+                    <p className="text-white text-sm text-center mb-4">
+                        Press and hold the image, then tap Save to Photos
+                    </p>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                        src={iosGalleryUrl}
+                        alt="Invite card"
+                        className="max-h-[70vh] w-auto max-w-full rounded-2xl"
+                        style={{ WebkitTouchCallout: "default", WebkitUserSelect: "auto" }}
+                    />
+                    <button
+                        type="button"
+                        onClick={closeIosGalleryPreview}
+                        className="mt-6 text-white/80 text-sm underline"
+                    >
+                        Close
+                    </button>
+                </div>
             )}
         </>
     )
