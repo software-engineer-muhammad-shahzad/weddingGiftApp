@@ -10,7 +10,6 @@ import { handleShare } from "@/app/utils/handleShareQr"
 import ModalLayer from "@/app/components/ui/ModalLayer"
 import Button from "@/app/components/elements/Button"
 import { formatDateWithWeekday } from "@/app/utils/formatDate"
-import { showError } from "@/app/lib/toast"
 
 const QR_CANVAS_ID = "banner-qr-code-canvas"
 
@@ -20,67 +19,56 @@ interface BannerProps {
     eventDate?: string
 }
 
-const isIosDevice = () => {
-    if (typeof navigator === "undefined") return false
-    return (
-        /iP(ad|hone|od)/.test(navigator.userAgent) ||
-        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)
-    )
-}
-
 const Banner = ({ inviteData, coupleName = "OUR WEDDING", eventDate = "" }: BannerProps) => {
     const [isQrModalOpen, setIsQrModalOpen] = useState(false)
     const [isDownloading, setIsDownloading] = useState(false)
-    const [iosGalleryUrl, setIosGalleryUrl] = useState<string | null>(null)
     const inviteCardRef = useRef<HTMLDivElement>(null)
 
-    const closeIosGalleryPreview = () => {
-        if (iosGalleryUrl) URL.revokeObjectURL(iosGalleryUrl)
-        setIosGalleryUrl(null)
-    }
+    const saveCanvasAsPng = (canvas: HTMLCanvasElement, fileName: string) =>
+        new Promise<void>((resolve, reject) => {
+            canvas.toBlob((blob) => {
+                if (!blob) {
+                    reject(new Error("Failed to create invite card image"))
+                    return
+                }
+
+                const objectUrl = URL.createObjectURL(blob)
+                const link = document.createElement("a")
+                link.href = objectUrl
+                link.download = fileName
+                link.rel = "noopener"
+                link.style.display = "none"
+                document.body.appendChild(link)
+
+                // iOS Safari ignores data: URLs and needs the <a> to stay mounted
+                // until the download actually starts.
+                requestAnimationFrame(() => {
+                    link.click()
+                    window.setTimeout(() => {
+                        link.remove()
+                        URL.revokeObjectURL(objectUrl)
+                        resolve()
+                    }, 2000)
+                })
+            }, "image/png")
+        })
 
     const handleDownload = async () => {
         if (!inviteCardRef.current || isDownloading) return
-
-        const fileName = `${coupleName}-invite-card.jpg`
 
         try {
             setIsDownloading(true)
 
             const canvas = await html2canvas(inviteCardRef.current, {
                 backgroundColor: "#2a0050",
-                scale: Math.min(2, window.devicePixelRatio || 1),
+                scale: 2,
                 useCORS: true,
                 allowTaint: true,
-                logging: false,
-                scrollX: 0,
-                scrollY: 0,
             })
 
-            const blob = await new Promise<Blob | null>((resolve) =>
-                canvas.toBlob(resolve, "image/jpeg", 0.95)
-            )
-            if (!blob) throw new Error("Failed to create invite card image")
-
-            // iPhone cannot auto-write to Photos. Show a real <img> so the native
-            // long-press menu can "Save to Photos" / "Add to Photos".
-            if (isIosDevice()) {
-                if (iosGalleryUrl) URL.revokeObjectURL(iosGalleryUrl)
-                setIosGalleryUrl(URL.createObjectURL(blob))
-                return
-            }
-
-            const objectUrl = URL.createObjectURL(blob)
-            const link = document.createElement("a")
-            link.href = objectUrl
-            link.download = fileName
-            document.body.appendChild(link)
-            link.click()
-            document.body.removeChild(link)
-            URL.revokeObjectURL(objectUrl)
+            await saveCanvasAsPng(canvas, `${coupleName}-invite-card.png`)
         } catch (err) {
             console.error("Failed to download invite card:", err)
-            showError("Failed to download invite card. Please try again.")
         } finally {
             setIsDownloading(false)
         }
@@ -205,28 +193,6 @@ const Banner = ({ inviteData, coupleName = "OUR WEDDING", eventDate = "" }: Bann
                         </div>
                     </div>
                 </ModalLayer>
-            )}
-
-            {iosGalleryUrl && (
-                <div className="fixed inset-0 z-[10000] bg-black/80 flex flex-col items-center justify-center px-5">
-                    <p className="text-white text-sm text-center mb-4">
-                        Press and hold the image, then tap Save to Photos
-                    </p>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                        src={iosGalleryUrl}
-                        alt="Invite card"
-                        className="max-h-[70vh] w-auto max-w-full rounded-2xl"
-                        style={{ WebkitTouchCallout: "default", WebkitUserSelect: "auto" }}
-                    />
-                    <button
-                        type="button"
-                        onClick={closeIosGalleryPreview}
-                        className="mt-6 text-white/80 text-sm underline"
-                    >
-                        Close
-                    </button>
-                </div>
             )}
         </>
     )
