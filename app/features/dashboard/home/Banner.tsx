@@ -10,6 +10,7 @@ import { handleShare } from "@/app/utils/handleShareQr"
 import ModalLayer from "@/app/components/ui/ModalLayer"
 import Button from "@/app/components/elements/Button"
 import { formatDateWithWeekday } from "@/app/utils/formatDate"
+import { showError } from "@/app/lib/toast"
 
 const QR_CANVAS_ID = "banner-qr-code-canvas"
 
@@ -27,24 +28,62 @@ const Banner = ({ inviteData, coupleName = "OUR WEDDING", eventDate = "" }: Bann
     const handleDownload = async () => {
         if (!inviteCardRef.current || isDownloading) return
 
+        const fileName = `${coupleName}-invite-card.png`
+
         try {
             setIsDownloading(true)
 
             const canvas = await html2canvas(inviteCardRef.current, {
                 backgroundColor: "#2a0050",
-                scale: 2,
+                scale: Math.min(2, window.devicePixelRatio || 1),
                 useCORS: true,
                 allowTaint: true,
+                logging: false,
+                scrollX: 0,
+                scrollY: 0,
             })
 
+            const blob = await new Promise<Blob | null>((resolve) =>
+                canvas.toBlob(resolve, "image/png")
+            )
+            if (!blob) throw new Error("Failed to create invite card image")
+
+            const file = new File([blob], fileName, { type: "image/png" })
+            const shareData: ShareData = {
+                files: [file],
+                title: fileName,
+            }
+
+            // iPhone Safari ignores <a download>. The share sheet is the working save path.
+            if (
+                typeof navigator !== "undefined" &&
+                typeof navigator.share === "function" &&
+                (!navigator.canShare || navigator.canShare(shareData))
+            ) {
+                await navigator.share(shareData)
+                return
+            }
+
+            const objectUrl = URL.createObjectURL(blob)
             const link = document.createElement("a")
-            link.href = canvas.toDataURL("image/png")
-            link.download = `${coupleName}-invite-card.png`
+            link.href = objectUrl
+            link.download = fileName
+            link.rel = "noopener"
             document.body.appendChild(link)
             link.click()
             document.body.removeChild(link)
+
+            // If the download attribute was ignored, open the image so it can be saved.
+            setTimeout(() => {
+                if (/iP(ad|hone|od)/.test(navigator.userAgent)) {
+                    window.open(objectUrl, "_blank")
+                }
+                URL.revokeObjectURL(objectUrl)
+            }, 1000)
         } catch (err) {
+            if (err instanceof DOMException && err.name === "AbortError") return
             console.error("Failed to download invite card:", err)
+            showError("Failed to download invite card. Please try again.")
         } finally {
             setIsDownloading(false)
         }
