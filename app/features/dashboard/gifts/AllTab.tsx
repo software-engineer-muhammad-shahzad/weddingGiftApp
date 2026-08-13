@@ -3,10 +3,11 @@
 import Image from "next/image";
 import { useRef, useState } from "react";
 import ModalLayer from "../../../components/ui/ModalLayer";
-import { Download, Share2, X } from "lucide-react";
+import { Download, Loader2, Share2, X } from "lucide-react";
 import { showError, showSuccess } from "@/app/lib/toast";
 import { buildContentImageUrl } from "@/app/utils/imageUrl";
 import { MessageItemDTO } from "../types/coupleGreetings";
+import { formatDate } from "@/app/utils/formatDate";
 
 interface AllTabProps {
   receivedGiftData: MessageItemDTO[];
@@ -34,6 +35,7 @@ const toSameOriginMediaUrl = (url: string) =>
 const AllTab = ({ receivedGiftData, activeTab = "all" }: AllTabProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
   const [selectedData, setSelectedData] = useState<MessageItemDTO | null>(
     null
   );
@@ -122,33 +124,46 @@ const AllTab = ({ receivedGiftData, activeTab = "all" }: AllTabProps) => {
     return new File([blob], `${guestName}.${extension}`, { type: mimeType });
   };
 
-  const downloadFile = (file: File) => {
-    const objectUrl = URL.createObjectURL(file);
-    const link = document.createElement("a");
-    link.href = objectUrl;
-    link.download = file.name;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(objectUrl);
-  };
+  const downloadFile = (file: File) =>
+    new Promise<void>((resolve) => {
+      const objectUrl = URL.createObjectURL(file);
+      const link = document.createElement("a");
+      link.href = objectUrl;
+      link.download = file.name;
+      link.rel = "noopener";
+      link.style.display = "none";
+      document.body.appendChild(link);
+
+      // iOS Safari needs the <a> to stay mounted until the download starts.
+      requestAnimationFrame(() => {
+        link.click();
+        window.setTimeout(() => {
+          link.remove();
+          URL.revokeObjectURL(objectUrl);
+          resolve();
+        }, 2000);
+      });
+    });
 
   const handleDownload = async () => {
     const media = getSelectedMedia();
-    if (!media) return;
+    if (!media || isDownloading || isSharing) return;
 
     try {
+      setIsDownloading(true);
       const file = await fetchMediaFile(media);
-      downloadFile(file);
+      await downloadFile(file);
     } catch (error) {
       console.error("Download failed:", error);
       showError("Failed to download media. Please try again.");
+    } finally {
+      setIsDownloading(false);
     }
   };
 
   const handleShare = async () => {
     const media = getSelectedMedia();
-    if (!media?.url || isSharing) {
+    if (!media?.url || isSharing || isDownloading) {
       if (!media?.url) showError("Nothing to share");
       return;
     }
@@ -172,7 +187,7 @@ const AllTab = ({ receivedGiftData, activeTab = "all" }: AllTabProps) => {
         }
       }
 
-      downloadFile(file);
+      await downloadFile(file);
       showSuccess("Media downloaded. You can share it from your device.");
     } catch (error: unknown) {
       const name = error instanceof Error ? error.name : "";
@@ -187,7 +202,7 @@ const AllTab = ({ receivedGiftData, activeTab = "all" }: AllTabProps) => {
   return (
     <>
       <div
-        className="flex flex-col gap-4 max-h-96 overflow-y-auto pb-24"
+        className="flex flex-col gap-4 flex-1 min-h-0 overflow-y-auto pb-28"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         {receivedGiftData?.map((item) => (
@@ -329,12 +344,7 @@ const AllTab = ({ receivedGiftData, activeTab = "all" }: AllTabProps) => {
               </p>
 
               <p className="text-white text-lg font-light mt-1">
-                {new Date(selectedData.resourceMetadata.createdOn).toLocaleDateString("en-GB", {
-                  weekday: "long",
-                  day: "numeric",
-                  month: "long",
-                  year: "numeric",
-                })}
+                {formatDate(selectedData.resourceMetadata.createdOn ?? "")}
               </p>
             </div>
 
@@ -344,18 +354,28 @@ const AllTab = ({ receivedGiftData, activeTab = "all" }: AllTabProps) => {
                 <button
                   type="button"
                   onClick={handleShare}
-                  disabled={isSharing}
-                  className="cursor-pointer border border-[#5FDA78] glass-card w-12 h-12 rounded-full flex items-center justify-center disabled:opacity-50"
+                  disabled={isSharing || isDownloading}
+                  className="cursor-pointer border border-[#5FDA78] glass-card w-12 h-12 rounded-full flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                   aria-label="Share media"
                 >
-                  <Share2 className="w-5 h-5" />
+                  {isSharing ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <Share2 className="w-5 h-5" />
+                  )}
                 </button>
                 <button
                   type="button"
                   onClick={handleDownload}
-                  className="cursor-pointer border border-[#5FDA78] glass-card w-12 h-12 rounded-full flex items-center justify-center"
+                  disabled={isDownloading || isSharing}
+                  className="cursor-pointer border border-[#5FDA78] glass-card w-12 h-12 rounded-full flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                  aria-label="Download media"
                 >
-                  <Download className="w-5 h-5" />
+                  {isDownloading ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <Download className="w-5 h-5" />
+                  )}
                 </button>
               </div>
             )}

@@ -1,5 +1,6 @@
 "use client"
 
+import { formatDate } from "@/app/utils/formatDate"
 import type { ContributionItem } from "../types/coupleContributions"
 import Skeleton from "@/app/components/ui/Skeleton"
 
@@ -47,7 +48,7 @@ const StatisticTable = ({ items, loading }: StatisticTableProps) => {
                   <td className="py-4 px-4 font-light">{item.defaultCurrencySymbol}{item.amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
                   <td className="py-4 px-4 font-light">{hasAttachment ? "Yes" : "No"}</td>
                   <td className="py-4 px-4 font-light">
-                    {new Date(item.resourceMetadata.createdOn).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" })}
+                    { formatDate(item.resourceMetadata.createdOn ?? "")}
                   </td>
                 </tr>
               )

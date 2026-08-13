@@ -1,6 +1,6 @@
 "use client"
 
-import { Copy, Share2, Download } from "lucide-react"
+import { Copy, Share2, Download, Loader2 } from "lucide-react"
 import Link from "next/link"
 import { ShagunLogo, WelcomeLogo } from "@/app/components/icons/Icons"
 import { formatDateWithWeekday } from "@/app/utils/formatDate"
@@ -70,6 +70,35 @@ const Page = () => {
         return new File([blob], fileName, { type: "image/png" })
     }
 
+    const saveCanvasAsPng = (canvas: HTMLCanvasElement, fileName: string) =>
+        new Promise<void>((resolve, reject) => {
+            canvas.toBlob((blob) => {
+                if (!blob) {
+                    reject(new Error("Failed to create invite card image"))
+                    return
+                }
+
+                const objectUrl = URL.createObjectURL(blob)
+                const link = document.createElement("a")
+                link.href = objectUrl
+                link.download = fileName
+                link.rel = "noopener"
+                link.style.display = "none"
+                document.body.appendChild(link)
+
+                // iOS Safari ignores data: URLs and needs the <a> to stay mounted
+                // until the download actually starts.
+                requestAnimationFrame(() => {
+                    link.click()
+                    window.setTimeout(() => {
+                        link.remove()
+                        URL.revokeObjectURL(objectUrl)
+                        resolve()
+                    }, 2000)
+                })
+            }, "image/png")
+        })
+
     const handleDownload = async () => {
         if (!userData || !inviteCardRef.current || isDownloading || isSharing) return
 
@@ -77,12 +106,7 @@ const Page = () => {
             setIsDownloading(true)
 
             const canvas = await captureInviteCard()
-            const link = document.createElement("a")
-            link.href = canvas.toDataURL("image/png")
-            link.download = `${userData.name}-invite-card.png`
-            document.body.appendChild(link)
-            link.click()
-            document.body.removeChild(link)
+            await saveCanvasAsPng(canvas, `${userData.name}-invite-card.png`)
         } catch (err) {
             console.error("Failed to download invite card:", err)
             showError("Failed to download invite card. Please try again.")
@@ -269,7 +293,11 @@ const Page = () => {
                             className="w-11 h-11 cursor-pointer rounded-full border border-[#5FDA78] bg-[#2a0050] flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                             aria-label="Share invite card"
                         >
-                            <Share2 className="text-white" size={18} />
+                            {isSharing ? (
+                                <Loader2 className="text-white animate-spin" size={18} />
+                            ) : (
+                                <Share2 className="text-white" size={18} />
+                            )}
                         </button>
 
                         <button
@@ -278,7 +306,11 @@ const Page = () => {
                             className="w-11 h-11 rounded-full cursor-pointer border border-[#5FDA78] bg-[#2a0050] flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                             aria-label="Download invite card"
                         >
-                            <Download className="text-white" size={18} />
+                            {isDownloading ? (
+                                <Loader2 className="text-white animate-spin" size={18} />
+                            ) : (
+                                <Download className="text-white" size={18} />
+                            )}
                         </button>
                     </div>
 

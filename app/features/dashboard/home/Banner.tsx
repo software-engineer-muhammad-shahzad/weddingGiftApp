@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef, useState } from "react"
-import { X, Download } from "lucide-react"
+import { X, Download, Loader2 } from "lucide-react"
 import { QRCodeCanvas } from "qrcode.react"
 import html2canvas from "html2canvas-pro"
 import type { Invite } from "@/app/features/dashboard/types/coupleDashboard"
@@ -185,9 +185,16 @@ const Banner = ({ inviteData, coupleName = "OUR WEDDING", eventDate = "" }: Bann
                                     onClick={handleDownload}
                                     disabled={isDownloading}
                                     className="w-12 h-12 sm:w-10 sm:h-10 p-2 rounded-full! bg-[#2a0050]! text-white! border-[#5FDA78]! disabled:opacity-50"
+                                    aria-label="Download invite card"
                                 >
-                                    <Download size={22} className="sm:hidden" />
-                                    <Download size={18} className="hidden sm:block" />
+                                    {isDownloading ? (
+                                        <Loader2 className="w-5 h-5 sm:w-4.5 sm:h-4.5 animate-spin" />
+                                    ) : (
+                                        <>
+                                            <Download size={22} className="sm:hidden" />
+                                            <Download size={18} className="hidden sm:block" />
+                                        </>
+                                    )}
                                 </Button>
                             </div>
                         </div>

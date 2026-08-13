@@ -1,6 +1,6 @@
 "use client"
 
-import { Download, Share2 } from "lucide-react"
+import { Download, Loader2, Share2 } from "lucide-react"
 import Button from "../../../components/elements/Button"
 import type { ChargePaymentData } from "../types"
 import { formatAccountDisplay } from "../utils/paymentReceipt"
@@ -65,7 +65,11 @@ const PaymentMakerDetail = ({
           disabled={isSharing || isDownloading}
           aria-label="Share receipt"
         >
-          <Share2 className="text-white w-5 h-5" />
+          {isSharing ? (
+            <Loader2 className="text-white w-5 h-5 animate-spin" />
+          ) : (
+            <Share2 className="text-white w-5 h-5" />
+          )}
         </Button>
         <Button
           type="button"
@@ -74,7 +78,11 @@ const PaymentMakerDetail = ({
           disabled={isDownloading || isSharing}
           aria-label="Download receipt"
         >
-          <Download className="text-white w-5 h-5" />
+          {isDownloading ? (
+            <Loader2 className="text-white w-5 h-5 animate-spin" />
+          ) : (
+            <Download className="text-white w-5 h-5" />
+          )}
         </Button>
       </div>
 
