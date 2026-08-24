@@ -135,11 +135,13 @@ export interface MakePaymentPayload {
   customerId?: string
   stripeCustomerId?: string
   greetingMediaType?: "Image" | "Video"
-  wishingCardAmount?: number
-  wishingVideoAmount?: number
+  wishingCardAmount?: any
+  wishingVideoAmount?: any
   wishingVideoPath?: string
   wishingCardPath?: string
   wishingContent?: string
+  /** Estimated Stripe processing fee sent with the charge. */
+  stripeFee?: any
 }
 
 export interface ChargePaymentData {

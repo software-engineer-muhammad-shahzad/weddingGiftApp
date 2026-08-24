@@ -34,6 +34,7 @@ import {
   normalizePaymentMethods,
 } from "./utils/paymentMethod"
 import { normalizeChargePaymentData } from "./utils/paymentReceipt"
+import { calculateStripeFee, getChargeableTotal } from "./utils/stripeFee"
 
 const ADD_NEW_CARD_VALUE = "__add_new_card__"
 
@@ -56,6 +57,8 @@ interface PendingCharge {
   guestUserId: number
   stripeCustomerId: string
   paymentMethodId: string
+  stripeFeeAmount: number
+  cardBrand?: string | null
 }
 
 const elementStyle: StripeElementStyle = {
@@ -200,12 +203,29 @@ const StripeCardForm = ({
     setCardList(methods)
   }
 
+  const resolveStripeFee = () => {
+    const chargeableTotal = getChargeableTotal({
+      giftAmount: parsedAmount,
+      wishingCardAmount,
+      wishingVideoAmount,
+      platformServiceFeePercent: platformServiceFeeAmount,
+    })
+    return calculateStripeFee(chargeableTotal)
+  }
+
   const openConfirmWithPaymentMethod = (
     guestUserId: number,
     stripeCustomerId: string,
     paymentMethodId: string,
+    cardBrand?: string | null,
   ) => {
-    setPendingCharge({ guestUserId, stripeCustomerId, paymentMethodId })
+    setPendingCharge({
+      guestUserId,
+      stripeCustomerId,
+      paymentMethodId,
+      stripeFeeAmount: resolveStripeFee(),
+      cardBrand,
+    })
     setIsConfirmOpen(true)
   }
 
@@ -251,7 +271,12 @@ const StripeCardForm = ({
       return
     }
 
-    openConfirmWithPaymentMethod(guestUserId, stripeCustomerId, selectedSavedCard.paymentMethodId)
+    openConfirmWithPaymentMethod(
+      guestUserId,
+      stripeCustomerId,
+      selectedSavedCard.paymentMethodId,
+      selectedSavedCard.cardBrand,
+    )
   }
 
   const handleSubmitNewCard = async () => {
@@ -347,7 +372,12 @@ const StripeCardForm = ({
       setSelectedOption(savedCard.paymentMethodId)
       setShowNewCardFields(false)
 
-      openConfirmWithPaymentMethod(guestUserId, stripeCustomerId, paymentMethod.id)
+      openConfirmWithPaymentMethod(
+        guestUserId,
+        stripeCustomerId,
+        paymentMethod.id,
+        card?.brand,
+      )
     } catch (err: any) {
       const apiMessage =
         err?.response?.data?.message ||
@@ -383,6 +413,7 @@ const StripeCardForm = ({
         wishingCardAmount,
         wishingVideoAmount,
         greetingMediaType,
+        stripeFee: pendingCharge.stripeFeeAmount,
       })
 
       const receipt =
@@ -393,7 +424,14 @@ const StripeCardForm = ({
         throw new Error("Payment succeeded but receipt data is missing.")
       }
 
-      setPaymentReceipt(receipt)
+      const beStripeFee = Number(receipt.stripeFee)
+      setPaymentReceipt({
+        ...receipt,
+        stripeFee:
+          Number.isFinite(beStripeFee) && beStripeFee > 0
+            ? receipt.stripeFee
+            : pendingCharge.stripeFeeAmount,
+      })
       setIsConfirmOpen(false)
       setPendingCharge(null)
       setShowPaymentSuccess(true)
@@ -561,6 +599,7 @@ const StripeCardForm = ({
         wishingCardAmount={wishingCardAmount}
         wishingVideoAmount={wishingVideoAmount}
         platformServiceFeeAmount={platformServiceFeeAmount}
+        stripeFeeAmount={pendingCharge?.stripeFeeAmount ?? 0}
       />
 
       <PaymentSucessfulModal

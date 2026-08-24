@@ -54,11 +54,20 @@ export const normalizeChargePaymentData = (
 export const getReceiptFeeTotal = (receipt: ChargePaymentData): any =>
   receipt.platformFee;
 
-export const formatReceiptAmount = (amount: any): string =>
-  amount.toLocaleString(undefined, {
+export const formatReceiptAmount = (amount: any): string => {
+  const value =
+    typeof amount === "number"
+      ? amount
+      : typeof amount === "string" && amount.trim() !== ""
+        ? Number(amount)
+        : 0
+
+  const safe = Number.isFinite(value) ? value : 0
+  return safe.toLocaleString(undefined, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })
+}
 
 export const formatReceiptDateTime = (value: string): string => {
   if (!value) return "—"

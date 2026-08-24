@@ -13,6 +13,7 @@ interface ConfirmPaymentModalProps {
   wishingCardAmount?: number
   wishingVideoAmount?: number
   platformServiceFeeAmount?: number
+  stripeFeeAmount?: number
 }
 
 const ConfirmPaymentModal = ({
@@ -25,6 +26,7 @@ const ConfirmPaymentModal = ({
   wishingCardAmount,
   wishingVideoAmount,
   platformServiceFeeAmount,
+  stripeFeeAmount = 0,
 }: ConfirmPaymentModalProps) => {
   if (!isModalOpen) return null
 
@@ -33,7 +35,7 @@ const ConfirmPaymentModal = ({
   const serviceFeePercent = platformServiceFeeAmount ?? 0
   const serviceFeeAmount =
     serviceFeePercent > 0 ? (giftAmount * serviceFeePercent) / 100 : 0
-  const total = subtotal + serviceFeeAmount
+  const total = subtotal + serviceFeeAmount + stripeFeeAmount
 
   return (
     <ModalLayer
@@ -72,6 +74,13 @@ const ConfirmPaymentModal = ({
                 Service Fee ({serviceFeePercent.toFixed(2)}%)
               </span>
               <span>{currency} {serviceFeeAmount.toFixed(2)}</span>
+            </div>
+          )}
+
+          {stripeFeeAmount > 0 && (
+            <div className="flex justify-between">
+              <span className="text-white/70">Stripe Fee</span>
+              <span>{currency} {stripeFeeAmount.toFixed(2)}</span>
             </div>
           )}
 
