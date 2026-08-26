@@ -45,9 +45,16 @@ const page = () => {
     ""
   const selectedCard = greetingCards.find((card) => card.id === selectedCardId)
   const recipientUserId = coupleDetails?.coupleUserId ?? null
+  const cardTemplate = coupleDetails?.cardTemplate
+  const platformServiceFeePercent =
+    coupleDetails?.platformServiceFeeAmount ?? cardTemplate?.platformFeePercent ?? 0
+  const wishingCardAddon =
+    coupleDetails?.wishingCardAddonAmount ?? cardTemplate?.cardPrice ?? 0
+  const wishingVideoAddon =
+    coupleDetails?.wishingVideoAddonAmount ?? cardTemplate?.videoPrice ?? 0
   const wishingCardAmount =
-    selectedCardId !== null ? (coupleDetails?.wishingCardAddonAmount ?? 0) : undefined
-  const wishingVideoAmount = videoUrl ? coupleDetails?.cardTemplate.videoPrice : undefined
+    selectedCardId !== null ? wishingCardAddon : undefined
+  const wishingVideoAmount = videoUrl ? wishingVideoAddon : undefined
   const hasPendingVideoUpload = Boolean(video) && !videoUrl
 
   const openModal = (type: ModalType) => {
@@ -108,13 +115,13 @@ const page = () => {
                   greetingCards={greetingCards}
                   selectedCardId={selectedCardId}
                   onSelectCard={setSelectedCardId}
-                  addonAmount={coupleDetails?.wishingCardAddonAmount ?? 0}
+                  addonAmount={wishingCardAddon}
                   currency={currency}
                 />
                 <WishVideo
                   video={video}
                   setVideo={setVideo}
-                  addonAmount={coupleDetails?.wishingVideoAddonAmount ?? 0}
+                  addonAmount={wishingVideoAddon}
                   currency={currency}
                   coupleId={recipientUserId}
                   videoUrl={videoUrl}
@@ -164,7 +171,7 @@ const page = () => {
               wishingContent={greetingText}
               wishingCardAmount={wishingCardAmount}
               wishingVideoAmount={wishingVideoAmount}
-              platformServiceFeeAmount={coupleDetails?.platformServiceFeeAmount}
+              platformServiceFeeAmount={platformServiceFeePercent}
               currency={currency}
               greetingMediaType={videoUrl ? "Video" : selectedCard ? "Image" : undefined}
               savedPaymentMethods={savedPaymentMethods}

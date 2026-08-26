@@ -1,10 +1,10 @@
 /**
  * Stripe UK domestic card pricing (per Stripe support):
- * - Standard: 1.5% + £0.20
- * - Premium (rewards/corporate): 1.9% + £0.20
+ * - Standard: 1.5% + £0.20 per successful transaction
+ * - Premium: 1.9% + £0.20 per successful transaction
  *
- * Visa, Mastercard, and Amex use the same tiers — brand alone does not
- * change the rate. We default to standard when tier is unknown on the client.
+ * Visa, Mastercard, and Amex share the same tier rates — brand alone
+ * does not change the fee; standard vs premium is set by the issuer.
  */
 const UK_FIXED_FEE = 0.2
 const UK_STANDARD_PERCENT = 0.015
@@ -15,8 +15,11 @@ export type UkCardTier = "standard" | "premium"
 const roundMoney = (value: number): number =>
   Math.round((value + Number.EPSILON) * 100) / 100
 
+const getTierPercent = (tier: UkCardTier): number =>
+  tier === "premium" ? UK_PREMIUM_PERCENT : UK_STANDARD_PERCENT
+
 /**
- * Chargeable total used for Stripe fee estimate:
+ * Subtotal before Stripe fee:
  * gift + wishing card/video add-ons + platform service fee.
  */
 export const getChargeableTotal = ({
@@ -40,20 +43,48 @@ export const getChargeableTotal = ({
   return roundMoney(gift + card + video + platformFee)
 }
 
+export interface StripeFeeInput {
+  giftAmount: number
+  wishingCardAmount?: number
+  wishingVideoAmount?: number
+  platformServiceFeePercent?: number
+  tier?: UkCardTier
+}
+
 /**
- * Estimate Stripe processing fee for UK domestic cards so the desired
- * amount is covered after Stripe takes its cut:
- * Final Charge = (Desired Amount + Fixed Fee) / (1 - Percentage Fee)
- * Stripe Fee   = Final Charge - Desired Amount
- * Defaults to the standard tier when tier cannot be determined client-side.
+ * Stripe UK processing fee on the subtotal charged to the card:
+ * fee = (subtotal × percent) + £0.20
  */
 export const calculateStripeFee = (
-  amount: number,
+  subtotal: number,
   tier: UkCardTier = "standard",
 ): number => {
-  if (!Number.isFinite(amount) || amount <= 0) return 0
+  if (!Number.isFinite(subtotal) || subtotal <= 0) return 0
 
-  const percent = tier === "premium" ? UK_PREMIUM_PERCENT : UK_STANDARD_PERCENT
-  const finalCharge = (amount + UK_FIXED_FEE) / (1 - percent)
-  return roundMoney(finalCharge - amount)
+  const percent = getTierPercent(tier)
+  return roundMoney(subtotal * percent + UK_FIXED_FEE)
 }
+
+/** Customer pays subtotal + Stripe processing fee. */
+export const getGrossChargeAmount = (
+  subtotal: number,
+  tier: UkCardTier = "standard",
+): number => roundMoney(subtotal + calculateStripeFee(subtotal, tier))
+
+/** Stripe fee for confirm modal and charge API — uses full payment subtotal. */
+export const resolveStripeFeeAmount = ({
+  giftAmount,
+  wishingCardAmount,
+  wishingVideoAmount,
+  platformServiceFeePercent,
+  tier = "standard",
+}: StripeFeeInput): number =>
+  calculateStripeFee(
+    getChargeableTotal({
+      giftAmount,
+      wishingCardAmount,
+      wishingVideoAmount,
+      platformServiceFeePercent,
+    }),
+    tier,
+  )

@@ -2,6 +2,7 @@
 
 import ModalLayer from "@/app/components/ui/ModalLayer"
 import Button from "@/app/components/elements/Button"
+import { resolveStripeFeeAmount } from "./utils/stripeFee"
 
 interface ConfirmPaymentModalProps {
   isModalOpen: boolean
@@ -13,7 +14,6 @@ interface ConfirmPaymentModalProps {
   wishingCardAmount?: number
   wishingVideoAmount?: number
   platformServiceFeeAmount?: number
-  stripeFeeAmount?: number
 }
 
 const ConfirmPaymentModal = ({
@@ -26,7 +26,6 @@ const ConfirmPaymentModal = ({
   wishingCardAmount,
   wishingVideoAmount,
   platformServiceFeeAmount,
-  stripeFeeAmount = 0,
 }: ConfirmPaymentModalProps) => {
   if (!isModalOpen) return null
 
@@ -35,6 +34,12 @@ const ConfirmPaymentModal = ({
   const serviceFeePercent = platformServiceFeeAmount ?? 0
   const serviceFeeAmount =
     serviceFeePercent > 0 ? (giftAmount * serviceFeePercent) / 100 : 0
+  const stripeFeeAmount = resolveStripeFeeAmount({
+    giftAmount,
+    wishingCardAmount,
+    wishingVideoAmount,
+    platformServiceFeePercent: platformServiceFeeAmount,
+  })
   const total = subtotal + serviceFeeAmount + stripeFeeAmount
 
   return (

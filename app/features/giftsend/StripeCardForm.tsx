@@ -34,7 +34,7 @@ import {
   normalizePaymentMethods,
 } from "./utils/paymentMethod"
 import { normalizeChargePaymentData } from "./utils/paymentReceipt"
-import { calculateStripeFee, getChargeableTotal } from "./utils/stripeFee"
+import { resolveStripeFeeAmount } from "./utils/stripeFee"
 
 const ADD_NEW_CARD_VALUE = "__add_new_card__"
 
@@ -57,7 +57,6 @@ interface PendingCharge {
   guestUserId: number
   stripeCustomerId: string
   paymentMethodId: string
-  stripeFeeAmount: number
   cardBrand?: string | null
 }
 
@@ -203,15 +202,13 @@ const StripeCardForm = ({
     setCardList(methods)
   }
 
-  const resolveStripeFee = () => {
-    const chargeableTotal = getChargeableTotal({
+  const getStripeFeeAmount = () =>
+    resolveStripeFeeAmount({
       giftAmount: parsedAmount,
       wishingCardAmount,
       wishingVideoAmount,
       platformServiceFeePercent: platformServiceFeeAmount,
     })
-    return calculateStripeFee(chargeableTotal)
-  }
 
   const openConfirmWithPaymentMethod = (
     guestUserId: number,
@@ -223,7 +220,6 @@ const StripeCardForm = ({
       guestUserId,
       stripeCustomerId,
       paymentMethodId,
-      stripeFeeAmount: resolveStripeFee(),
       cardBrand,
     })
     setIsConfirmOpen(true)
@@ -400,6 +396,7 @@ const StripeCardForm = ({
     setError(null)
 
     try {
+      const stripeFeeAmount = getStripeFeeAmount()
       const response = await makePayment({
         recipientUserId,
         guestUserId: pendingCharge.guestUserId,
@@ -413,7 +410,7 @@ const StripeCardForm = ({
         wishingCardAmount,
         wishingVideoAmount,
         greetingMediaType,
-        stripeFee: pendingCharge.stripeFeeAmount,
+        stripeFee: stripeFeeAmount,
       })
 
       const receipt =
@@ -430,7 +427,7 @@ const StripeCardForm = ({
         stripeFee:
           Number.isFinite(beStripeFee) && beStripeFee > 0
             ? receipt.stripeFee
-            : pendingCharge.stripeFeeAmount,
+            : stripeFeeAmount,
       })
       setIsConfirmOpen(false)
       setPendingCharge(null)
@@ -599,7 +596,6 @@ const StripeCardForm = ({
         wishingCardAmount={wishingCardAmount}
         wishingVideoAmount={wishingVideoAmount}
         platformServiceFeeAmount={platformServiceFeeAmount}
-        stripeFeeAmount={pendingCharge?.stripeFeeAmount ?? 0}
       />
 
       <PaymentSucessfulModal
