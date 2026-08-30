@@ -31,9 +31,10 @@ export const resendOtp = async (
 
 // login api call
 export const login = async (payload: LoginPayload): Promise<LoginResponse> => {
-  // A 400 here just means "invalid email or password" — already shown to the
-  // user as a toast by useLogin, so don't also spam the console for it.
-  return postRequest(endpoints.auth.login, payload, { skipAuth: true, silenceStatuses: [400] })
+  // A 400 here just means "invalid email or password" and a 403 means the
+  // email isn't verified yet — both are handled by useLogin, so don't also
+  // spam the console for them.
+  return postRequest(endpoints.auth.login, payload, { skipAuth: true, silenceStatuses: [400, 403] })
 }
 
 // forgot Password api call

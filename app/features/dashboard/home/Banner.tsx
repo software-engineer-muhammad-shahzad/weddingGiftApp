@@ -9,6 +9,7 @@ import { ShagunLogo, WelcomeLogo } from "@/app/components/icons/Icons"
 import { handleShare } from "@/app/utils/handleShareQr"
 import ModalLayer from "@/app/components/ui/ModalLayer"
 import Button from "@/app/components/elements/Button"
+import BankAccountRequiredModal from "@/app/features/dashboard/bankinformation/BankAccountRequiredModal"
 import { formatDateWithWeekday } from "@/app/utils/formatDate"
 
 const QR_CANVAS_ID = "banner-qr-code-canvas"
@@ -17,12 +18,34 @@ interface BannerProps {
     inviteData: Invite | undefined
     coupleName?: string
     eventDate?: string
+    /** Undefined while the dashboard is still loading — only an explicit `false` gates the actions. */
+    hasBankAccount?: boolean
 }
 
-const Banner = ({ inviteData, coupleName = "OUR WEDDING", eventDate = "" }: BannerProps) => {
+const Banner = ({ inviteData, coupleName = "OUR WEDDING", eventDate = "", hasBankAccount }: BannerProps) => {
     const [isQrModalOpen, setIsQrModalOpen] = useState(false)
     const [isDownloading, setIsDownloading] = useState(false)
+    const [isBankModalOpen, setIsBankModalOpen] = useState(false)
     const inviteCardRef = useRef<HTMLDivElement>(null)
+
+    const requiresBankAccount = hasBankAccount === false
+
+    const openQrModal = () => {
+        if (requiresBankAccount) {
+            setIsBankModalOpen(true)
+            return
+        }
+        setIsQrModalOpen(true)
+    }
+
+    const shareInvite = () => {
+        if (requiresBankAccount) {
+            setIsBankModalOpen(true)
+            return
+        }
+        if (!inviteData?.inviteUrl) return
+        handleShare(coupleName, inviteData.inviteUrl)
+    }
 
     const saveCanvasAsPng = (canvas: HTMLCanvasElement, fileName: string) =>
         new Promise<void>((resolve, reject) => {
@@ -54,6 +77,12 @@ const Banner = ({ inviteData, coupleName = "OUR WEDDING", eventDate = "" }: Bann
         })
 
     const handleDownload = async () => {
+        // Reachable if the dashboard resolved to "no bank account" after the
+        // QR modal was already opened.
+        if (requiresBankAccount) {
+            setIsBankModalOpen(true)
+            return
+        }
         if (!inviteCardRef.current || isDownloading) return
 
         try {
@@ -86,11 +115,11 @@ const Banner = ({ inviteData, coupleName = "OUR WEDDING", eventDate = "" }: Bann
                     <div
                         role="button"
                         tabIndex={0}
-                        onClick={() => setIsQrModalOpen(true)}
+                        onClick={openQrModal}
                         onKeyDown={(e) => {
                             if (e.key === "Enter" || e.key === " ") {
                                 e.preventDefault()
-                                setIsQrModalOpen(true)
+                                openQrModal()
                             }
                         }}
                         className="relative z-10 mt-2.5 flex h-full shrink-0 cursor-pointer items-stretch -mr-[clamp(0.75rem,4vw,2.5rem)]"
@@ -118,10 +147,7 @@ const Banner = ({ inviteData, coupleName = "OUR WEDDING", eventDate = "" }: Bann
                         {/* Invisible hit-area over the "Send" pill baked into the card image */}
                         <button
                             type="button"
-                            onClick={() => {
-                                if (!inviteData?.inviteUrl) return
-                                handleShare(coupleName, inviteData.inviteUrl)
-                            }}
+                            onClick={shareInvite}
                             aria-label="Share invite"
                             className="absolute right-[4%] bottom-[8%] z-10 h-[18%] min-h-10 w-[30%] min-w-10 cursor-pointer border-0 bg-transparent p-0 sm:right-[5%] sm:bottom-[9%] sm:h-[16%] sm:w-[28%]"
                         />
@@ -201,6 +227,12 @@ const Banner = ({ inviteData, coupleName = "OUR WEDDING", eventDate = "" }: Bann
                     </div>
                 </ModalLayer>
             )}
+
+            {/* Rendered last so it stacks above the QR modal when both are open */}
+            <BankAccountRequiredModal
+                isOpen={isBankModalOpen}
+                onClose={() => setIsBankModalOpen(false)}
+            />
         </>
     )
 }

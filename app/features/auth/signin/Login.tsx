@@ -11,12 +11,15 @@ import Input from "@/app/components/elements/Input"
 import Button from "@/app/components/elements/Button"
 import Checkbox from "@/app/components/elements/Checkbox"
 import { useLogin } from "@/app/features/auth/hooks/useLogin"
+import { useResendOtp } from "@/app/features/auth/hooks/useResendOtp"
+import { saveData } from "@/app/utils/storage/storageHelper"
 import { loginSchema, type LoginFormValues } from "@/app/features/auth/validations/loginSchema"
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false)
   const router = useRouter()
   const { handleLogin, isLoading } = useLogin()
+  const { resendOtp, isLoading: isSendingOtp } = useResendOtp()
 
   const {
     register,
@@ -37,6 +40,15 @@ const Login = () => {
 
     if (result.success) {
       router.push("/dashboard")
+      return
+    }
+
+    // Account exists but the email was never verified — send a fresh OTP and
+    // drop the user straight into the signup OTP screen.
+    if (result.needsVerification) {
+      saveData("email", values.email, "local")
+      await resendOtp()
+      router.push("/verify-otp")
     }
   }
 
@@ -89,9 +101,9 @@ const Login = () => {
               <Button
                 type="submit"
                 className="h-12 w-full z-50"
-                disabled={isLoading}
+                disabled={isLoading || isSendingOtp}
               >
-                {isLoading ? "Signing in..." : "Sign In"}
+                {isLoading || isSendingOtp ? "Signing in..." : "Sign In"}
               </Button>
             </div>
 

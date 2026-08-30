@@ -1,6 +1,5 @@
 "use client"
 import Image from "next/image"
-import Link from "next/link"
 import { useState } from "react"
 import Announcement from "@/app/features/dashboard/home/Announcement"
 import Balance from "@/app/features/dashboard/home/Balance"
@@ -11,13 +10,16 @@ import Header from "@/app/features/dashboard/home/Header"
 import StatisticChart from "@/app/features/dashboard/home/StatisticChart"
 import { useDashboard } from "@/app/features/dashboard/hooks/useDashboard"
 import Support from "@/app/features/dashboard/support/Support"
-import ModalLayer from "@/app/components/ui/ModalLayer"
+import BankAccountRequiredModal from "@/app/features/dashboard/bankinformation/BankAccountRequiredModal"
 
 const page = () => {
   const [isSupportOpen, setIsSupportOpen] = useState(false)
   const { data, isLoading, error, needsBankAccount } = useDashboard()
 
-  const showBankAccountModal = !isLoading && (needsBankAccount || data?.hasBankAccount === false)
+  // Only blocking when the dashboard endpoint itself refused (403) — there's no
+  // dashboard to show behind it. When the dashboard loads but `hasBankAccount`
+  // is false, the prompt is raised from the share / QR buttons instead.
+  const showBankAccountModal = !isLoading && needsBankAccount
   // Once a couple has bank details, `data` is the source of truth for the rest of the
   // dashboard — don't render Header/Balance/etc with a null `data` (undefined names,
   // "Invalid Date", ...) while the bank-account prompt is up or a real fetch failed.
@@ -36,6 +38,7 @@ const page = () => {
                 inviteData={data?.invite}
                 coupleName={data ? `${data.fullName} & ${data.partnerName}`.toUpperCase() : undefined}
                 eventDate={data?.eventDate}
+                hasBankAccount={data?.hasBankAccount}
               />
               <StatisticChart data={data?.weeklyStats} isLoading={isLoading} />
             </div>
@@ -59,30 +62,7 @@ const page = () => {
       {/* support modal */}
       <Support isOpen={isSupportOpen} onClose={() => setIsSupportOpen(false)} />
 
-      {showBankAccountModal && (
-        <ModalLayer
-          modalHeight="auto"
-          modalWidth="w-[90%] max-w-[360px]"
-          overlayColor="bg-[#171515EB]"
-          position="center"
-          className="rounded-2xl border border-[#5FDA78]"
-        >
-          <div className="bg-[#330065] rounded-2xl p-6 flex flex-col gap-4">
-            <p className="text-white font-semibold text-xl text-center">
-              Bank Account Required
-            </p>
-            <p className="text-white/80 text-sm text-center">
-              Please add bank account details first.
-            </p>
-            <Link
-              href="/dashboard/setting/bank-info"
-              className="mt-2 w-full bg-[#5FDA78] text-[#330065] text-center py-3 rounded-full font-semibold hover:bg-[#4ecb68] transition-colors"
-            >
-              Add Bank Details
-            </Link>
-          </div>
-        </ModalLayer>
-      )}
+      <BankAccountRequiredModal isOpen={showBankAccountModal} />
     </div>
   )
 }

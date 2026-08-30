@@ -12,9 +12,9 @@ import { handleError } from "@/app/utils/errorHandler"
  *   console.log(result.error)
  * }
  */
-export type AsyncResult<T> = 
+export type AsyncResult<T> =
   | { success: true; data: T }
-  | { success: false; error: string }
+  | { success: false; error: string; status?: number }
 
 export const asyncHandler = async <T>(
   asyncFn: () => Promise<T>
@@ -24,6 +24,6 @@ export const asyncHandler = async <T>(
     return { success: true, data }
   } catch (error: any) {
     const result = handleError(error)
-    return { success: false, error: result.error }
+    return { success: false, error: result.error, status: result.status }
   }
 }

@@ -36,9 +36,16 @@ export const useLogin = () => {
                       : null) ||
                   "Login failed"
 
+        // A 403 "This account has not been verified yet" isn't a real login
+        // failure — the caller sends a fresh OTP and routes to verification.
+        const needsVerification =
+            result.success === false &&
+            result.status === 403 &&
+            /not\s+(been\s+)?verified/i.test(errorMessage)
+
         showError(errorMessage)
         setIsLoading(false)
-        return { success: false, error: errorMessage }
+        return { success: false, error: errorMessage, needsVerification }
     }
 
     return {

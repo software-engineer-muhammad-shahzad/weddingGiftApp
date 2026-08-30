@@ -64,5 +64,12 @@ export const signupSchema = z
     message: "Passwords must match",
     path: ["confirmPassword"],
   })
+  .refine(
+    (data) => data.fullName.toLowerCase() !== data.partnerName.toLowerCase(),
+    {
+      message: "Your name and partner name cannot be the same",
+      path: ["partnerName"],
+    },
+  )
 
 export type SignupFormValues = z.infer<typeof signupSchema>

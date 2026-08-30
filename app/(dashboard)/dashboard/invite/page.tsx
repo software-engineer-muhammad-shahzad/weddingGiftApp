@@ -12,18 +12,24 @@ import QrHeaders from "@/app/features/dashboard/invite/QrHeaders"
 import Skeleton from "@/app/components/ui/Skeleton"
 import html2canvas from "html2canvas-pro"
 import { useDashboard } from "@/app/features/dashboard/hooks/useDashboard"
+import BankAccountRequiredModal from "@/app/features/dashboard/bankinformation/BankAccountRequiredModal"
 
 
 
 const Page = () => {
 
     const { data, isLoading, error } = useQrCode()
-    const { data: dashboardData } = useDashboard()
+    const { data: dashboardData, needsBankAccount } = useDashboard()
     const unReadNotificationCount = dashboardData?.unReadNotificationCount ?? 0
     const [qrImageUrl, setQrImageUrl] = useState<string | null>(null)
     const [isDownloading, setIsDownloading] = useState(false)
     const [isSharing, setIsSharing] = useState(false)
+    const [isBankModalOpen, setIsBankModalOpen] = useState(false)
     const inviteCardRef = useRef<HTMLDivElement>(null)
+
+    // `needsBankAccount` covers the case where the dashboard endpoint 403s
+    // outright, so `dashboardData` is null and the flag never arrives.
+    const requiresBankAccount = needsBankAccount || dashboardData?.hasBankAccount === false
     const userData = useMemo(() => {
         if (!data) return null
 
@@ -100,6 +106,10 @@ const Page = () => {
         })
 
     const handleDownload = async () => {
+        if (requiresBankAccount) {
+            setIsBankModalOpen(true)
+            return
+        }
         if (!userData || !inviteCardRef.current || isDownloading || isSharing) return
 
         try {
@@ -116,6 +126,10 @@ const Page = () => {
     }
 
     const handleShareInviteCard = async () => {
+        if (requiresBankAccount) {
+            setIsBankModalOpen(true)
+            return
+        }
         if (!userData || !inviteCardRef.current || isSharing || isDownloading) return
 
         const fileName = `${userData.name}-invite-card.png`
@@ -329,6 +343,11 @@ const Page = () => {
                 </div>
 
             </div>
+
+            <BankAccountRequiredModal
+                isOpen={isBankModalOpen}
+                onClose={() => setIsBankModalOpen(false)}
+            />
         </div>
     )
 

@@ -54,6 +54,8 @@ const isGenericStatusLabel = (value: string): boolean => {
 export type ErrorResult = {
   success: false
   error: string
+  /** HTTP status when the failure came from a response (undefined for network/timeout errors). */
+  status?: number
 }
 
 export const handleError = (error: any): ErrorResult => {
@@ -61,5 +63,6 @@ export const handleError = (error: any): ErrorResult => {
   return {
     success: false,
     error: message,
+    status: error?.response?.status,
   }
 }
