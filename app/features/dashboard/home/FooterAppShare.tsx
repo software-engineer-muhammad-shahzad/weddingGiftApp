@@ -1,18 +1,24 @@
 "use client"
-import React from "react"
+import React, { useState } from "react"
 import { Blocks, Wallet } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { DashboardIcon, DashboardGiftsICon } from "../../../components/icons/Icons"
 import type { Invite } from "@/app/features/dashboard/types/coupleDashboard"
+import BankAccountRequiredModal from "@/app/features/dashboard/bankinformation/BankAccountRequiredModal"
 
 interface FooterAppShareProps {
   inviteData?: Invite
   isLoading?: boolean
+  /** Undefined while the dashboard is still loading — only an explicit `false` gates navigation. */
+  hasBankAccount?: boolean
 }
 
-const FooterAppShare = ({ inviteData, isLoading }: FooterAppShareProps) => {
+const FooterAppShare = ({ inviteData, isLoading, hasBankAccount }: FooterAppShareProps) => {
   const pathname = usePathname();
+  const [isBankModalOpen, setIsBankModalOpen] = useState(false)
+
+  const requiresBankAccount = hasBankAccount === false
 
   const navLinks = [
     {
@@ -34,7 +40,9 @@ const FooterAppShare = ({ inviteData, isLoading }: FooterAppShareProps) => {
       href: "/dashboard/invite",
       icon: <Blocks className="w-5 h-5" />,
       alt: "app-share-icon",
-      isActive: pathname === "/dashboard/invite"
+      isActive: pathname === "/dashboard/invite",
+      // invite page hands out the QR / invite link — needs bank details first
+      gated: true
     },
     {
       id: 4,
@@ -46,12 +54,19 @@ const FooterAppShare = ({ inviteData, isLoading }: FooterAppShareProps) => {
   ];
 
   return (
+    <>
     <div className="fixed bottom-0 left-0 right-0 flex justify-center z-100 " >
       <div className="flex py-2 gap-2 justify-center w-full    max-w-200 bg-[#3401660d] backdrop-blur-[10px] shadow-[0_10px_25px_0_rgba(0,0,0,0.45)]">
         {navLinks.map((link) => (
           <Link
             key={link.id}
             href={link.href}
+            onClick={(e) => {
+              if (link.gated && requiresBankAccount) {
+                e.preventDefault()
+                setIsBankModalOpen(true)
+              }
+            }}
             className={`p-3 w-12 h-12 group md:w-14 md:h-14 hover:text-[#330065]  border border-[#5FDA78] flex items-center justify-center rounded-full transition-colors ${
               link.isActive ? "bg-[#5FDA78]   w-20 md:w-24 h-8 md:h-14 rounded-2xl" : "glass-card hover:bg-[#5FDA78]! hover:text-[#330065]"
             }`}
@@ -66,6 +81,14 @@ const FooterAppShare = ({ inviteData, isLoading }: FooterAppShareProps) => {
         ))}
       </div>
     </div>
+
+    {/* Outside the footer wrapper: that div is `z-100` and creates a stacking
+        context, which would let higher-z page chrome sit above the overlay. */}
+    <BankAccountRequiredModal
+      isOpen={isBankModalOpen}
+      onClose={() => setIsBankModalOpen(false)}
+    />
+    </>
   )
 }
 

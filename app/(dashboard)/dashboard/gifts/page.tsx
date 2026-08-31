@@ -18,7 +18,10 @@ const Page = () => {
     setSearch,
     loading,
   } = useCoupleGreetings();
-  const { data: dashboardData } = useDashboard();
+  const { data: dashboardData, needsBankAccount } = useDashboard();
+  // The dashboard endpoint 403s outright before bank details exist, so in that
+  // case `dashboardData` is null and the flag never arrives — treat it as false.
+  const hasBankAccount = needsBankAccount ? false : dashboardData?.hasBankAccount;
 
   return (
     <div className="flex justify-center bg-[#330065] h-dvh overflow-hidden w-full mx-auto pt-10 px-6 md:px-10 max-w-382.5">
@@ -50,7 +53,7 @@ const Page = () => {
             <AllTab receivedGiftData={items} activeTab={activeTab} />
           )}
 
-          <FooterAppShare />
+          <FooterAppShare hasBankAccount={hasBankAccount} />
         </div>
       </div>
     </div>

@@ -43,7 +43,7 @@ const page = () => {
               <StatisticChart data={data?.weeklyStats} isLoading={isLoading} />
             </div>
             <ContributorList />
-            <FooterAppShare inviteData={data?.invite} isLoading={isLoading} />
+            <FooterAppShare inviteData={data?.invite} isLoading={isLoading} hasBankAccount={data?.hasBankAccount} />
           </>
         ) : error ? (
           <div className="flex flex-col items-center gap-3 px-4 pt-20 text-center">
