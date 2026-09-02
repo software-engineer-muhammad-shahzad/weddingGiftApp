@@ -36,6 +36,37 @@ const getMaximumDob = () => {
   return `${year}-${month}-${day}`
 }
 
+const normalizePhoneNumber = (value: string) => value.replace(/[\s()-]/g, "")
+
+const isValidPhoneNumber = (value: string) => {
+  if (!/^\+?[0-9]+$/.test(value)) return false
+
+  const digits = value.startsWith("+") ? value.slice(1) : value
+  if (digits.length < 10 || digits.length > 15) return false
+
+  if (value.startsWith("+44") || value.startsWith("0")) {
+    const ukNumber = value.startsWith("+44") ? `0${value.slice(3)}` : value
+    return /^0[1-9]\d{8,9}$/.test(ukNumber)
+  }
+
+  return true
+}
+
+const UK_POSTCODE_PATTERN = /^[A-Z]{1,2}\d[A-Z\d]? \d[A-Z]{2}$/
+
+/**
+ * Formats a UK postcode the way Stripe expects it (uppercase, single space before
+ * the final three characters). Mirrors NormalizeUkPostcode in PaymentService.cs.
+ * Returns null when the value isn't a valid UK postcode.
+ */
+const toUkPostcode = (value: string) => {
+  const compact = value.replace(/[^A-Za-z0-9]/g, "").toUpperCase()
+  if (compact.length < 5 || compact.length > 7) return null
+
+  const formatted = `${compact.slice(0, -3)} ${compact.slice(-3)}`
+  return UK_POSTCODE_PATTERN.test(formatted) ? formatted : null
+}
+
 const validateBankDetails = (form: UpdateBankDetailsData) => {
   const errors: Partial<Record<keyof UpdateBankDetailsData, string>> = {}
   const accountHolderName = form.accountHolderName.trim()
@@ -66,9 +97,32 @@ const validateBankDetails = (form: UpdateBankDetailsData) => {
   }
 
   if (!form.address.trim()) {
-    errors.address = "Bank address is required"
+    errors.address = "Address line 1 is required"
   } else if (form.address.trim().length < 5 || form.address.trim().length > 200) {
     errors.address = "Address must be between 5 and 200 characters"
+  }
+
+  if (form.addressLine2.trim().length > 200) {
+    errors.addressLine2 = "Address line 2 must be 200 characters or fewer"
+  }
+
+  if (!form.city.trim()) {
+    errors.city = "City is required"
+  } else if (form.city.trim().length > 100) {
+    errors.city = "City must be 100 characters or fewer"
+  }
+
+  if (!form.postalCode.trim()) {
+    errors.postalCode = "Postcode is required"
+  } else if (!toUkPostcode(form.postalCode)) {
+    errors.postalCode = "Enter a valid UK postcode, e.g. SW1A 1AA"
+  }
+
+  const phoneNumber = normalizePhoneNumber(form.phoneNumber.trim())
+  if (!phoneNumber) {
+    errors.phoneNumber = "Phone number is required"
+  } else if (!isValidPhoneNumber(phoneNumber)) {
+    errors.phoneNumber = "Enter a valid phone number (e.g. 07123456789 or +447123456789)"
   }
 
   if (!form.dob) {
@@ -89,6 +143,10 @@ const UpdateBankInfo = ({ data, onCancel, onSuccess }: Props) => {
     iban: data?.iban || "",
     accountNumber: data?.accountNumber || "",
     address: data?.address || "",
+    addressLine2: data?.addressLine2 || "",
+    city: data?.city || "",
+    postalCode: data?.postalCode || "",
+    phoneNumber: data?.phoneNumber || "",
     currency: data?.currency || "",
     dob: toDateInputValue(data?.dob),
   })
@@ -121,6 +179,12 @@ const UpdateBankInfo = ({ data, onCancel, onSuccess }: Props) => {
       const payload: UpdateBankDetailsData = {
         ...form,
         currency,
+        address: form.address.trim(),
+        addressLine2: form.addressLine2.trim(),
+        city: form.city.trim(),
+        // Send the canonical form so Stripe's address check gets a clean value.
+        postalCode: toUkPostcode(form.postalCode) ?? form.postalCode.trim(),
+        phoneNumber: normalizePhoneNumber(form.phoneNumber.trim()),
         dob: form.dob ? form.dob : "",
       }
       await updateBankData(payload)
@@ -212,16 +276,75 @@ const UpdateBankInfo = ({ data, onCancel, onSuccess }: Props) => {
           {errors.iban && <p className="text-xs text-red-500">{errors.iban}</p>}
         </div>
 
+        <p className="text-xs text-[#BBBBBB] -mb-1">
+          Your home address, as it appears on your bank records. Stripe verifies this.
+        </p>
+
         <div className="flex flex-col gap-1">
           <input
             name="address"
+            autoComplete="address-line1"
             value={form.address}
             onChange={handleChange}
-            placeholder="Bank Address"
+            placeholder="Address Line 1"
             maxLength={200}
             className={`p-2 rounded bg-[#1f003d] text-white border ${errors.address ? "border-red-500" : "border-gray-600"}`}
           />
           {errors.address && <p className="text-xs text-red-500">{errors.address}</p>}
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <input
+            name="addressLine2"
+            autoComplete="address-line2"
+            value={form.addressLine2}
+            onChange={handleChange}
+            placeholder="Address Line 2 (optional)"
+            maxLength={200}
+            className={`p-2 rounded bg-[#1f003d] text-white border ${errors.addressLine2 ? "border-red-500" : "border-gray-600"}`}
+          />
+          {errors.addressLine2 && <p className="text-xs text-red-500">{errors.addressLine2}</p>}
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <input
+            name="city"
+            autoComplete="address-level2"
+            value={form.city}
+            onChange={handleChange}
+            placeholder="City"
+            maxLength={100}
+            className={`p-2 rounded bg-[#1f003d] text-white border ${errors.city ? "border-red-500" : "border-gray-600"}`}
+          />
+          {errors.city && <p className="text-xs text-red-500">{errors.city}</p>}
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <input
+            name="postalCode"
+            autoComplete="postal-code"
+            value={form.postalCode}
+            onChange={handleChange}
+            placeholder="Postcode (e.g. SW1A 1AA)"
+            maxLength={16}
+            className={`p-2 rounded bg-[#1f003d] text-white border uppercase ${errors.postalCode ? "border-red-500" : "border-gray-600"}`}
+          />
+          {errors.postalCode && <p className="text-xs text-red-500">{errors.postalCode}</p>}
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <input
+            name="phoneNumber"
+            type="tel"
+            inputMode="tel"
+            autoComplete="tel"
+            value={form.phoneNumber}
+            onChange={handleChange}
+            placeholder="Phone Number"
+            maxLength={32}
+            className={`p-2 rounded bg-[#1f003d] text-white border ${errors.phoneNumber ? "border-red-500" : "border-gray-600"}`}
+          />
+          {errors.phoneNumber && <p className="text-xs text-red-500">{errors.phoneNumber}</p>}
         </div>
 
         <div className="flex flex-col gap-1">

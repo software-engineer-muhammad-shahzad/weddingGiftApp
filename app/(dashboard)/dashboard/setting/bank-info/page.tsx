@@ -48,10 +48,10 @@ const Page = () => {
           </Link>
 
           <div className="border border-[#5FDA78] rounded-[30px] mt-10 glass-card">
-            {[1, 2, 3, 4].map((i) => (
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((i, index, rows) => (
               <div
                 key={i}
-                className={`flex flex-col gap-2 py-3 px-5 ${i < 4 ? "border-b border-[#F1F1F11A]" : ""}`}
+                className={`flex flex-col gap-2 py-3 px-5 ${index < rows.length - 1 ? "border-b border-[#F1F1F11A]" : ""}`}
               >
                 <Skeleton className="h-3 w-32" />
                 <Skeleton className="h-4 w-40" />
@@ -126,9 +126,37 @@ const Page = () => {
             </div>
 
             <div className="flex flex-col border-b border-[#F1F1F11A] py-3 px-5">
-              <p className="text-sm text-[#EEEEEE]">Address</p>
+              <p className="text-sm text-[#EEEEEE]">Address Line 1</p>
               <p className="font-medium text-[#EEEEEE]">
                 {data?.address || "N/A"}
+              </p>
+            </div>
+
+            <div className="flex flex-col border-b border-[#F1F1F11A] py-3 px-5">
+              <p className="text-sm text-[#EEEEEE]">Address Line 2</p>
+              <p className="font-medium text-[#EEEEEE]">
+                {data?.addressLine2 || "N/A"}
+              </p>
+            </div>
+
+            <div className="flex flex-col border-b border-[#F1F1F11A] py-3 px-5">
+              <p className="text-sm text-[#EEEEEE]">City</p>
+              <p className="font-medium text-[#EEEEEE]">
+                {data?.city || "N/A"}
+              </p>
+            </div>
+
+            <div className="flex flex-col border-b border-[#F1F1F11A] py-3 px-5">
+              <p className="text-sm text-[#EEEEEE]">Postcode</p>
+              <p className="font-medium text-[#EEEEEE]">
+                {data?.postalCode || "N/A"}
+              </p>
+            </div>
+
+            <div className="flex flex-col border-b border-[#F1F1F11A] py-3 px-5">
+              <p className="text-sm text-[#EEEEEE]">Phone Number</p>
+              <p className="font-medium text-[#EEEEEE]">
+                {data?.phoneNumber || "N/A"}
               </p>
             </div>
 

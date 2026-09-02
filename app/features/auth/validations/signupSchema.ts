@@ -7,20 +7,34 @@ const getTodayDateString = () => {
   return `${today.getFullYear()}-${month}-${day}`
 }
 
-const normalizePhoneNumber = (value: string) => value.replace(/[\s()-]/g, "")
+/** GB national number: leading 0, then a 9- or 10-digit significant number. */
+const GB_NATIONAL_PATTERN = /^0[1-9]\d{8,9}$/
 
-const isValidPhoneNumber = (value: string) => {
-  if (!/^\+?[0-9]+$/.test(value)) return false
+/**
+ * Accepts the ways a GB number is normally typed — 07123456789, +447123456789,
+ * 447123456789, 00447123456789 — and returns it in E.164 (+447123456789), which
+ * is the form Stripe requires. Returns null for anything that isn't a GB number.
+ */
+const toGbE164 = (value: string) => {
+  const compact = value.replace(/[\s()-]/g, "")
+  if (!/^\+?\d+$/.test(compact)) return null
 
-  const digits = value.startsWith("+") ? value.slice(1) : value
-  if (digits.length < 10 || digits.length > 15) return false
+  let nationalDigits = compact.startsWith("+") ? compact.slice(1) : compact
 
-  if (value.startsWith("+44") || value.startsWith("0")) {
-    const ukNumber = value.startsWith("+44") ? `0${value.slice(3)}` : value
-    return /^0[1-9]\d{8,9}$/.test(ukNumber)
+  // A GB significant number never starts with 4, so a leading 44 is the country code.
+  if (nationalDigits.startsWith("0044")) {
+    nationalDigits = nationalDigits.slice(4)
+  } else if (nationalDigits.startsWith("44")) {
+    nationalDigits = nationalDigits.slice(2)
+  } else if (nationalDigits.startsWith("0")) {
+    nationalDigits = nationalDigits.slice(1)
+  } else {
+    return null
   }
 
-  return true
+  if (!GB_NATIONAL_PATTERN.test(`0${nationalDigits}`)) return null
+
+  return `+44${nationalDigits}`
 }
 
 const nameSchema = (fieldLabel: string) =>
@@ -47,11 +61,12 @@ export const signupSchema = z
       .trim()
       .min(1, "Please enter your phone number")
       .max(32, "Phone number is too long")
-      .transform(normalizePhoneNumber)
+      // Keep the raw value when it isn't a GB number so the pipe below rejects it.
+      .transform((value) => toGbE164(value) ?? value)
       .pipe(
-        z.string().refine(
-          isValidPhoneNumber,
-          "Please enter a valid phone number (e.g. 07123456789 or +447123456789)",
+        z.string().regex(
+          /^\+44\d{9,10}$/,
+          "Please enter a valid UK phone number with country code (e.g. +447123456789)",
         ),
       ),
     password: z.string()

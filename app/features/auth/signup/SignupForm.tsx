@@ -115,7 +115,7 @@ const SignupForm = () => {
           type="tel"
           inputMode="tel"
           autoComplete="tel"
-          placeholder="e.g. 07123456789"
+          placeholder="e.g. +447123456789"
           maxLength={32}
           error={errors.phoneNumber?.message}
           {...register("phoneNumber")}
