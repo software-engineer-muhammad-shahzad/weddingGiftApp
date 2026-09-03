@@ -2,8 +2,9 @@
 
 import { ChevronLeft, Pencil } from "lucide-react"
 import Link from "next/link"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
+import { getStripeOnboardingLink } from "@/app/features/dashboard/services/dashboardService"
 import { useCoupleBankDetails } from "@/app/features/dashboard/hooks/useCoupleBankDetails"
 import UpdateBankInfo from "@/app/features/dashboard/bankinformation/UpdateBankInfo"
 import Skeleton from "@/app/components/ui/Skeleton"
@@ -37,8 +38,51 @@ const dobDateInputClassName =
 const Page = () => {
   const { data, isLoading, error, refetch } = useCoupleBankDetails()
   const [isEditMode, setIsEditMode] = useState(false)
+  const [isResumingOnboarding, setIsResumingOnboarding] = useState(false)
 
-  if (isLoading) {
+  // Stripe bounces the couple back to ?stripe=refresh when the account link was
+  // already used or has expired (they are single-use and short-lived). Mint a new
+  // link and send them straight back in, otherwise onboarding dead-ends here and
+  // the connected account stays "restricted".
+  useEffect(() => {
+    if (typeof window === "undefined") return
+
+    const params = new URLSearchParams(window.location.search)
+    const stage = params.get("stripe")
+    if (!stage) return
+
+    // Drop the marker so a manual reload doesn't retrigger this.
+    window.history.replaceState(null, "", window.location.pathname)
+
+    if (stage === "return") {
+      refetch()
+      return
+    }
+
+    if (stage !== "refresh") return
+
+    let cancelled = false
+    setIsResumingOnboarding(true)
+
+    getStripeOnboardingLink()
+      .then((url) => {
+        if (cancelled) return
+        if (url) {
+          window.location.href = url
+          return
+        }
+        setIsResumingOnboarding(false)
+      })
+      .catch(() => {
+        if (!cancelled) setIsResumingOnboarding(false)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [refetch])
+
+  if (isLoading || isResumingOnboarding) {
     return (
       <div className="h-screen w-full flex justify-center mx-auto bg-[#330065]">
         <div className="w-full max-w-200 py-8 px-5">
@@ -129,13 +173,6 @@ const Page = () => {
               <p className="text-sm text-[#EEEEEE]">Address Line 1</p>
               <p className="font-medium text-[#EEEEEE]">
                 {data?.address || "N/A"}
-              </p>
-            </div>
-
-            <div className="flex flex-col border-b border-[#F1F1F11A] py-3 px-5">
-              <p className="text-sm text-[#EEEEEE]">Address Line 2</p>
-              <p className="font-medium text-[#EEEEEE]">
-                {data?.addressLine2 || "N/A"}
               </p>
             </div>
 

@@ -102,10 +102,6 @@ const validateBankDetails = (form: UpdateBankDetailsData) => {
     errors.address = "Address must be between 5 and 200 characters"
   }
 
-  if (form.addressLine2.trim().length > 200) {
-    errors.addressLine2 = "Address line 2 must be 200 characters or fewer"
-  }
-
   if (!form.city.trim()) {
     errors.city = "City is required"
   } else if (form.city.trim().length > 100) {
@@ -143,7 +139,6 @@ const UpdateBankInfo = ({ data, onCancel, onSuccess }: Props) => {
     iban: data?.iban || "",
     accountNumber: data?.accountNumber || "",
     address: data?.address || "",
-    addressLine2: data?.addressLine2 || "",
     city: data?.city || "",
     postalCode: data?.postalCode || "",
     phoneNumber: data?.phoneNumber || "",
@@ -180,14 +175,16 @@ const UpdateBankInfo = ({ data, onCancel, onSuccess }: Props) => {
         ...form,
         currency,
         address: form.address.trim(),
-        addressLine2: form.addressLine2.trim(),
         city: form.city.trim(),
         // Send the canonical form so Stripe's address check gets a clean value.
         postalCode: toUkPostcode(form.postalCode) ?? form.postalCode.trim(),
         phoneNumber: normalizePhoneNumber(form.phoneNumber.trim()),
         dob: form.dob ? form.dob : "",
       }
-      await updateBankData(payload)
+      const response = await updateBankData(payload);
+console.log("UpdateBankInfo response:", response);
+      if (response?.data?.onboardingUrl) { window.location.href = response?.data?.onboardingUrl; return; }
+
       onSuccess?.()
       onCancel()
     } catch (err) {
@@ -291,19 +288,6 @@ const UpdateBankInfo = ({ data, onCancel, onSuccess }: Props) => {
             className={`p-2 rounded bg-[#1f003d] text-white border ${errors.address ? "border-red-500" : "border-gray-600"}`}
           />
           {errors.address && <p className="text-xs text-red-500">{errors.address}</p>}
-        </div>
-
-        <div className="flex flex-col gap-1">
-          <input
-            name="addressLine2"
-            autoComplete="address-line2"
-            value={form.addressLine2}
-            onChange={handleChange}
-            placeholder="Address Line 2 (optional)"
-            maxLength={200}
-            className={`p-2 rounded bg-[#1f003d] text-white border ${errors.addressLine2 ? "border-red-500" : "border-gray-600"}`}
-          />
-          {errors.addressLine2 && <p className="text-xs text-red-500">{errors.addressLine2}</p>}
         </div>
 
         <div className="flex flex-col gap-1">

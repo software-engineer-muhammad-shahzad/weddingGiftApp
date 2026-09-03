@@ -182,9 +182,26 @@ export const getCoupleBankDetailsData = async (): Promise<CoupleBankDetailsData 
 
 
 
-export const updateBankDetails = async (data: any): Promise<void> => {
-  await updateCoupleBankDetails(data)
+export const updateBankDetails = async (data: any): Promise<any> => {
+  return await updateCoupleBankDetails(data)
   // ✅ if no error thrown = success, done!
+}
+
+// stripeOnboardingLink
+// Stripe account links are single-use and expire after a few minutes, so a fresh
+// one has to be minted every time the couple re-enters Connect onboarding.
+export const getStripeOnboardingLink = async (): Promise<string | null> => {
+  const response = await getRequest<{
+    statusCode: number
+    statusMessage?: string
+    data?: { onboardingUrl?: string | null }
+  }>(endpoints.bankdetails.stripeOnboardingLink, { silenceStatuses: [403, 404] })
+
+  if (response.statusCode !== 200 || !response.data?.onboardingUrl) {
+    return null
+  }
+
+  return response.data.onboardingUrl
 }
 
 // coupleProfileDetails

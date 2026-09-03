@@ -23,6 +23,7 @@ const endpoints = {
   // bank-details
   bankdetails: {
     coupleBankDetails: "/couple/bankdetails",
+    stripeOnboardingLink: "/couple/stripe/onboarding-link",
   },
   // couple-profile-details
   coupleProfile: {

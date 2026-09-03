@@ -14,10 +14,11 @@ export const useUpdateBankInfo = () => {
       setIsSuccess(false)
 
       // ✅ CALL SERVICE LAYER ONLY
-      await updateBankDetails(payload)
+      const response = await updateBankDetails(payload)
 
       // ✅ 204 = success if no error thrown
       setIsSuccess(true)
+      return response
     } catch (err: any) {
       setError(
         err?.response?.data?.message ||
