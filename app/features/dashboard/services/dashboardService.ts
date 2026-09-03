@@ -19,6 +19,10 @@ import type {
   AnnouncementDismissalData,
   AnnouncementDismissalResponse,
 } from "../types/announcementDismissal"
+import type {
+  StripeConnectStatusData,
+  StripeConnectStatusResponse,
+} from "../types/stripeConnectStatus"
 import { getRequest, postRequest } from "@/app/services/http"
 import { CoupleProfileDetailsData, CoupleProfileDetailsResponse } from "../types/coupleProfileDetails"
 import { deleteCoupleProfile, getCoupleProfileDetails, submitCoupleSupportTicket, updateCoupleBankDetails, updateCoupleProfile, updateCoupleProfileDetails } from "../api/dashboardApi"
@@ -202,6 +206,37 @@ export const getStripeOnboardingLink = async (): Promise<string | null> => {
   }
 
   return response.data.onboardingUrl
+}
+
+// stripeConnectStatus
+// Diagnostic status of the couple's Stripe connected account. Returns null when
+// no connected account exists yet (backend replies 404), which the UI treats as
+// an empty state rather than an error.
+export const getStripeConnectStatus = async (
+  coupleUserId: number
+): Promise<StripeConnectStatusData | null> => {
+  const url = endpoints.bankdetails.stripeConnectStatus.replace(
+    "{coupleUserId}",
+    String(coupleUserId)
+  )
+
+  try {
+    const response = await getRequest<StripeConnectStatusResponse>(url, {
+      silenceStatuses: [403, 404],
+    })
+
+    if (response.statusCode !== 200 || !response.data) {
+      return null
+    }
+
+    return response.data
+  } catch (err) {
+    const status = (err as { response?: { status?: number } })?.response?.status
+    if (status === 404 || status === 403) {
+      return null
+    }
+    throw err
+  }
 }
 
 // coupleProfileDetails

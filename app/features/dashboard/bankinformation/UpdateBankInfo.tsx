@@ -38,19 +38,20 @@ const getMaximumDob = () => {
 
 const normalizePhoneNumber = (value: string) => value.replace(/[\s()-]/g, "")
 
-const isValidPhoneNumber = (value: string) => {
-  if (!/^\+?[0-9]+$/.test(value)) return false
-
-  const digits = value.startsWith("+") ? value.slice(1) : value
-  if (digits.length < 10 || digits.length > 15) return false
-
-  if (value.startsWith("+44") || value.startsWith("0")) {
-    const ukNumber = value.startsWith("+44") ? `0${value.slice(3)}` : value
-    return /^0[1-9]\d{8,9}$/.test(ukNumber)
-  }
-
-  return true
-}
+// Commented out: phone number field removed from the form.
+// const isValidPhoneNumber = (value: string) => {
+//   if (!/^\+?[0-9]+$/.test(value)) return false
+//
+//   const digits = value.startsWith("+") ? value.slice(1) : value
+//   if (digits.length < 10 || digits.length > 15) return false
+//
+//   if (value.startsWith("+44") || value.startsWith("0")) {
+//     const ukNumber = value.startsWith("+44") ? `0${value.slice(3)}` : value
+//     return /^0[1-9]\d{8,9}$/.test(ukNumber)
+//   }
+//
+//   return true
+// }
 
 const UK_POSTCODE_PATTERN = /^[A-Z]{1,2}\d[A-Z\d]? \d[A-Z]{2}$/
 
@@ -102,24 +103,25 @@ const validateBankDetails = (form: UpdateBankDetailsData) => {
     errors.address = "Address must be between 5 and 200 characters"
   }
 
-  if (!form.city.trim()) {
-    errors.city = "City is required"
-  } else if (form.city.trim().length > 100) {
-    errors.city = "City must be 100 characters or fewer"
-  }
+  // Commented out: city, postcode and phone number fields removed from the form.
+  // if (!form.city.trim()) {
+  //   errors.city = "City is required"
+  // } else if (form.city.trim().length > 100) {
+  //   errors.city = "City must be 100 characters or fewer"
+  // }
 
-  if (!form.postalCode.trim()) {
-    errors.postalCode = "Postcode is required"
-  } else if (!toUkPostcode(form.postalCode)) {
-    errors.postalCode = "Enter a valid UK postcode, e.g. SW1A 1AA"
-  }
+  // if (!form.postalCode.trim()) {
+  //   errors.postalCode = "Postcode is required"
+  // } else if (!toUkPostcode(form.postalCode)) {
+  //   errors.postalCode = "Enter a valid UK postcode, e.g. SW1A 1AA"
+  // }
 
-  const phoneNumber = normalizePhoneNumber(form.phoneNumber.trim())
-  if (!phoneNumber) {
-    errors.phoneNumber = "Phone number is required"
-  } else if (!isValidPhoneNumber(phoneNumber)) {
-    errors.phoneNumber = "Enter a valid phone number (e.g. 07123456789 or +447123456789)"
-  }
+  // const phoneNumber = normalizePhoneNumber(form.phoneNumber.trim())
+  // if (!phoneNumber) {
+  //   errors.phoneNumber = "Phone number is required"
+  // } else if (!isValidPhoneNumber(phoneNumber)) {
+  //   errors.phoneNumber = "Enter a valid phone number (e.g. 07123456789 or +447123456789)"
+  // }
 
   if (!form.dob) {
     errors.dob = "Date of birth is required"
@@ -280,16 +282,17 @@ console.log("UpdateBankInfo response:", response);
         <div className="flex flex-col gap-1">
           <input
             name="address"
-            autoComplete="address-line1"
+            autoComplete="address"
             value={form.address}
             onChange={handleChange}
-            placeholder="Address Line 1"
+            placeholder="Address"
             maxLength={200}
             className={`p-2 rounded bg-[#1f003d] text-white border ${errors.address ? "border-red-500" : "border-gray-600"}`}
           />
           {errors.address && <p className="text-xs text-red-500">{errors.address}</p>}
         </div>
 
+        {/* Commented out: city, postcode and phone number fields.
         <div className="flex flex-col gap-1">
           <input
             name="city"
@@ -330,6 +333,7 @@ console.log("UpdateBankInfo response:", response);
           />
           {errors.phoneNumber && <p className="text-xs text-red-500">{errors.phoneNumber}</p>}
         </div>
+        */}
 
         <div className="flex flex-col gap-1">
           <label htmlFor="dob" className="text-sm text-[#EEEEEE]">

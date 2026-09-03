@@ -6,7 +6,9 @@ import { useEffect, useState } from "react"
 
 import { getStripeOnboardingLink } from "@/app/features/dashboard/services/dashboardService"
 import { useCoupleBankDetails } from "@/app/features/dashboard/hooks/useCoupleBankDetails"
+import { useStripeConnectStatus } from "@/app/features/dashboard/hooks/useStripeConnectStatus"
 import UpdateBankInfo from "@/app/features/dashboard/bankinformation/UpdateBankInfo"
+import StripeConnectStatusCard from "@/app/features/dashboard/bankinformation/StripeConnectStatusCard"
 import Skeleton from "@/app/components/ui/Skeleton"
 import { UpdateBankDetailsData } from "@/app/features/dashboard/types/UpdateBankDetails"
 
@@ -37,13 +39,34 @@ const dobDateInputClassName =
 
 const Page = () => {
   const { data, isLoading, error, refetch } = useCoupleBankDetails()
+  const {
+    data: connectStatus,
+    isLoading: isStatusLoading,
+    refetch: refetchStatus,
+  } = useStripeConnectStatus()
   const [isEditMode, setIsEditMode] = useState(false)
   const [isResumingOnboarding, setIsResumingOnboarding] = useState(false)
+
+  // Mint a fresh single-use Stripe account link and send the couple into onboarding.
+  const resumeOnboarding = async () => {
+    setIsResumingOnboarding(true)
+    try {
+      const url = await getStripeOnboardingLink()
+      if (url) {
+        window.location.href = url
+        return
+      }
+    } catch {
+      // fall through to clear the loading state
+    }
+    setIsResumingOnboarding(false)
+  }
 
   // Stripe bounces the couple back to ?stripe=refresh when the account link was
   // already used or has expired (they are single-use and short-lived). Mint a new
   // link and send them straight back in, otherwise onboarding dead-ends here and
-  // the connected account stays "restricted".
+  // the connected account stays "restricted". ?stripe=return means they finished
+  // (or dismissed) the flow, so re-pull the details and account status.
   useEffect(() => {
     if (typeof window === "undefined") return
 
@@ -56,35 +79,23 @@ const Page = () => {
 
     if (stage === "return") {
       refetch()
+      refetchStatus()
       return
     }
 
-    if (stage !== "refresh") return
-
-    let cancelled = false
-    setIsResumingOnboarding(true)
-
-    getStripeOnboardingLink()
-      .then((url) => {
-        if (cancelled) return
-        if (url) {
-          window.location.href = url
-          return
-        }
-        setIsResumingOnboarding(false)
-      })
-      .catch(() => {
-        if (!cancelled) setIsResumingOnboarding(false)
-      })
-
-    return () => {
-      cancelled = true
+    if (stage === "refresh") {
+      // Link expired/consumed before completion — bounce straight into a fresh one.
+      getStripeOnboardingLink()
+        .then((url) => {
+          if (url) window.location.href = url
+        })
+        .catch(() => {})
     }
-  }, [refetch])
+  }, [refetch, refetchStatus])
 
   if (isLoading || isResumingOnboarding) {
     return (
-      <div className="h-screen w-full flex justify-center mx-auto bg-[#330065]">
+      <div className="min-h-screen w-full flex justify-center mx-auto bg-[#330065]">
         <div className="w-full max-w-200 py-8 px-5">
           <Link href="/dashboard/setting" className="flex items-center gap-2">
             <ChevronLeft className="text-white" />
@@ -109,7 +120,7 @@ const Page = () => {
 
   if (error) {
     return (
-      <div className="h-screen w-full flex justify-center mx-auto bg-[#330065]">
+      <div className="min-h-screen w-full flex justify-center mx-auto bg-[#330065]">
         <div className="w-full max-w-200 py-8 px-5">
           <Link href="/dashboard/setting" className="flex items-center gap-2">
             <ChevronLeft className="text-white" />
@@ -123,7 +134,7 @@ const Page = () => {
   }
 
   return (
-    <div className="h-screen w-full flex justify-center mx-auto bg-[#330065]">
+    <div className="min-h-screen w-full flex justify-center mx-auto bg-[#330065]">
       <div className="w-full max-w-200 py-8 px-5">
 
         {/* BACK NAV */}
@@ -146,6 +157,7 @@ const Page = () => {
 
         {/* VIEW MODE */}
         {!isEditMode ? (
+          <>
           <div className="border border-[#5FDA78] rounded-[30px] mt-10 glass-card">
 
             <div className="flex flex-col border-b border-[#F1F1F11A] py-3 px-5">
@@ -170,12 +182,13 @@ const Page = () => {
             </div>
 
             <div className="flex flex-col border-b border-[#F1F1F11A] py-3 px-5">
-              <p className="text-sm text-[#EEEEEE]">Address Line 1</p>
+              <p className="text-sm text-[#EEEEEE]">Address</p>
               <p className="font-medium text-[#EEEEEE]">
                 {data?.address || "N/A"}
               </p>
             </div>
 
+            {/* Commented out: city, postcode and phone number fields.
             <div className="flex flex-col border-b border-[#F1F1F11A] py-3 px-5">
               <p className="text-sm text-[#EEEEEE]">City</p>
               <p className="font-medium text-[#EEEEEE]">
@@ -196,6 +209,7 @@ const Page = () => {
                 {data?.phoneNumber || "N/A"}
               </p>
             </div>
+            */}
 
             <div className="flex flex-col border-b border-[#F1F1F11A] py-3 px-5">
               <p className="text-sm text-[#EEEEEE]">DOB</p>
@@ -216,6 +230,17 @@ const Page = () => {
             </div>
 
           </div>
+
+          {/* STRIPE CONNECTED ACCOUNT STATUS */}
+          {connectStatus && (
+            <StripeConnectStatusCard
+              status={connectStatus}
+              isLoading={isStatusLoading}
+              onResumeOnboarding={resumeOnboarding}
+              isResuming={isResumingOnboarding}
+            />
+          )}
+          </>
         ) : (
           /* EDIT MODE */
           <UpdateBankInfo

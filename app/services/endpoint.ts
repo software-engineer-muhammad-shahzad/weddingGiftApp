@@ -23,7 +23,9 @@ const endpoints = {
   // bank-details
   bankdetails: {
     coupleBankDetails: "/couple/bankdetails",
-    stripeOnboardingLink: "/couple/stripe/onboarding-link",
+    stripeOnboardingLink: "/payments/stripe/onboarding-link",
+    // {coupleUserId} is the numeric user id from the stored auth data.
+    stripeConnectStatus: "/payments/stripe/connect/{coupleUserId}/status",
   },
   // couple-profile-details
   coupleProfile: {
