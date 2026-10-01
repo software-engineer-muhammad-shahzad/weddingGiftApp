@@ -39,14 +39,22 @@ export const useGuestInviteDetails = (slug: string) => {
         const inviteData = normalizeInviteData(res.data as unknown as Record<string, unknown>)
 
         if (!inviteData) {
-          setError("Invite details are incomplete. Please try again later.")
+          setError("This invite link is no longer valid.")
           setData(null)
           return
         }
 
         setData(inviteData)
       } catch (err: any) {
-        setError(err.message || "Something went wrong")
+        // The backend resolves an inactive/deactivated couple the same way
+        // as an unknown slug (404) — both mean the guest's QR code/link no
+        // longer works, so they share the same "expired" message here.
+        const status = err?.response?.status
+        setError(
+          status === 404
+            ? "This invite link is no longer valid."
+            : err.message || "Something went wrong",
+        )
       } finally {
         setIsLoading(false)
       }

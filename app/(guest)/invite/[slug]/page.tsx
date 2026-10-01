@@ -19,7 +19,7 @@ type ModalType = "stripeCard" | null
 
 const page = () => {
   const { slug } = useParams<{ slug: string }>()
-  const { data: coupleDetails, isLoading: isCoupleDetailsLoading } = useGuestInviteDetails(slug)
+  const { data: coupleDetails, isLoading: isCoupleDetailsLoading, error: inviteError } = useGuestInviteDetails(slug)
   const {
     isReady: isGuestReady,
     isLoading: isGuestLoading,
@@ -80,6 +80,34 @@ const page = () => {
     openModal("stripeCard")
   }
 
+  if (isCoupleDetailsLoading) {
+    return (
+      <div className="min-h-screen w-full bg-[#330065] flex items-center justify-center">
+        <Image
+          src="/images/shagun-logo.svg"
+          alt="Shagun Direct"
+          width={40}
+          height={40}
+          className="animate-pulse"
+        />
+      </div>
+    )
+  }
+
+  if (!coupleDetails || inviteError) {
+    return (
+      <div className="min-h-screen w-full bg-[#330065] flex items-center justify-center px-6 text-center">
+        <div className="flex flex-col items-center gap-4">
+          <Image src="/images/shagun-logo.svg" alt="Shagun Direct" width={48} height={48} />
+          <h1 className="text-white text-2xl font-semibold">QR Code Expired</h1>
+          <p className="text-white/70 max-w-sm">
+            Couple account is deactivated or the QR code has expired.
+          </p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <>
       <div className="min-h-screen w-full bg-[#330065] max-w-382.5 flex justify-center mx-auto">
@@ -137,15 +165,15 @@ const page = () => {
                 wishingVideoAmount={wishingVideoAmount}
               />
               <p className="px-2 text-[11px] text-white md:text-sm">
-                By continuing, you agree to the Shagun Direct Payments{" "}
+                By continuing, you agree to the our{" "}
                 <Link href="/terms-of-service" className="border-b" target="_blank" rel="noopener noreferrer">
-                  Terms of Service.
+                  Terms & Conditions
                 </Link>{" "}
-                The{" "}
+                Our{" "}
                 <Link href="/privacy-notice" className="border-b" target="_blank" rel="noopener noreferrer">
                   Privacy Notice
                 </Link>{" "}
-                describes how your data is handled.
+                explains how we use your data.
               </p>
               <WishForm
                 hasSavedCards={savedPaymentMethods.length > 0}

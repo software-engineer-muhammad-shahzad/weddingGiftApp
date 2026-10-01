@@ -70,6 +70,29 @@ body {
 .scrollbar-hide::-webkit-scrollbar-thumb {
   background: transparent;
 }
+/* Stop the browser's autofill suggestion (saved email/password) from
+   painting the input with its own opaque white/yellow background. */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-text-fill-color: #ffffff !important;
+  color: #ffffff !important;
+  caret-color: #ffffff;
+  -webkit-box-shadow: 0 0 0px 1000px #350366 inset;
+  box-shadow: 0 0 0px 1000px #350366 inset;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+/* Native date-input calendar icon is black by default; invert it so it's
+   visible on this app's dark input backgrounds. */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+}
+
 .glass-card {
   background: radial-gradient(38.46% 47.48% at 11.54% 17.62%, rgba(255, 235, 255, 0) 0%, rgba(230, 255, 240, 0) 70%, rgba(240, 240, 255, 0) 100%),
     linear-gradient(310.95deg, rgba(255, 255, 255, 0.044) 11.07%, rgba(255, 255, 255, 0) 56.95%, rgba(217, 235, 255, 0) 87.55%),
