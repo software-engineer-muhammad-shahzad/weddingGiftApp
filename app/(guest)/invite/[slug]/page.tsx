@@ -1,6 +1,7 @@
 "use client"
 import Image from "next/image"
 import Link from "next/link"
+import Checkbox from "@/app/components/elements/Checkbox"
 import GuestCheckoutForm from "@/app/features/giftsend/GuestCheckoutForm"
 import ProfileDescription from "@/app/features/giftsend/ProfileDescription"
 import StripeCardModal from "@/app/features/giftsend/StripeCardModal"
@@ -13,7 +14,7 @@ import { useGuestCheckout } from "@/app/features/giftsend/hooks/useGuestCheckout
 import { useGuestInviteDetails } from "@/app/features/giftsend/hooks/useGuestInviteDetails"
 import { showError } from "@/app/lib/toast"
 import { useParams } from "next/navigation"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 type ModalType = "stripeCard" | null
 
@@ -37,6 +38,8 @@ const page = () => {
   const [videoUrl, setVideoUrl] = useState<string | null>(null)
   const [amount, setAmount] = useState("")
   const [selectedCardId, setSelectedCardId] = useState<number | null>(null)
+  const [agreedToTerms, setAgreedToTerms] = useState(false)
+  const [confirmedAttachmentSend, setConfirmedAttachmentSend] = useState(false)
 
   const greetingCards = coupleDetails?.cardTemplate.greetingCards ?? []
   const currency =
@@ -56,6 +59,13 @@ const page = () => {
     selectedCardId !== null ? wishingCardAddon : undefined
   const wishingVideoAmount = videoUrl ? wishingVideoAddon : undefined
   const hasPendingVideoUpload = Boolean(video) && !videoUrl
+  const hasAttachment = selectedCardId !== null || Boolean(videoUrl)
+
+  // Require re-confirmation whenever the chosen attachment changes, so a
+  // stale confirmation can't silently carry over to a different card/video.
+  useEffect(() => {
+    setConfirmedAttachmentSend(false)
+  }, [selectedCardId, videoUrl])
 
   const openModal = (type: ModalType) => {
     setActiveModal(type)
@@ -73,6 +83,16 @@ const page = () => {
 
     if (hasPendingVideoUpload) {
       showError("Please upload your wishing video before continuing to payment.")
+      return
+    }
+
+    if (!agreedToTerms) {
+      showError("Please agree to the Terms & Conditions and Privacy Notice to continue.")
+      return
+    }
+
+    if (hasAttachment && !confirmedAttachmentSend) {
+      showError("Please confirm you want to send your card/video now.")
       return
     }
 
@@ -164,20 +184,40 @@ const page = () => {
                 wishingCardAmount={wishingCardAmount ?? 0}
                 wishingVideoAmount={wishingVideoAmount}
               />
-              <p className="px-2 text-[11px] text-white md:text-sm">
-                By continuing, you agree to the our{" "}
-                <Link href="/terms-of-service" className="border-b" target="_blank" rel="noopener noreferrer">
-                  Terms & Conditions
-                </Link>{" "}
-                Our{" "}
-                <Link href="/privacy-notice" className="border-b" target="_blank" rel="noopener noreferrer">
-                  Privacy Notice
-                </Link>{" "}
-                explains how we use your data.
-              </p>
+
+              {hasAttachment && (
+                <div className="px-2">
+                  <Checkbox
+                    label="Send my card/video now. I understand it can't be cancelled once sent."
+                    checked={confirmedAttachmentSend}
+                    onChange={(e) => setConfirmedAttachmentSend(e.target.checked)}
+                  />
+                </div>
+              )}
+
+              <label className="flex items-start gap-2 px-2 text-sm text-white cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={agreedToTerms}
+                  onChange={(e) => setAgreedToTerms(e.target.checked)}
+                  className="accent-[#5FDA78] w-4 h-4 mt-0.5 shrink-0 cursor-pointer"
+                />
+                <span>
+                  By continuing, you agree to our{" "}
+                  <Link href="/terms-of-service" className="border-b" target="_blank" rel="noopener noreferrer">
+                    Terms & Conditions.
+                  </Link>{" "}
+                  Our{" "}
+                  <Link href="/privacy-notice" className="border-b" target="_blank" rel="noopener noreferrer">
+                    Privacy Notice
+                  </Link>{" "}
+                  explains how we use your data.
+                </span>
+              </label>             
+
               <WishForm
                 hasSavedCards={savedPaymentMethods.length > 0}
-                disabled={hasPendingVideoUpload}
+                disabled={hasPendingVideoUpload || !agreedToTerms || (hasAttachment && !confirmedAttachmentSend)}
                 openStripeModal={handleContinueToPayment}
               />
             </>

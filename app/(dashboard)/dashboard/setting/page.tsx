@@ -8,19 +8,21 @@ import { useState } from "react"
 import { clearAllData } from "@/app/utils/storage/storageHelper"
 import { useRouter } from "next/navigation";
 import { showSuccess } from "@/app/lib/toast"
+import { useGoBack } from "@/app/hooks/useGoBack"
 
 const page = () => {
     const [isLogoutOpen, setIsLogoutOpen] = useState(false);
     const [activeButton, setActiveButton] = useState('no');
     const router = useRouter();
+    const goBack = useGoBack("/dashboard");
     return (
         <div className="min-h-screen overflow-auto  bg-[#330065] max-w-400 w-full   flex justify-center mx-auto ">
             <div className="w-full  max-w-200 py-8  px-6">
                 {/* notification header */}
-                <Link href="/dashboard" className="flex w-fit items-center gap-2">
+                <button type="button" onClick={goBack} className="flex w-fit items-center gap-2 cursor-pointer">
                     <ChevronLeft className='text-white' />
                     <p className="text-white text-2xl border-b border-transparent hover:border-white transition-all duration-300">Settings</p>
-                </Link>
+                </button>
 
                 {/* personal info */}
                 <div className="">

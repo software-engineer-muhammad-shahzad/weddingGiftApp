@@ -1,13 +1,13 @@
 "use client"
 import { ChevronLeft } from 'lucide-react';
 import { Search } from 'lucide-react';
-import Link from 'next/link';
 
 import { useRef, useEffect } from 'react';
 import Input from '@/app/components/elements/Input';
 import Skeleton from '@/app/components/ui/Skeleton';
 import { useCoupleNotification } from '@/app/features/dashboard/hooks/useCoupleNotification';
 import type { NotificationItem } from '@/app/features/dashboard/types/coupleNotifications';
+import { useGoBack } from '@/app/hooks/useGoBack';
 
 const NotificationSkeleton = () => (
   <div className='w-full p-4 flex justify-between rounded-[40px] glass-card border-[0.5px] border-[#5FDA78] pb-4'>
@@ -22,6 +22,7 @@ const NotificationSkeleton = () => (
 const page = () => {
   const sentinelRef = useRef<HTMLDivElement>(null);
   const { items, isLoading, hasMore, search, setSearch, loadMore } = useCoupleNotification();
+  const goBack = useGoBack("/dashboard");
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -50,11 +51,11 @@ const page = () => {
     <div className="min-h-screen   w-full max-w-382.5 bg-[#330065] border flex  justify-center mx-auto  ">
       <div className="w-full min-h-screen  md:max-w-200 py-8 px-4 md:px-3 ">
         {/* notification header */}
-        <Link href="/dashboard" className="flex w-fit items-center gap-2 ">
+        <button type="button" onClick={goBack} className="flex w-fit items-center gap-2 cursor-pointer">
           <ChevronLeft className='text-white' />
 
           <p className="text-white text-2xl border-b border-transparent hover:border-white transition-all duration-300">Notification</p>
-        </Link>
+        </button>
         {/* search input */}
         <div className='border-[0.5px] glass-card border-[#5FDA78] rounded-[30px] h-14.5 mt-12 px-5 py-3 flex items-center'>
           <Search className='text-white' />

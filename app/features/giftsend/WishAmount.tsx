@@ -87,7 +87,7 @@ const WishAmount = ({
         <div className="w-full h-px my-6 bg-linear-to-r from-[#00114E] via-white to-[#00114E]" />
 
         <p className="text-white text-center text-lg md:text-xl font-normal px-4 pb-2">
-          Your Total is {currency} {total.toFixed(2)}
+          Your sub-total is {currency} {total.toFixed(2)}
         </p>
       </div>
     </div>

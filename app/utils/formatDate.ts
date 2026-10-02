@@ -48,5 +48,5 @@ export const formatDateWithWeekday = (dateString: string) => {
   const weekday = date.toLocaleDateString("en-US", { weekday: "long" })
   const month = date.toLocaleDateString("en-US", { month: "long" })
 
-  return `${weekday}, ${date.getDate()} ${month}`.toUpperCase()
+  return `${weekday}, ${date.getDate()} ${month} ${date.getFullYear()}`
 }

@@ -5,12 +5,16 @@ import { Loader2, Search } from "lucide-react"
 import Button from "@/app/components/elements/Button"
 import Header from "@/app/features/dashboard/gifts/Header"
 import StatisticTable from "@/app/features/dashboard/statistic/StatisticTable"
+import FooterAppShare from "@/app/features/dashboard/home/FooterAppShare"
 import { useCoupleContributions } from "@/app/features/dashboard/hooks/useCoupleContributions"
 import { useDashboard } from "@/app/features/dashboard/hooks/useDashboard"
 
 const Page = () => {
   const { items, loading, search, setSearch } = useCoupleContributions()
-  const { data: dashboardData } = useDashboard()
+  const { data: dashboardData, needsBankAccount } = useDashboard()
+  // The dashboard endpoint 403s outright before bank details exist, so in that
+  // case `dashboardData` is null and the flag never arrives — treat it as false.
+  const hasBankAccount = needsBankAccount ? false : dashboardData?.hasBankAccount
   const [isDownloading, setIsDownloading] = useState(false)
 
   const saveBlobFile = (blob: Blob, fileName: string) =>
@@ -97,6 +101,8 @@ const Page = () => {
         </Button>
         )}
       </div>
+
+      <FooterAppShare hasBankAccount={hasBankAccount} />
     </div>
   )
 }

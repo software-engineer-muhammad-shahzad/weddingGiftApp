@@ -3,6 +3,7 @@
 import { Bell, ChevronLeft, Settings } from "lucide-react"
 import Link from "next/link"
 import { markAllNotificationsRead } from "@/app/features/dashboard/services/dashboardService"
+import { useGoBack } from "@/app/hooks/useGoBack"
 
 interface HeaderProps {
   title?: string
@@ -10,14 +11,16 @@ interface HeaderProps {
 }
 
 const Header = ({ title = "Greetings", unReadNotificationCount = 0 }: HeaderProps) => {
+  const goBack = useGoBack("/dashboard")
+
   return (
     <div className="flex justify-between items-center">
-      <Link href="/dashboard" className="flex w-fit items-center gap-2">
+      <button type="button" onClick={goBack} className="flex w-fit items-center gap-2 cursor-pointer">
         <ChevronLeft className="text-white" />
         <p className="text-white text-2xl border-b border-transparent hover:border-white transition-all duration-300">
           {title}
         </p>
-      </Link>
+      </button>
 
       <div className="flex gap-2">
         <Link

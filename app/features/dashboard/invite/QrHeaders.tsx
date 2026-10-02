@@ -3,18 +3,21 @@
 import { Bell, ChevronLeft, Settings } from "lucide-react"
 import Link from "next/link"
 import { markAllNotificationsRead } from "@/app/features/dashboard/services/dashboardService"
+import { useGoBack } from "@/app/hooks/useGoBack"
 
 interface QrHeadersProps {
   unReadNotificationCount?: number
 }
 
 const QrHeaders = ({ unReadNotificationCount = 0 }: QrHeadersProps) => {
+  const goBack = useGoBack("/dashboard")
+
   return (
     <div className="flex justify-between items-center">
-      <Link href="/dashboard" className="flex items-center gap-2">
+      <button type="button" onClick={goBack} className="flex items-center gap-2 cursor-pointer">
         <ChevronLeft className="text-white" />
         <p className="text-white text-2xl">QR Code</p>
-      </Link>
+      </button>
 
       <div className="flex gap-2">
         <Link

@@ -13,6 +13,7 @@ import Skeleton from "@/app/components/ui/Skeleton"
 import html2canvas from "html2canvas-pro"
 import { useDashboard } from "@/app/features/dashboard/hooks/useDashboard"
 import BankAccountRequiredModal from "@/app/features/dashboard/bankinformation/BankAccountRequiredModal"
+import FooterAppShare from "@/app/features/dashboard/home/FooterAppShare"
 
 
 
@@ -30,6 +31,9 @@ const Page = () => {
     // `needsBankAccount` covers the case where the dashboard endpoint 403s
     // outright, so `dashboardData` is null and the flag never arrives.
     const requiresBankAccount = needsBankAccount || dashboardData?.hasBankAccount === false
+    // The dashboard endpoint 403s outright before bank details exist, so in that
+    // case `dashboardData` is null and the flag never arrives — treat it as false.
+    const hasBankAccount = needsBankAccount ? false : dashboardData?.hasBankAccount
     const userData = useMemo(() => {
         if (!data) return null
 
@@ -210,10 +214,12 @@ const Page = () => {
                         </div>
                     </div>
 
-                    <div className="py-6 mt-8">
+                    <div className="py-6 mt-8 pb-28">
                         <Skeleton className="h-13 w-full rounded-full" />
                     </div>
                 </div>
+
+                <FooterAppShare hasBankAccount={hasBankAccount} />
             </div>
         )
     }
@@ -333,7 +339,7 @@ const Page = () => {
 
 
                 {/* DONE */}
-                <div className="py-6 mt-8">
+                <div className="py-6 mt-8 pb-28">
                     <Link
                         href="/dashboard"
                         className="block w-full bg-green-400 text-[#330065] text-center py-4 rounded-full font-semibold"
@@ -343,6 +349,8 @@ const Page = () => {
                 </div>
 
             </div>
+
+            <FooterAppShare hasBankAccount={hasBankAccount} />
 
             <BankAccountRequiredModal
                 isOpen={isBankModalOpen}
