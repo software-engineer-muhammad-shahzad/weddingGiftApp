@@ -346,7 +346,7 @@ console.log("UpdateBankInfo response:", response);
             value={form.dob}
             max={maximumDob}
             onChange={handleChange}
-            className={`p-2 rounded bg-[#1f003d] text-white border ${errors.dob ? "border-red-500" : "border-gray-600"} [color-scheme:dark] [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-100 [&::-webkit-calendar-picker-indicator]:invert`}
+            className={`p-2 rounded bg-[#1f003d] text-white border ${errors.dob ? "border-red-500" : "border-gray-600"} [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-100`}
           />
           {errors.dob && <p className="text-xs text-red-500">{errors.dob}</p>}
         </div>

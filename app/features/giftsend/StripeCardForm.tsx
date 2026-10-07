@@ -589,7 +589,7 @@ const StripeCardForm = ({
 
       <div className="flex items-center justify-center gap-1.5">
         <span className="font-figtree text-white text-[17px] font-bold leading-5">Protected by :</span>
-        <Image src="/images/stripe-step.png" alt="Stripe" width={50} height={20} className="object-contain" />
+        <Image src="/images/stripe-step.png" alt="Stripe" width={50} height={20} unoptimized className="object-contain" />
       </div>
 
       <ConfirmPaymentModal

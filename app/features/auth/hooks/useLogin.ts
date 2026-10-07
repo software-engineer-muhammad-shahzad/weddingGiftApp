@@ -21,7 +21,7 @@ export const useLogin = () => {
                 result.data.data.expiresAtUtc
             )
 
-            showSuccess("Login successfully")
+            showSuccess("Logged in Successfully")
             setIsLoading(false)
             return { success: true, data: result.data.data }
         }

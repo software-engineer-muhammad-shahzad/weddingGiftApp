@@ -1,5 +1,7 @@
+"use client"
+
 import { ChevronLeft } from "lucide-react"
-import Link from "next/link"
+import { useGoBack } from "@/app/hooks/useGoBack"
 
 type Props = {
   isFormOpen: boolean
@@ -10,6 +12,8 @@ const ProfileInfoNavigation = ({
   isFormOpen,
   setIsFormOpen,
 }: Props) => {
+  const goBack = useGoBack("/dashboard/setting")
+
   return (
     <>
       {isFormOpen ? (
@@ -24,16 +28,17 @@ const ProfileInfoNavigation = ({
           </span>
         </button>
       ) : (
-        <Link
-          href="/dashboard/setting"
-          className="flex w-fit items-center gap-2"
+        <button
+          type="button"
+          onClick={goBack}
+          className="flex w-fit items-center gap-2 cursor-pointer"
         >
           <ChevronLeft className="text-white" />
 
           <p className="text-white text-xl md:text-2xl border-b border-transparent hover:border-white transition-all duration-300">
             My Profile
           </p>
-        </Link>
+        </button>
       )}
     </>
   )

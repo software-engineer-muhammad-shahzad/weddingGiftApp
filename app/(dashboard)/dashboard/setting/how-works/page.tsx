@@ -1,5 +1,7 @@
+"use client"
+
 import { ChevronLeft } from "lucide-react"
-import Link from "next/link"
+import { useGoBack } from "@/app/hooks/useGoBack"
 import Image from "next/image"
 import Button from "@/app/components/elements/Button"
 
@@ -47,15 +49,16 @@ const HeartDivider = () => (
 )
 
 const page = () => {
+    const goBack = useGoBack("/dashboard/setting")
     return (
         <div className="relative min-h-screen overflow-x-hidden overflow-y-auto bg-[#330065] w-full max-w-382.5 flex justify-center mx-auto">
             <div className="w-full min-h-screen max-w-200 py-6 sm:py-8 relative flex flex-col px-5 sm:px-6">
-                <Link href="/dashboard/setting" className="flex w-fit items-center gap-2">
+                <button type="button" onClick={goBack} className="flex w-fit items-center gap-2 cursor-pointer">
                     <ChevronLeft className="text-white" />
                     <p className="text-white text-lg sm:text-xl md:text-2xl font-medium border-b border-transparent hover:border-white transition-all duration-300">
                         How It Works
                     </p>
-                </Link>
+                </button>
 
                 <div className="flex-1 flex flex-col pt-10 sm:pt-14">
                     <h1 className="text-center font-bold leading-tight">
@@ -97,13 +100,13 @@ const page = () => {
                 <div className="mt-auto pt-8 pb-[max(1rem,env(safe-area-inset-bottom))]">
                     <div className="flex items-center justify-center gap-1.5 mb-6">
                         <span className="font-figtree text-white text-[17px] font-bold leading-5">Powered by :</span>
-                        <Image src="/images/stripe-step.png" alt="Stripe" width={50} height={20} className="object-contain" />
+                        <Image src="/images/stripe-step.png" alt="Stripe" width={50} height={20} unoptimized className="object-contain" />
                     </div>
 
                     <div className="flex justify-center">
-                        <Link href="/dashboard/setting" className="w-full max-w-80">
-                            <Button className="w-full py-3!">Got it</Button>
-                        </Link>
+                        <div className="w-full max-w-80">
+                            <Button onClick={goBack} className="w-full py-3!">Got it</Button>
+                        </div>
                     </div>
                 </div>
             </div>

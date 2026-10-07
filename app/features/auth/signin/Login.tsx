@@ -118,7 +118,7 @@ const Login = () => {
       </div>
       <div className="pointer-events-none absolute bottom-6 left-0 right-0 z-10 flex items-center justify-center gap-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
         <span className="font-figtree text-white text-[17px] font-bold leading-5">Powered by :</span>
-        <Image src="/images/stripe-step.png" alt="Stripe" width={50} height={20} className="object-contain" />
+        <Image src="/images/stripe-step.png" alt="Stripe" width={50} height={20} unoptimized className="object-contain" />
       </div>
       <div className="pointer-events-none fixed -top-22.5 right-0 z-0 md:top-10 md:left-0 md:right-auto" aria-hidden>
         <Image

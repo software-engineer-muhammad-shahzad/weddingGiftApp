@@ -33,7 +33,7 @@ const TermsOfServicePage = () => {
               Direct&quot;, &quot;we&quot;, &quot;our&quot;, &quot;us&quot;), a company
               registered in England and Wales under company number 16753269, with its
               registered office at 167–169 Great Portland Street, London, England W1W
-              5PF. You can contact us at info@shagundirect.com.
+              5PF. You can contact us at <a href="mailto:info@shagundirect.com" className="border-b border-white/60 hover:border-white">info@shagundirect.com</a>.
             </p>
             <p>
               By creating an account, or by continuing past a screen that links to
@@ -42,7 +42,7 @@ const TermsOfServicePage = () => {
               Terms. If you do not agree, you must not use the Platform.
             </p>
             <p>
-              These Terms should be read together with our Privacy Notice, which
+              These Terms should be read together with our <Link href="/privacy-notice" className="border-b border-white/60 hover:border-white">Privacy Notice</Link>, which
               explains how we handle personal information.
             </p>
           </section>
@@ -162,7 +162,7 @@ const TermsOfServicePage = () => {
               <h3 className="text-lg font-semibold text-white">5.3 Account security</h3>
               <p>
                 Couples must keep their login details confidential and tell us
-                promptly at info@shagundirect.com if they suspect unauthorised access.
+                promptly at <a href="mailto:info@shagundirect.com" className="border-b border-white/60 hover:border-white">info@shagundirect.com</a> if they suspect unauthorised access.
                 Couples are responsible for activity on their account.
               </p>
             </div>
@@ -183,10 +183,10 @@ const TermsOfServicePage = () => {
             <p>
               Payment processing and payouts are provided by Stripe. By connecting a
               Stripe account to Shagun Direct, the Couple agrees to be bound by the
-              Stripe Services Agreement and the Stripe Connected Account Agreement, as
+              <a href="https://stripe.com/legal/ssa" target="_blank" rel="noopener noreferrer" className="border-b border-white/60 hover:border-white">Stripe Services Agreement</a> and the <a href="https://stripe.com/legal/connect-account" target="_blank" rel="noopener noreferrer" className="border-b border-white/60 hover:border-white">Stripe Connected Account Agreement</a>, as
               updated by Stripe from time to time (together, the &quot;Stripe
               Terms&quot;). Stripe processes personal information in accordance with
-              the Stripe Privacy Policy.
+              the <a href="https://stripe.com/gb/privacy" target="_blank" rel="noopener noreferrer" className="border-b border-white/60 hover:border-white">Stripe Privacy Policy</a>.
             </p>
             <p>
               As a condition of Shagun Direct enabling payments through Stripe, the
@@ -355,7 +355,7 @@ const TermsOfServicePage = () => {
               </li>
               <li>
                 By continuing past the guest details screen, the Guest agrees to
-                these Terms. Our Privacy Notice explains how we use the Guest&apos;s
+                these Terms. Our <Link href="/privacy-notice" className="border-b border-white/60 hover:border-white">Privacy Notice </Link> explains how we use the Guest&apos;s
                 information.
               </li>
               <li>
@@ -378,8 +378,7 @@ const TermsOfServicePage = () => {
                 10.1 How to request a refund
               </h3>
               <p>
-                A Guest who wants a Gift refunded must email
-                info@shagundirect.com within 48 hours of the payment, giving their
+                A Guest who wants a Gift refunded must email <a href="mailto:info@shagundirect.com" className="border-b border-white/60 hover:border-white">info@shagundirect.com</a> within 48 hours of the payment, giving their
                 name, the Couple&apos;s name, the amount and the date of the Gift. We
                 will review the request within 2 working days.
               </p>
@@ -526,7 +525,7 @@ const TermsOfServicePage = () => {
               </h3>
               <p>
                 We will notify the Couple before the account is deactivated. To keep
-                the account active, the Couple can email info@shagundirect.com before
+                the account active, the Couple can email <a href="mailto:info@shagundirect.com" className="border-b border-white/60 hover:border-white">info@shagundirect.com</a> before
                 the deactivation date, and we will extend it by 7 days.
               </p>
             </div>
@@ -732,7 +731,7 @@ const TermsOfServicePage = () => {
           <section className="flex flex-col gap-2">
             <h2 className="text-xl font-semibold text-white">23. Complaints</h2>
             <p>
-              If you have a complaint, please contact us at info@shagundirect.com, or
+              If you have a complaint, please contact us at <a href="mailto:info@shagundirect.com" className="border-b border-white/60 hover:border-white">info@shagundirect.com</a>, or
               through the dashboard support feature if you are a Couple. We aim to
               respond within one business day.
             </p>
@@ -753,7 +752,7 @@ const TermsOfServicePage = () => {
           <section className="flex flex-col gap-2">
             <h2 className="text-xl font-semibold text-white">25. Contact</h2>
             <p>Shagun Direct Limited, 167–169 Great Portland Street, London, England W1W 5PF</p>
-            <p>Email: info@shagundirect.com</p>
+            <p>Email: <a href="mailto:info@shagundirect.com" className="border-b border-white/60 hover:border-white">info@shagundirect.com</a></p>
           </section>
         </div>
 

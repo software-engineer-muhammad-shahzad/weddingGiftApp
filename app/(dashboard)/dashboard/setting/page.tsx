@@ -111,7 +111,7 @@ const page = () => {
                                         setActiveButton('yes');
                                         // Clear all local storage
                                         clearAllData();
-                                        showSuccess("logout SucessFully");
+                                        showSuccess("Logged out successfully");
                                         // Redirect to login page after logout
                                         router.push("/login");
                                     }}

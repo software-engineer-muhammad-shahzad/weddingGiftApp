@@ -42,6 +42,7 @@ const SignupForm = () => {
       phoneNumber: "",
       password: "",
       confirmPassword: "",
+      acceptTerms: false,
     },
   })
 
@@ -146,7 +147,30 @@ const SignupForm = () => {
           <p className="text-sm text-red-400">{errors.confirmPassword.message}</p>
         )}
 
-        <div className="mt-5 w-full">
+        <div className="mt-2 flex flex-col gap-1">
+          <label className="flex items-start gap-2 cursor-pointer text-[#C5C5C5] text-xs md:text-sm">
+            <input
+              type="checkbox"
+              className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer accent-[#5FDA78]"
+              aria-invalid={!!errors.acceptTerms}
+              {...register("acceptTerms")}
+            />
+            <span>
+              I agree to the{" "}
+              <Link href="/terms-of-service" className="border-b text-white" target="_blank" rel="noopener noreferrer">
+                Terms & Conditions
+              </Link>
+              . Our{" "}
+              <Link href="/privacy-notice" className="border-b text-white" target="_blank" rel="noopener noreferrer">
+                Privacy Notice
+              </Link>{" "}
+              explains how we use your data.
+            </span>
+          </label>
+          {errors.acceptTerms && <p className="text-sm text-red-400">{errors.acceptTerms.message}</p>}
+        </div>
+
+        <div className="w-full">
           <Button type="submit" className="w-full py-3! md:py-4!" disabled={isSubmitting}>
             {isSubmitting ? "Signing up..." : "Sign Up"}
           </Button>

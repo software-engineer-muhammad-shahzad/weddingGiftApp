@@ -1,7 +1,7 @@
 "use client"
 
 import { ChevronLeft, Pencil } from "lucide-react"
-import Link from "next/link"
+import { useGoBack } from "@/app/hooks/useGoBack"
 import { useEffect, useState } from "react"
 
 import { getStripeOnboardingLink } from "@/app/features/dashboard/services/dashboardService"
@@ -35,7 +35,7 @@ const getTodayDateInputValue = () => {
 }
 
 const dobDateInputClassName =
-  "mt-1 w-full max-w-xs rounded-lg bg-transparent border-0 px-0 py-1 font-medium text-white [color-scheme:dark] cursor-default [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-100 [&::-webkit-calendar-picker-indicator]:invert"
+  "mt-1 w-full max-w-xs rounded-lg bg-transparent border-0 px-0 py-1 font-medium text-white cursor-default [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-100"
 
 const Page = () => {
   const { data, isLoading, error, refetch } = useCoupleBankDetails()
@@ -44,6 +44,7 @@ const Page = () => {
     isLoading: isStatusLoading,
     refetch: refetchStatus,
   } = useStripeConnectStatus()
+  const goBack = useGoBack("/dashboard/setting")
   const [isEditMode, setIsEditMode] = useState(false)
   const [isResumingOnboarding, setIsResumingOnboarding] = useState(false)
 
@@ -97,10 +98,10 @@ const Page = () => {
     return (
       <div className="min-h-screen w-full flex justify-center mx-auto bg-[#330065]">
         <div className="w-full max-w-200 py-8 px-5">
-          <Link href="/dashboard/setting" className="flex items-center gap-2">
+          <button type="button" onClick={goBack} className="flex items-center gap-2 cursor-pointer">
             <ChevronLeft className="text-white" />
             <p className="text-white text-2xl">Bank Information</p>
-          </Link>
+          </button>
 
           <div className="border border-[#5FDA78] rounded-[30px] mt-10 glass-card">
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((i, index, rows) => (
@@ -122,10 +123,10 @@ const Page = () => {
     return (
       <div className="min-h-screen w-full flex justify-center mx-auto bg-[#330065]">
         <div className="w-full max-w-200 py-8 px-5">
-          <Link href="/dashboard/setting" className="flex items-center gap-2">
+          <button type="button" onClick={goBack} className="flex items-center gap-2 cursor-pointer">
             <ChevronLeft className="text-white" />
             <p className="text-white text-2xl">Bank Information</p>
-          </Link>
+          </button>
 
           <p className="text-red-400 mt-8">{error}</p>
         </div>
@@ -138,10 +139,10 @@ const Page = () => {
       <div className="w-full max-w-200 py-8 px-5">
 
         {/* BACK NAV */}
-        <Link href="/dashboard/setting" className="flex items-center gap-2">
+        <button type="button" onClick={goBack} className="flex items-center gap-2 cursor-pointer">
           <ChevronLeft className="text-white" />
           <p className="text-white text-2xl">Bank Information</p>
-        </Link>
+        </button>
 
         {/* EDIT ICON */}
         {!isEditMode && (

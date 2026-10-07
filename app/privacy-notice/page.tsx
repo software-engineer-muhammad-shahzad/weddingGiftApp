@@ -280,10 +280,9 @@ const PrivacyNoticePage = () => {
             </p>
             <p>
               For this processing, Stripe acts as an independent data
-              controller, and its use of your information is governed by the
-              Stripe Privacy Policy. Couples&apos; use of Stripe is also
-              governed by the Stripe Services Agreement and the Stripe
-              Connected Account Agreement.
+              controller, and its use of your information is governed by the <a href="https://stripe.com/gb/privacy" target="_blank" rel="noopener noreferrer" className="border-b border-white/60 hover:border-white">Stripe Privacy Policy</a>. Couples&apos; use of Stripe is also
+              governed by the <a href="https://stripe.com/legal/ssa" target="_blank" rel="noopener noreferrer" className="border-b border-white/60 hover:border-white">Stripe Services Agreement</a> and the <a href="https://stripe.com/legal/connect-account" target="_blank" rel="noopener noreferrer" className="border-b border-white/60 hover:border-white">Stripe
+              Connected Account Agreement</a>.
             </p>
             <p>
               We share with Stripe the information needed to process each
@@ -512,8 +511,8 @@ const PrivacyNoticePage = () => {
               </table>
             </div>
             <p>
-              Stripe keeps the information it collects in line with the Stripe
-              Privacy Policy.
+              Stripe keeps the information it collects in line with the <a href="https://stripe.com/gb/privacy" target="_blank" rel="noopener noreferrer" className="border-b border-white/60 hover:border-white">Stripe
+              Privacy Policy</a>.
             </p>
           </section>
 
@@ -540,7 +539,7 @@ const PrivacyNoticePage = () => {
               <li>withdraw consent at any time, where we rely on consent.</li>
             </ul>
             <p>
-              To exercise your rights, email info@shagundirect.com. Couples can
+              To exercise your rights, email <a href="mailto:info@shagundirect.com" className="border-b border-white/60 hover:border-white">info@shagundirect.com</a>. Couples can
               also use the dashboard support feature. We will respond within
               one month. For information held by Stripe, please contact Stripe
               directly.
@@ -639,7 +638,7 @@ const PrivacyNoticePage = () => {
             <p>
               Please contact us first so we can try to help. You also have the
               right to complain to the Information Commissioner&apos;s Office
-              (ICO), the UK data protection regulator, at ico.org.uk.
+              (ICO), the UK data protection regulator, at <a href="https://ico.org.uk" target="_blank" rel="noopener noreferrer" className="border-b border-white/60 hover:border-white">ico.org.uk</a>.
             </p>
           </section>
         </div>
@@ -649,7 +648,7 @@ const PrivacyNoticePage = () => {
             href="/terms-of-service"
             className="border-b border-white/60 hover:border-white"
           >
-            Terms of Service
+            Terms & Conditions
           </Link>
         </div>
       </div>

@@ -74,6 +74,9 @@ export const signupSchema = z
       .regex(/[A-Za-z]/, "Password must contain at least one letter")
       .regex(/[0-9]/, "Password must contain at least one number"),
     confirmPassword: z.string().min(8, "Please confirm your password"),
+    acceptTerms: z.boolean().refine((value) => value === true, {
+      message: "You must accept the Terms & Conditions to sign up",
+    }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords must match",
