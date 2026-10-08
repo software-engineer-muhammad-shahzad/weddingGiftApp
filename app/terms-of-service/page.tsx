@@ -1,6 +1,30 @@
 import Link from "next/link"
 import Image from "next/image"
 
+const linkClass = "border-b border-white/60 hover:border-white"
+
+const EmailLink = () => (
+  <a href="mailto:info@shagundirect.com" className={linkClass}>
+    info@shagundirect.com
+  </a>
+)
+
+const PrivacyNoticeLink = () => (
+  <Link href="/privacy-notice" className={linkClass}>
+    Privacy Notice
+  </Link>
+)
+
+const ExternalLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
+  <a href={href} target="_blank" rel="noopener noreferrer" className={linkClass}>
+    {children}
+  </a>
+)
+
+const StripePrivacyPolicyLink = () => (
+  <ExternalLink href="https://stripe.com/gb/privacy">Stripe Privacy Policy</ExternalLink>
+)
+
 const TermsOfServicePage = () => {
   return (
     <div className="min-h-screen w-full bg-[#330065] text-white">
@@ -21,7 +45,7 @@ const TermsOfServicePage = () => {
         <h1 className="mb-2 text-3xl font-semibold">
           Shagun Direct – Terms & Conditions
         </h1>
-        <p className="mb-8 text-sm text-white/70">Last updated: 2 October 2026</p>
+        <p className="mb-8 text-sm text-white/70">Last updated: 7 October 2026</p>
 
         <div className="flex flex-col gap-6 text-sm leading-relaxed text-white/90 sm:text-base">
           <section className="flex flex-col gap-2">
@@ -33,7 +57,7 @@ const TermsOfServicePage = () => {
               Direct&quot;, &quot;we&quot;, &quot;our&quot;, &quot;us&quot;), a company
               registered in England and Wales under company number 16753269, with its
               registered office at 167–169 Great Portland Street, London, England W1W
-              5PF. You can contact us at <a href="mailto:info@shagundirect.com" className="border-b border-white/60 hover:border-white">info@shagundirect.com</a>.
+              5PF. You can contact us at <EmailLink />.
             </p>
             <p>
               By creating an account, or by continuing past a screen that links to
@@ -42,7 +66,7 @@ const TermsOfServicePage = () => {
               Terms. If you do not agree, you must not use the Platform.
             </p>
             <p>
-              These Terms should be read together with our <Link href="/privacy-notice" className="border-b border-white/60 hover:border-white">Privacy Notice</Link>, which
+              These Terms should be read together with our <PrivacyNoticeLink />, which
               explains how we handle personal information.
             </p>
           </section>
@@ -97,6 +121,20 @@ const TermsOfServicePage = () => {
               paid out to the Couple&apos;s bank account.
             </p>
             <p>
+              Shagun Direct acts solely as a facilitator of the Platform services. The
+              Platform does not:
+            </p>
+            <ul className="list-disc space-y-1 ps-5">
+              <li>hold customer funds;</li>
+              <li>operate customer bank accounts;</li>
+              <li>act as a regulated payment institution; or</li>
+              <li>provide financial services.</li>
+            </ul>
+            <p>
+              Nothing in these Terms creates a banking, escrow or financial services
+              relationship between Shagun Direct and users of the Platform.
+            </p>
+            <p>
               A Gift is a transaction between the Guest and the Couple. Shagun Direct
               is not a party to the Gift and does not sell anything to the Guest other
               than optional Attachments and the platform service.
@@ -116,14 +154,42 @@ const TermsOfServicePage = () => {
               United Kingdom, including a UK bank account for payouts, and must meet
               Stripe&apos;s verification requirements.
             </p>
+            <p>
+              We may restrict or suspend access where we reasonably believe misuse,
+              fraud or unlawful activity may have occurred.
+            </p>
+          </section>
+
+          <section className="flex flex-col gap-2">
+            <h2 className="text-xl font-semibold text-white">
+              5. Platform Services & Features
+            </h2>
+            <p>The Platform may provide features including:</p>
+            <ul className="list-disc space-y-1 ps-5">
+              <li>event and wedding page creation;</li>
+              <li>QR code and link invitations;</li>
+              <li>digital gifting and payment through Stripe;</li>
+              <li>free greeting text messages;</li>
+              <li>digital wishing cards;</li>
+              <li>video greetings;</li>
+              <li>notifications and announcements;</li>
+              <li>customer support tools;</li>
+              <li>transaction history, receipts and downloads; and</li>
+              <li>contributor statistics and rankings.</li>
+            </ul>
+            <p>
+              We may modify, restrict or discontinue features at any time. Where a
+              change significantly affects Couples, we will give reasonable notice
+              where practicable.
+            </p>
           </section>
 
           <section className="flex flex-col gap-3">
-            <h2 className="text-xl font-semibold text-white">5. Couple Accounts</h2>
+            <h2 className="text-xl font-semibold text-white">6. Couple Accounts</h2>
 
             <div className="flex flex-col gap-2">
               <h3 className="text-lg font-semibold text-white">
-                5.1 Creating an account
+                6.1 Creating an account
               </h3>
               <p>
                 Couples register on the Platform with their names, email address,
@@ -135,7 +201,7 @@ const TermsOfServicePage = () => {
 
             <div className="flex flex-col gap-2">
               <h3 className="text-lg font-semibold text-white">
-                5.2 Stripe onboarding and verification
+                6.2 Stripe onboarding and verification
               </h3>
               <p>
                 To receive Gifts, the Couple must connect a Stripe account to Shagun
@@ -159,16 +225,16 @@ const TermsOfServicePage = () => {
             </div>
 
             <div className="flex flex-col gap-2">
-              <h3 className="text-lg font-semibold text-white">5.3 Account security</h3>
+              <h3 className="text-lg font-semibold text-white">6.3 Account security</h3>
               <p>
                 Couples must keep their login details confidential and tell us
-                promptly at <a href="mailto:info@shagundirect.com" className="border-b border-white/60 hover:border-white">info@shagundirect.com</a> if they suspect unauthorised access.
+                promptly at <EmailLink /> if they suspect unauthorised access.
                 Couples are responsible for activity on their account.
               </p>
             </div>
 
             <div className="flex flex-col gap-2">
-              <h3 className="text-lg font-semibold text-white">5.4 Updating information</h3>
+              <h3 className="text-lg font-semibold text-white">6.4 Updating information</h3>
               <p>
                 Some details can be updated in the dashboard. Others may require our
                 support team. Details held by Stripe must be updated with Stripe.
@@ -176,17 +242,23 @@ const TermsOfServicePage = () => {
             </div>
           </section>
 
-          <section className="flex flex-col gap-2">
+          <section className="flex flex-col gap-3">
             <h2 className="text-xl font-semibold text-white">
-              6. Stripe Payment Services
+              7. Stripe Payment Services
             </h2>
             <p>
               Payment processing and payouts are provided by Stripe. By connecting a
-              Stripe account to Shagun Direct, the Couple agrees to be bound by the
-              <a href="https://stripe.com/legal/ssa" target="_blank" rel="noopener noreferrer" className="border-b border-white/60 hover:border-white">Stripe Services Agreement</a> and the <a href="https://stripe.com/legal/connect-account" target="_blank" rel="noopener noreferrer" className="border-b border-white/60 hover:border-white">Stripe Connected Account Agreement</a>, as
-              updated by Stripe from time to time (together, the &quot;Stripe
+              Stripe account to Shagun Direct, the Couple agrees to be bound by the{" "}
+              <ExternalLink href="https://stripe.com/legal/ssa">
+                Stripe Services Agreement
+              </ExternalLink>{" "}
+              and the{" "}
+              <ExternalLink href="https://stripe.com/legal/connect-account">
+                Stripe Connected Account Agreement
+              </ExternalLink>
+              , as updated by Stripe from time to time (together, the &quot;Stripe
               Terms&quot;). Stripe processes personal information in accordance with
-              the <a href="https://stripe.com/gb/privacy" target="_blank" rel="noopener noreferrer" className="border-b border-white/60 hover:border-white">Stripe Privacy Policy</a>.
+              the <StripePrivacyPolicyLink />.
             </p>
             <p>
               As a condition of Shagun Direct enabling payments through Stripe, the
@@ -194,22 +266,39 @@ const TermsOfServicePage = () => {
               authorises Shagun Direct to share it, and transaction information
               related to their use of Stripe&apos;s services, with Stripe.
             </p>
-            <p>
-              Guests enter their card details directly into Stripe&apos;s secure card
-              form. Card details are sent only to Stripe. Shagun Direct never receives
-              or stores full card numbers, CVC codes or expiry dates.
-            </p>
+
+            <div className="flex flex-col gap-2">
+              <h3 className="text-lg font-semibold text-white">7.1 Card details</h3>
+              <p>
+                Guests enter their card details directly into Stripe&apos;s secure card
+                form. Card details are sent only to Stripe. Shagun Direct never
+                receives or stores full card numbers, CVC codes, expiry dates or other
+                sensitive banking credentials.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <h3 className="text-lg font-semibold text-white">7.2 Payment failures</h3>
+              <p>Shagun Direct is not responsible for:</p>
+              <ul className="list-disc space-y-1 ps-5">
+                <li>failed transactions;</li>
+                <li>payment processing delays;</li>
+                <li>card issuer refusals;</li>
+                <li>outages at Stripe or other third-party payment providers; or</li>
+                <li>banking interruptions outside our reasonable control.</li>
+              </ul>
+            </div>
           </section>
 
           <section className="flex flex-col gap-3">
-            <h2 className="text-xl font-semibold text-white">7. Fees</h2>
+            <h2 className="text-xl font-semibold text-white">8. Fees</h2>
             <p>
               All fees are paid by the Guest, on top of the Gift. The Couple receives
               the full Gift amount.
             </p>
 
             <div className="flex flex-col gap-2">
-              <h3 className="text-lg font-semibold text-white">7.1 Platform fee</h3>
+              <h3 className="text-lg font-semibold text-white">8.1 Platform fee</h3>
               <p>
                 3% of the Gift amount. The platform fee is not charged on Attachment
                 fees.
@@ -218,7 +307,7 @@ const TermsOfServicePage = () => {
 
             <div className="flex flex-col gap-2">
               <h3 className="text-lg font-semibold text-white">
-                7.2 Attachment fees (optional)
+                8.2 Attachment fees (optional)
               </h3>
               <p>
                 Guests may add one Attachment per Gift (a wishing card or a video
@@ -236,7 +325,7 @@ const TermsOfServicePage = () => {
 
             <div className="flex flex-col gap-2">
               <h3 className="text-lg font-semibold text-white">
-                7.3 Payment processing fee
+                8.3 Payment processing fee
               </h3>
               <p>
                 Stripe charges a fee for processing each card payment. The fee depends
@@ -249,7 +338,7 @@ const TermsOfServicePage = () => {
             </div>
 
             <div className="flex flex-col gap-2">
-              <h3 className="text-lg font-semibold text-white">7.4 Price display</h3>
+              <h3 className="text-lg font-semibold text-white">8.4 Price display</h3>
               <p>
                 All prices are in pounds sterling (GBP). The amount first shown on the
                 gift screen is a subtotal of the Gift and any Attachment. The platform
@@ -260,7 +349,7 @@ const TermsOfServicePage = () => {
             </div>
 
             <div className="flex flex-col gap-2">
-              <h3 className="text-lg font-semibold text-white">7.5 Worked example</h3>
+              <h3 className="text-lg font-semibold text-white">8.5 Worked example</h3>
               <p>
                 A Guest sends a £100 Gift with a wishing card, using a standard UK
                 card:
@@ -304,7 +393,7 @@ const TermsOfServicePage = () => {
             </div>
 
             <div className="flex flex-col gap-2">
-              <h3 className="text-lg font-semibold text-white">7.6 Changes to fees</h3>
+              <h3 className="text-lg font-semibold text-white">8.6 Changes to fees</h3>
               <p>
                 We may change our fees for future transactions by updating these Terms
                 and the Platform. Changes do not affect Gifts already made.
@@ -313,7 +402,7 @@ const TermsOfServicePage = () => {
           </section>
 
           <section className="flex flex-col gap-2">
-            <h2 className="text-xl font-semibold text-white">8. Payouts to Couples</h2>
+            <h2 className="text-xl font-semibold text-white">9. Payouts to Couples</h2>
             <ul className="list-disc space-y-1 ps-5">
               <li>
                 <span className="font-semibold text-white">Automatic payout:</span>{" "}
@@ -340,14 +429,19 @@ const TermsOfServicePage = () => {
               </li>
               <li>
                 Gifts that have been paid out, including by early or instant payout,
-                can no longer be refunded to the Guest under section 10.
+                can no longer be refunded to the Guest under section 11.
               </li>
             </ul>
           </section>
 
           <section className="flex flex-col gap-2">
-            <h2 className="text-xl font-semibold text-white">9. Guests</h2>
+            <h2 className="text-xl font-semibold text-white">10. Guests</h2>
             <ul className="list-disc space-y-1 ps-5">
+              <li>
+                Guests are not required to create an account. Guests reach a
+                Couple&apos;s page through a QR code, a direct link or an event
+                invitation.
+              </li>
               <li>
                 Guests are responsible for making sure they are on the correct
                 Couple&apos;s page and for entering the correct Gift amount before
@@ -355,8 +449,8 @@ const TermsOfServicePage = () => {
               </li>
               <li>
                 By continuing past the guest details screen, the Guest agrees to
-                these Terms. Our <Link href="/privacy-notice" className="border-b border-white/60 hover:border-white">Privacy Notice </Link> explains how we use the Guest&apos;s
-                information.
+                these Terms. Our <PrivacyNoticeLink /> explains how we use the
+                Guest&apos;s information.
               </li>
               <li>
                 The Guest&apos;s name, greeting message, Gift amount and any
@@ -371,33 +465,34 @@ const TermsOfServicePage = () => {
           </section>
 
           <section className="flex flex-col gap-3">
-            <h2 className="text-xl font-semibold text-white">10. Refunds</h2>
+            <h2 className="text-xl font-semibold text-white">11. Refunds</h2>
 
             <div className="flex flex-col gap-2">
               <h3 className="text-lg font-semibold text-white">
-                10.1 How to request a refund
+                11.1 How to request a refund
               </h3>
               <p>
-                A Guest who wants a Gift refunded must email <a href="mailto:info@shagundirect.com" className="border-b border-white/60 hover:border-white">info@shagundirect.com</a> within 48 hours of the payment, giving their
-                name, the Couple&apos;s name, the amount and the date of the Gift. We
-                will review the request within 2 working days.
+                A Guest who wants a Gift refunded must email <EmailLink /> within 48
+                hours of the payment, giving their name, the Couple&apos;s name, the
+                amount and the date of the Gift. We will review the request within 2
+                working days.
               </p>
             </div>
 
             <div className="flex flex-col gap-2">
               <h3 className="text-lg font-semibold text-white">
-                10.2 When a refund is possible
+                11.2 When a refund is possible
               </h3>
               <p>
                 A refund can only be made if the Gift has not yet been paid out to the
                 Couple&apos;s bank account. Once a Gift has been paid out (see section
-                8), we cannot refund it. The Guest may contact the Couple directly.
+                9), we cannot refund it. The Guest may contact the Couple directly.
               </p>
             </div>
 
             <div className="flex flex-col gap-2">
               <h3 className="text-lg font-semibold text-white">
-                10.3 What is refunded
+                11.3 What is refunded
               </h3>
               <p>
                 If a refund is approved, the Gift amount is refunded to the
@@ -407,7 +502,7 @@ const TermsOfServicePage = () => {
             </div>
 
             <div className="flex flex-col gap-2">
-              <h3 className="text-lg font-semibold text-white">10.4 Full refunds</h3>
+              <h3 className="text-lg font-semibold text-white">11.4 Full refunds</h3>
               <p>
                 The Guest will receive a full refund of everything they paid,
                 including all fees, where the payment was:
@@ -424,7 +519,7 @@ const TermsOfServicePage = () => {
 
             <div className="flex flex-col gap-2">
               <h3 className="text-lg font-semibold text-white">
-                10.5 Couple&apos;s authorisation
+                11.5 Couple&apos;s authorisation
               </h3>
               <p>
                 Gifts are held in the Couple&apos;s Stripe account. The Couple
@@ -434,14 +529,14 @@ const TermsOfServicePage = () => {
             </div>
 
             <div className="flex flex-col gap-2">
-              <h3 className="text-lg font-semibold text-white">10.6 Your legal rights</h3>
+              <h3 className="text-lg font-semibold text-white">11.6 Your legal rights</h3>
               <p>Nothing in this section affects a consumer&apos;s legal rights.</p>
             </div>
           </section>
 
           <section className="flex flex-col gap-2">
             <h2 className="text-xl font-semibold text-white">
-              11. Chargebacks and Payment Disputes
+              12. Chargebacks and Payment Disputes
             </h2>
             <p>
               If a Guest disputes a payment with their bank or card issuer (a
@@ -450,28 +545,29 @@ const TermsOfServicePage = () => {
             </p>
             <ul className="list-disc space-y-1 ps-5">
               <li>
-                Each Gift is paid into the Couple&apos;s own Stripe account. The
-                Couple is responsible for chargebacks, including the disputed amount
-                and any dispute fee charged by Stripe, even if the Gift has already
-                been paid out.
+                Each Gift is paid into the Couple&apos;s own Stripe account.{" "}
+                <span className="font-semibold text-white">
+                  The Couple is responsible for chargebacks
+                </span>
+                , including the disputed amount and any dispute fee charged by Stripe,
+                even if the Gift has already been paid out.
               </li>
-              <li>Shagun Direct is not responsible for chargebacks.</li>
+              <li>
+                <span className="font-semibold text-white">
+                  Shagun Direct is not responsible for chargebacks.
+                </span>
+              </li>
               <li>
                 Shagun Direct may, on request, give the Couple transaction records it
                 holds (such as the Guest&apos;s name, the receipt and the time of
                 payment) to help the Couple respond to a dispute.
               </li>
             </ul>
-            <p>
-              We are also not responsible for payments that are declined, delayed,
-              reversed or interrupted by Stripe, card issuers or banks, or by outages
-              outside our reasonable control.
-            </p>
           </section>
 
           <section className="flex flex-col gap-2">
             <h2 className="text-xl font-semibold text-white">
-              12. Wishing Cards and Video Greetings
+              13. Wishing Cards and Video Greetings
             </h2>
             <ul className="list-disc space-y-1 ps-5">
               <li>
@@ -479,14 +575,16 @@ const TermsOfServicePage = () => {
                 immediately after payment.
               </li>
               <li>
-                By choosing an Attachment and pressing Pay, the Guest asks for
-                immediate delivery and understands that the Attachment cannot be
-                cancelled or refunded once delivered, except where it was faulty or
-                not delivered (see section 10.4).
+                <span className="font-semibold text-white">
+                  By choosing an Attachment and pressing Pay, the Guest asks for
+                  immediate delivery and understands that the Attachment cannot be
+                  cancelled or refunded once delivered
+                </span>
+                , except where it was faulty or not delivered (see section 11.4).
               </li>
               <li>
                 Guests must only upload videos they have the right to share and which
-                comply with section 14. Videos must not exceed 25MB.
+                comply with section 15. Videos must not exceed 25MB.
               </li>
               <li>
                 Video greetings are shared only with the Couple. They are stored for
@@ -498,19 +596,32 @@ const TermsOfServicePage = () => {
 
           <section className="flex flex-col gap-3">
             <h2 className="text-xl font-semibold text-white">
-              13. Account Deactivation and Deletion
+              14. Account Deactivation and Deletion
             </h2>
 
             <div className="flex flex-col gap-2">
               <h3 className="text-lg font-semibold text-white">
-                13.1 Automatic deactivation
+                14.1 Deactivation by Shagun Direct
               </h3>
               <p>
-                A Couple account is automatically deactivated 60 days after the
-                account was created. If a payout is made in the 7 days before the
-                account is due to be deactivated, the account stays active until 7
-                days after that payout. Each further payout in that period keeps the
-                account active until 7 days after it.
+                We may suspend or deactivate an account where suspicious, abusive or
+                unlawful activity is identified (see section 22).
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <h3 className="text-lg font-semibold text-white">
+                14.2 Automatic deactivation
+              </h3>
+              <p>
+                A Couple account is automatically deactivated{" "}
+                <span className="font-semibold text-white">
+                  60 days after the account was created
+                </span>
+                . If a payout is made in the 7 days before the account is due to be
+                deactivated, the account stays active until 7 days after that payout.
+                Each further payout in that period keeps the account active until 7
+                days after it.
               </p>
               <p>
                 Examples: with no recent payout, the account is deactivated on day 60.
@@ -521,18 +632,18 @@ const TermsOfServicePage = () => {
 
             <div className="flex flex-col gap-2">
               <h3 className="text-lg font-semibold text-white">
-                13.2 Notice and extension
+                14.3 Notice and extension
               </h3>
               <p>
                 We will notify the Couple before the account is deactivated. To keep
-                the account active, the Couple can email <a href="mailto:info@shagundirect.com" className="border-b border-white/60 hover:border-white">info@shagundirect.com</a> before
-                the deactivation date, and we will extend it by 7 days.
+                the account active, the Couple can email <EmailLink /> before the
+                deactivation date, and we will extend it by 7 days.
               </p>
             </div>
 
             <div className="flex flex-col gap-2">
               <h3 className="text-lg font-semibold text-white">
-                13.3 Effect of deactivation
+                14.4 Effect of deactivation
               </h3>
               <p>When an account is deactivated:</p>
               <ul className="list-disc space-y-1 ps-5">
@@ -553,7 +664,7 @@ const TermsOfServicePage = () => {
             </div>
 
             <div className="flex flex-col gap-2">
-              <h3 className="text-lg font-semibold text-white">13.4 Reactivation</h3>
+              <h3 className="text-lg font-semibold text-white">14.5 Reactivation</h3>
               <p>
                 A Couple can ask our support team to reactivate their account at any
                 time within 12 months of deactivation.
@@ -562,20 +673,23 @@ const TermsOfServicePage = () => {
 
             <div className="flex flex-col gap-2">
               <h3 className="text-lg font-semibold text-white">
-                13.5 Permanent deletion
+                14.6 Permanent deletion
               </h3>
               <p>
                 12 months after deactivation, the account and its data are
                 permanently deleted and cannot be recovered. Transaction records are
-                kept for 6 years, as required by UK tax and accounting law. A Couple
-                may ask us to delete their account earlier. See our Privacy Notice for
-                details.
+                kept for 6 years, as required by UK tax and accounting law. Couples
+                cannot delete their account themselves through the Platform. A Couple
+                may ask us by email to delete their account earlier. See our Privacy
+                Notice for details.
               </p>
             </div>
           </section>
 
           <section className="flex flex-col gap-2">
-            <h2 className="text-xl font-semibold text-white">14. Acceptable Use</h2>
+            <h2 className="text-xl font-semibold text-white">
+              15. User Content & Conduct
+            </h2>
             <p>You must not use the Platform to:</p>
             <ul className="list-disc space-y-1 ps-5">
               <li>
@@ -591,13 +705,24 @@ const TermsOfServicePage = () => {
               <li>create event pages for other people, or impersonate anyone; or</li>
               <li>interfere with, reverse-engineer or attack the Platform.</li>
             </ul>
-            <p>We may remove content that breaches these Terms.</p>
+            <p>Shagun Direct may:</p>
+            <ul className="list-disc space-y-1 ps-5">
+              <li>remove content;</li>
+              <li>restrict accounts;</li>
+              <li>suspend or terminate users; and</li>
+              <li>investigate suspected misuse.</li>
+            </ul>
           </section>
 
           <section className="flex flex-col gap-2">
             <h2 className="text-xl font-semibold text-white">
-              15. What Couples and Admins Can See
+              16. Contributor Visibility & Display Names
             </h2>
+            <p>
+              Guests (&quot;contributors&quot;) provide a name and may add a greeting
+              message. These are visible to the relevant Couple, to authorised Admins,
+              and within the Couple&apos;s contributor ranking and statistics features.
+            </p>
             <ul className="list-disc space-y-1 ps-5">
               <li>
                 The Couple can see each Guest&apos;s name, greeting message, Gift
@@ -613,26 +738,39 @@ const TermsOfServicePage = () => {
               <li>
                 Admins cannot see card details and cannot withdraw or redirect funds
                 held in a Couple&apos;s Stripe account. They can only trigger payouts
-                to the Couple&apos;s own bank account (section 8) and process refunds
-                under section 10.
+                to the Couple&apos;s own bank account (section 9) and process refunds
+                under section 11.
+              </li>
+              <li>
+                Card details submitted through Stripe are handled separately by Stripe
+                under its own policies and regulatory requirements.
               </li>
             </ul>
           </section>
 
           <section className="flex flex-col gap-2">
-            <h2 className="text-xl font-semibold text-white">16. Communications</h2>
+            <h2 className="text-xl font-semibold text-white">
+              17. Messaging, Notifications & Communications
+            </h2>
+            <p>
+              The Platform provides transactional notifications, support
+              communications and operational announcements. By using the Platform, you
+              agree that these may be sent electronically.
+            </p>
             <p>
               We send service messages, including verification codes, password
               resets, payment confirmations, receipts, deactivation notices, security
               alerts and support replies. These are part of the service and cannot be
               switched off while an account is active. We do not send marketing
               messages. If we introduce them in future, we will only send them with
-              your consent, and you will be able to unsubscribe at any time.
+              your consent, in line with privacy and marketing laws, and you will be
+              able to opt out at any time. Service messages may still be sent where
+              needed to run the Platform or your account.
             </p>
           </section>
 
           <section className="flex flex-col gap-2">
-            <h2 className="text-xl font-semibold text-white">17. Tax</h2>
+            <h2 className="text-xl font-semibold text-white">18. Tax</h2>
             <p>
               Couples are responsible for any tax obligations that may arise from
               Gifts they receive. Shagun Direct does not provide tax advice.
@@ -641,7 +779,7 @@ const TermsOfServicePage = () => {
 
           <section className="flex flex-col gap-2">
             <h2 className="text-xl font-semibold text-white">
-              18. Intellectual Property
+              19. Intellectual Property
             </h2>
             <p>
               All Platform content, branding, logos, wishing card designs, software
@@ -655,19 +793,25 @@ const TermsOfServicePage = () => {
 
           <section className="flex flex-col gap-2">
             <h2 className="text-xl font-semibold text-white">
-              19. Platform Availability
+              20. Platform Availability
             </h2>
             <p>
               We aim to keep the Platform available but do not guarantee
-              uninterrupted or error-free operation. We may modify, restrict or
-              discontinue features. Where a change significantly affects Couples, we
-              will give reasonable notice where practicable.
+              uninterrupted or error-free operation. The Platform may occasionally be
+              unavailable because of:
             </p>
+            <ul className="list-disc space-y-1 ps-5">
+              <li>maintenance;</li>
+              <li>technical issues;</li>
+              <li>third-party provider failures;</li>
+              <li>system upgrades; or</li>
+              <li>events outside our reasonable control.</li>
+            </ul>
           </section>
 
           <section className="flex flex-col gap-2">
             <h2 className="text-xl font-semibold text-white">
-              20. Limitation of Liability
+              21. Limitation of Liability
             </h2>
             <ul className="list-disc space-y-1 ps-5">
               <li>
@@ -681,9 +825,12 @@ const TermsOfServicePage = () => {
                 Terms affects them.
               </li>
               <li>
-                We are not liable for losses that were not reasonably foreseeable, for
-                loss of profits, revenue or goodwill, or for the acts or omissions of
-                Stripe, banks, card issuers or other third parties.
+                To the fullest extent permitted by law, we are not liable for:
+                indirect or consequential losses; losses that were not reasonably
+                foreseeable; loss of profits, revenue or goodwill; payment provider
+                failures; delays or interruptions in services; user-generated content;
+                unauthorised access caused by third parties; or the acts or omissions
+                of Stripe, banks, card issuers or other third parties.
               </li>
               <li>
                 Subject to the above, our total liability to you in connection with
@@ -696,7 +843,7 @@ const TermsOfServicePage = () => {
 
           <section className="flex flex-col gap-2">
             <h2 className="text-xl font-semibold text-white">
-              21. Suspension and Termination
+              22. Suspension and Termination
             </h2>
             <p>
               We may suspend, restrict or remove access to the Platform, or remove an
@@ -709,14 +856,27 @@ const TermsOfServicePage = () => {
               <li>the Platform is being misused.</li>
             </ul>
             <p>
-              Where appropriate, we will tell you the reason. Stripe may separately
-              restrict or close a Stripe account under the Stripe Terms.
+              Suspension or termination may take place without prior notice where
+              reasonably necessary. Where appropriate, we will tell you the reason.
+              Stripe may separately restrict or close a Stripe account under the
+              Stripe Terms.
+            </p>
+          </section>
+
+          <section className="flex flex-col gap-2">
+            <h2 className="text-xl font-semibold text-white">23. Privacy</h2>
+            <p>
+              Use of the Platform is also governed by our <PrivacyNoticeLink />.
+              Personal data is processed in connection with Platform functionality,
+              support, payment processing and communications. Where Stripe processes
+              payment-related information, that processing is also subject to the
+              Stripe Terms and the <StripePrivacyPolicyLink />.
             </p>
           </section>
 
           <section className="flex flex-col gap-2">
             <h2 className="text-xl font-semibold text-white">
-              22. Changes to These Terms
+              24. Changes to These Terms
             </h2>
             <p>
               We may update these Terms from time to time. We will post the updated
@@ -729,9 +889,9 @@ const TermsOfServicePage = () => {
           </section>
 
           <section className="flex flex-col gap-2">
-            <h2 className="text-xl font-semibold text-white">23. Complaints</h2>
+            <h2 className="text-xl font-semibold text-white">25. Complaints</h2>
             <p>
-              If you have a complaint, please contact us at <a href="mailto:info@shagundirect.com" className="border-b border-white/60 hover:border-white">info@shagundirect.com</a>, or
+              If you have a complaint, please contact us at <EmailLink />, or
               through the dashboard support feature if you are a Couple. We aim to
               respond within one business day.
             </p>
@@ -739,7 +899,7 @@ const TermsOfServicePage = () => {
 
           <section className="flex flex-col gap-2">
             <h2 className="text-xl font-semibold text-white">
-              24. Governing Law and Jurisdiction
+              26. Governing Law and Jurisdiction
             </h2>
             <p>
               These Terms are governed by the laws of England and Wales. The courts
@@ -750,19 +910,15 @@ const TermsOfServicePage = () => {
           </section>
 
           <section className="flex flex-col gap-2">
-            <h2 className="text-xl font-semibold text-white">25. Contact</h2>
+            <h2 className="text-xl font-semibold text-white">27. Contact</h2>
             <p>Shagun Direct Limited, 167–169 Great Portland Street, London, England W1W 5PF</p>
-            <p>Email: <a href="mailto:info@shagundirect.com" className="border-b border-white/60 hover:border-white">info@shagundirect.com</a></p>
+            <p>Email: <EmailLink /></p>
+            <p>Couples can also contact us through the support feature in the dashboard.</p>
           </section>
         </div>
 
         <div className="mt-10 flex flex-wrap gap-4 text-sm">
-          <Link
-            href="/privacy-notice"
-            className="border-b border-white/60 hover:border-white"
-          >
-            Privacy Notice
-          </Link>
+          <PrivacyNoticeLink />
         </div>
       </div>
     </div>
