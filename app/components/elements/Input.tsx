@@ -1,4 +1,5 @@
 import React from "react"
+import { Calendar } from "lucide-react"
 import { UseFormRegisterReturn } from "react-hook-form"
 import { EyeIcon, EyeOffIcon } from "@/app/components/icons/Icons"
 
@@ -32,6 +33,7 @@ const Input = ({
 
   const defaultContainerClass = `border ${error ? "border-red-500" : "border-[#5FDA78]"} rounded-[147px] glass-card`
 
+  const isDateField = type === "date"
   const isPasswordField = type === "password"
   const inputType = isPasswordField && showPassword ? "text" : type
 
@@ -44,7 +46,7 @@ const Input = ({
           </label>
         )}
 
-        <div className="flex items-center gap-2">
+        <div className={`flex items-center gap-2${isDateField ? " date-field relative" : ""}`}>
           <input
             {...(register ?? {})}
             {...inputProps}
@@ -52,6 +54,10 @@ const Input = ({
             id={id}
             className={className || defaultInputClass}
           />
+
+          {isDateField && (
+            <Calendar className="pointer-events-none absolute right-0 h-5 w-5 text-white" aria-hidden="true" />
+          )}
 
           {isPasswordField && onTogglePasswordVisibility && (
             <button

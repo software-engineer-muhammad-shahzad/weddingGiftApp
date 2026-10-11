@@ -35,7 +35,7 @@ const getTodayDateInputValue = () => {
 }
 
 const dobDateInputClassName =
-  "mt-1 w-full max-w-xs rounded-lg bg-transparent border-0 px-0 py-1 font-medium text-white cursor-default [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-100"
+  "mt-1 w-full max-w-xs rounded-lg bg-transparent border-0 px-0 py-1 font-medium text-white cursor-default [&::-webkit-calendar-picker-indicator]:hidden"
 
 const Page = () => {
   const { data, isLoading, error, refetch } = useCoupleBankDetails()

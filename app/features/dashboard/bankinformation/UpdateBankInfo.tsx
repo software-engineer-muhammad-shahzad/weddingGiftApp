@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from "react"
-import { X } from "lucide-react"
+import { Calendar, X } from "lucide-react"
 import { showError } from "@/app/lib/toast"
 import { useUpdateBankInfo } from "../hooks/useUpdateBankInfo"
 import { UpdateBankDetailsData } from "../types/UpdateBankDetails"
@@ -151,17 +151,29 @@ const UpdateBankInfo = ({ data, onCancel, onSuccess }: Props) => {
   const { updateBankData, isLoading } = useUpdateBankInfo()
   const [currency, setCurrency] = useState(form.currency)
   const formWithCurrency = { ...form, currency }
-  const errors = validateBankDetails(formWithCurrency)
-  const isFormValid = Object.keys(errors).length === 0
+  const allErrors = validateBankDetails(formWithCurrency)
+  // Only surface a field's message once the user has interacted with it.
+  const [touched, setTouched] = useState<Partial<Record<keyof UpdateBankDetailsData, boolean>>>({})
+  const errors: typeof allErrors = Object.fromEntries(
+    Object.entries(allErrors).filter(([key]) => touched[key as keyof UpdateBankDetailsData]),
+  )
+  const isFormValid = Object.keys(allErrors).length === 0
+
+  const markTouched = (name: string) =>
+    setTouched((prev) => (prev[name as keyof UpdateBankDetailsData] ? prev : { ...prev, [name]: true }))
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => markTouched(e.target.name)
 
   const handleCurrencyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value
     setCurrency(value)
+    markTouched("currency")
     setForm((prev) => ({ ...prev, currency: value }))
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
+    markTouched(name)
 
     setForm((prev) => ({
       ...prev,
@@ -243,6 +255,7 @@ console.log("UpdateBankInfo response:", response);
             name="accountHolderName"
             value={form.accountHolderName}
             onChange={handleChange}
+            onBlur={handleBlur}
             placeholder="Account Holder Name"
             maxLength={100}
             className={`p-2 rounded bg-[#1f003d] text-white border ${errors.accountHolderName ? "border-red-500" : "border-gray-600"}`}
@@ -256,6 +269,7 @@ console.log("UpdateBankInfo response:", response);
             inputMode="numeric"
             value={form.accountNumber}
             onChange={handleChange}
+            onBlur={handleBlur}
             placeholder="Account Number"
             maxLength={20}
             className={`p-2 rounded bg-[#1f003d] text-white border ${errors.accountNumber ? "border-red-500" : "border-gray-600"}`}
@@ -268,6 +282,7 @@ console.log("UpdateBankInfo response:", response);
             name="iban"
             value={form.iban}
             onChange={handleChange}
+            onBlur={handleBlur}
             placeholder="IBAN"
             maxLength={34}
             className={`p-2 rounded bg-[#1f003d] text-white border uppercase ${errors.iban ? "border-red-500" : "border-gray-600"}`}
@@ -285,6 +300,7 @@ console.log("UpdateBankInfo response:", response);
             autoComplete="address"
             value={form.address}
             onChange={handleChange}
+            onBlur={handleBlur}
             placeholder="Address"
             maxLength={200}
             className={`p-2 rounded bg-[#1f003d] text-white border ${errors.address ? "border-red-500" : "border-gray-600"}`}
@@ -299,6 +315,7 @@ console.log("UpdateBankInfo response:", response);
             autoComplete="address-level2"
             value={form.city}
             onChange={handleChange}
+            onBlur={handleBlur}
             placeholder="City"
             maxLength={100}
             className={`p-2 rounded bg-[#1f003d] text-white border ${errors.city ? "border-red-500" : "border-gray-600"}`}
@@ -312,6 +329,7 @@ console.log("UpdateBankInfo response:", response);
             autoComplete="postal-code"
             value={form.postalCode}
             onChange={handleChange}
+            onBlur={handleBlur}
             placeholder="Postcode (e.g. SW1A 1AA)"
             maxLength={16}
             className={`p-2 rounded bg-[#1f003d] text-white border uppercase ${errors.postalCode ? "border-red-500" : "border-gray-600"}`}
@@ -327,6 +345,7 @@ console.log("UpdateBankInfo response:", response);
             autoComplete="tel"
             value={form.phoneNumber}
             onChange={handleChange}
+            onBlur={handleBlur}
             placeholder="Phone Number"
             maxLength={32}
             className={`p-2 rounded bg-[#1f003d] text-white border ${errors.phoneNumber ? "border-red-500" : "border-gray-600"}`}
@@ -339,15 +358,19 @@ console.log("UpdateBankInfo response:", response);
           <label htmlFor="dob" className="text-sm text-[#EEEEEE]">
             Date of Birth
           </label>
-          <input
-            id="dob"
-            name="dob"
-            type="date"
-            value={form.dob}
-            max={maximumDob}
-            onChange={handleChange}
-            className={`p-2 rounded bg-[#1f003d] text-white border ${errors.dob ? "border-red-500" : "border-gray-600"} [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-100`}
-          />
+          <div className="date-field relative">
+            <input
+              id="dob"
+              name="dob"
+              type="date"
+              value={form.dob}
+              max={maximumDob}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              className={`w-full p-2 rounded bg-[#1f003d] text-white border ${errors.dob ? "border-red-500" : "border-gray-600"}`}
+            />
+            <Calendar className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-white" aria-hidden="true" />
+          </div>
           {errors.dob && <p className="text-xs text-red-500">{errors.dob}</p>}
         </div>
 
