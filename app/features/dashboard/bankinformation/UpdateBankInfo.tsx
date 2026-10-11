@@ -367,7 +367,7 @@ console.log("UpdateBankInfo response:", response);
               max={maximumDob}
               onChange={handleChange}
               onBlur={handleBlur}
-              className={`w-full p-2 rounded bg-[#1f003d] text-white border ${errors.dob ? "border-red-500" : "border-gray-600"}`}
+              className={`block w-full min-h-[42px] leading-6 p-2 rounded bg-[#1f003d] text-white border ${errors.dob ? "border-red-500" : "border-gray-600"}`}
             />
             <Calendar className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-white" aria-hidden="true" />
           </div>

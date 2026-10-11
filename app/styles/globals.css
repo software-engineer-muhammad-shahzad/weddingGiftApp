@@ -98,6 +98,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
    indicator over the field so a click anywhere still opens the picker. */
 .date-field input[type="date"] {
   position: relative;
+  /* iOS Safari sizes date inputs from their native control, which makes them
+     overflow and look shorter than sibling fields; take it back under our control. */
+  -webkit-appearance: none;
+  appearance: none;
+  min-width: 0;
+  max-width: 100%;
+  text-align: left;
 }
 
 .date-field input[type="date"]::-webkit-calendar-picker-indicator {
