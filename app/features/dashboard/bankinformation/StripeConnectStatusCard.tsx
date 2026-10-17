@@ -35,6 +35,17 @@ const humanizeRequirement = (key: string) => {
   return cleaned.charAt(0).toUpperCase() + cleaned.slice(1)
 }
 
+// The API can send null/missing lists (e.g. when no requirements exist yet);
+// normalise them once so the rendering below never dereferences undefined.
+const normalizeStatus = (status: StripeConnectStatusData): StripeConnectStatusData => ({
+  ...status,
+  currentlyDue: status.currentlyDue ?? [],
+  pastDue: status.pastDue ?? [],
+  eventuallyDue: status.eventuallyDue ?? [],
+  pendingVerification: status.pendingVerification ?? [],
+  errors: status.errors ?? [],
+})
+
 const resolveOverall = (
   status: StripeConnectStatusData
 ): { tone: Tone; label: string; description: string } => {
@@ -108,11 +119,12 @@ interface Props {
 }
 
 const StripeConnectStatusCard = ({
-  status,
+  status: rawStatus,
   isLoading,
   onResumeOnboarding,
   isResuming,
 }: Props) => {
+  const status = normalizeStatus(rawStatus)
   const overall = resolveOverall(status)
   const styles = toneStyles[overall.tone]
 
