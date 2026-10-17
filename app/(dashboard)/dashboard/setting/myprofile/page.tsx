@@ -121,7 +121,7 @@ const Page = () => {
                   width={120}
                   height={120}
                   className="w-full h-full object-cover"
-                  unoptimized={imageSrc.startsWith("blob:")}
+                  unoptimized
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-[#5FDA7833]">

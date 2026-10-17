@@ -42,6 +42,7 @@ const ProfileDescription = ({ data, isLoading }: ProfileDescriptionProps) => {
                             alt={coupleName}
                             width={52}
                             height={52}
+                            unoptimized
                             className="w-13 h-13 rounded-full object-cover border border-[#5FDA78]"
                         />
                     ) : (

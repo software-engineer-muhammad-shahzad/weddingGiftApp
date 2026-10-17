@@ -28,7 +28,7 @@ export const useVerifyOtp = (): UseVerifyOtpResult => {
         const result = await asyncHandler(() => verifyOtpApi(payload))
 
         if (result.success && result.data.statusCode === 200) {
-            showSuccess("Email verified successfully. Please sign in")
+            showSuccess("Email verified successfully.")
             if (!options?.keepEmail) {
                 removeData("email", "local")
             }
