@@ -270,7 +270,7 @@ console.log("UpdateBankInfo response:", response);
             value={form.accountNumber}
             onChange={handleChange}
             onBlur={handleBlur}
-            placeholder="Source code + Account Number"
+            placeholder="Sort code + Account Number"
             maxLength={20}
             className={`p-2 rounded bg-[#1f003d] text-white border ${errors.accountNumber ? "border-red-500" : "border-gray-600"}`}
           />
