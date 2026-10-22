@@ -157,11 +157,11 @@ const SignupForm = () => {
             />
             <span>
               I agree to the{" "}
-              <Link href="/terms-of-service" className="border-b text-white" target="_blank" rel="noopener noreferrer">
+              <Link href="/terms" className="border-b text-white" target="_blank" rel="noopener noreferrer">
                 Terms & Conditions
               </Link>
               . Our{" "}
-              <Link href="/privacy-notice" className="border-b text-white" target="_blank" rel="noopener noreferrer">
+              <Link href="/privacy" className="border-b text-white" target="_blank" rel="noopener noreferrer">
                 Privacy Notice
               </Link>{" "}
               explains how we use your data.

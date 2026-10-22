@@ -75,11 +75,11 @@ const GuestCheckoutForm = ({ isLoading, onSubmit }: GuestCheckoutFormProps) => {
 
       <p className="text-white text-[11px] md:text-md px-2">
         By continuing, you agree to the our{" "}
-        <Link href="/terms-of-service" className="border-b" target="_blank" rel="noopener noreferrer">
+        <Link href="/terms" className="border-b" target="_blank" rel="noopener noreferrer">
           Terms & Conditions
         </Link>{" "}
         Our{" "}
-        <Link href="/privacy-notice" className="border-b" target="_blank" rel="noopener noreferrer">
+        <Link href="/privacy" className="border-b" target="_blank" rel="noopener noreferrer">
           Privacy Notice
         </Link>{" "}
         explains how we use your data.

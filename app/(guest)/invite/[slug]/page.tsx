@@ -204,11 +204,11 @@ const page = () => {
                 />
                 <span>
                   By continuing, you agree to our{" "}
-                  <Link href="/terms-of-service" className="border-b" target="_blank" rel="noopener noreferrer">
+                  <Link href="/terms" className="border-b" target="_blank" rel="noopener noreferrer">
                     Terms & Conditions.
                   </Link>{" "}
                   Our{" "}
-                  <Link href="/privacy-notice" className="border-b" target="_blank" rel="noopener noreferrer">
+                  <Link href="/privacy" className="border-b" target="_blank" rel="noopener noreferrer">
                     Privacy Notice
                   </Link>{" "}
                   explains how we use your data.

@@ -32,7 +32,7 @@ const PrivacyNoticePage = () => {
               website, event pages and related services (the &quot;Platform&quot;).
               It should be read together with our 
            <span> <Link
-            href="/terms-of-service"
+            href="/terms"
             className="border-b border-white/60 hover:border-white"
           >
             Terms & Conditions
@@ -645,7 +645,7 @@ const PrivacyNoticePage = () => {
 
         <div className="mt-10 flex flex-wrap gap-4 text-sm">
           <Link
-            href="/terms-of-service"
+            href="/terms"
             className="border-b border-white/60 hover:border-white"
           >
             Terms & Conditions

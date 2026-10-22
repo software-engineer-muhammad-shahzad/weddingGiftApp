@@ -16,8 +16,8 @@ const PUBLIC_ROUTE_PREFIXES = [
   "/set-password",
   "/forgot-password",
   "/invite",
-  "/privacy-notice",
-  "/terms-of-service",
+  "/privacy",
+  "/terms",
 ]
 
 const ACTIVITY_EVENTS: Array<keyof WindowEventMap> = [

@@ -10,7 +10,7 @@ const EmailLink = () => (
 )
 
 const PrivacyNoticeLink = () => (
-  <Link href="/privacy-notice" className={linkClass}>
+  <Link href="/privacy" className={linkClass}>
     Privacy Notice
   </Link>
 )
